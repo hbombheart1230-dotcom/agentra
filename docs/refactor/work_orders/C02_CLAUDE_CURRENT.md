@@ -4,7 +4,7 @@
 
 **C03 verified delta:** #11 comment 6543895966 reports A-22 A1–A8 REMOTE_DONE, normal unittest 8/8 exit0 and normal non-force push `a71a29de`; source `quant_shadow_candidate_evaluation.py` changed `c014b371→92a77e55`, 1207→1015 LOC. Re-fetched A and integration same source blob `92a77e5552ebcd0777db52c842bd500e80b5ae00`; old A-22 eight targets exist and are NOT new work. #12 6543760151 B-21 B1 REMOTE_DONE at `444cd862`, B2–B8 remain 7 safe pending, C01 retained with B1 completion correction. #32 no new comment since 6520075820; runtime Exited(255), RUN_SOURCE_SHA=UNKNOWN, operation HOLD.
 
-**One-file execution contract:** Read THIS C02 only and exact code/test paths below; no D00/RF/queue/C03/HANDOFF/self-selection. Pin CANONICAL_HEAD, ORDER_BLOB, A_REMOTE_SHA, ORDER_ID on start; do all A1–A8 or individually BLOCKED and continue safe next item. Do not redo A-22 or previous PASS/KEEP. Only A branch `work/p15-a-reporter-pure-20261021` code/test; no docs/RF/STATUS/C04/C05/B branch. Source BODY must leave original function as thin same-signature facade wrapper, move actual computation to one exclusive new Owner; Owner MUST NOT import SOURCE. Preserve import/caller signatures, original exception/order, generator/identity semantics, call-time monkeypatch via `facade=sys.modules[__name__]` where needed. Capture original-preimage golden before mutation; compare original vs wrapper vs direct Owner for each fixture including negative/error, post-import monkeypatch, and AST body removal. No duplicate BODY, rename-only, KEEP-only, or test-only work.
+**One-file execution contract:** Read THIS C02 only and exact code/test paths below; no D00/RF/queue/C03/HANDOFF/self-selection. Pin CANONICAL_HEAD, ORDER_BLOB, A_REMOTE_SHA, ORDER_ID on start; do all A1–A8 or individually BLOCKED and continue safe next item. Do not redo A-22 or previous PASS/KEEP. Only A branch `work/p15-a-reporter-pure-20261021` code/test; no docs/RF/STATUS/C04/C05/B branch. Source BODY must leave original function as thin same-signature facade wrapper, move actual computation to one exclusive new Owner; Owner MUST NOT import SOURCE; new Owner files use `from __future__ import annotations` and import their own type-only names. Preserve import/caller signatures, original exception/order, generator/identity semantics, call-time monkeypatch via `facade=sys.modules[__name__]` where needed. Capture original-preimage golden before mutation; compare original vs wrapper vs direct Owner for each fixture including negative/error, post-import monkeypatch, and AST body removal. No duplicate BODY, rename-only, KEEP-only, or test-only work.
 
 **Safety:** RF-035 offline reporting/diagnostics only, fake dict/TemporaryDirectory. No real pipeline execution, actual report/state/db writes, network, broker/order/Guard/Step5C/UEF/RunLab effects, operational environment, CI/frozen oracle, force push. Even guard-named functions below only compute read-only diagnostic values; never change enforcement or policy. No full peer/-O/hosted CI requirement. A-23 tests MUST be new `tests/test_p15_rf035_23h_quant_shadow_owners.py` (verified absent A/integration); preserve all earlier suites.
 
@@ -243,7 +243,7 @@ def _no_trade_scorecard(
         ),
     }
 ```
-**Thin wrapper / caller / monkeypatch:** Preserve exact original signature (including keyword-only and return type) and delegate to new Owner; use call-time `facade=sys.modules[__name__]` where relevant. Required seam: facade._bool/_forward_outcome/_scorecard_rows/_named_forward_rows/_text/constants. Owner must not import SOURCE. Preserve output, exception, identity and original call-site monkeypatch parity. **Safety:** report-only evaluation; facade._bool/_forward_outcome/_scorecard_rows/_named_forward_rows/_text and TRUSTED_FORWARD_MIN_COUNT/TRUSTED_FORWARD_MIN_COVERAGE at call time; no actual Guard or order effect.
+**Thin wrapper / caller / monkeypatch:** Preserve exact original signature (including keyword-only and return type) and delegate to new Owner; use call-time `facade=sys.modules[__name__]` where relevant. Required seam: facade._bool/_forward_outcome/_scorecard_rows/_named_forward_rows/_text/Mapping/TRUSTED_FORWARD_MIN_COUNT/TRUSTED_FORWARD_MIN_COVERAGE. Owner must not import SOURCE. Preserve output, exception, identity and original call-site monkeypatch parity. **Safety:** report-only evaluation; facade._bool/_forward_outcome/_scorecard_rows/_named_forward_rows/_text and TRUSTED_FORWARD_MIN_COUNT/TRUSTED_FORWARD_MIN_COVERAGE at call time; no actual Guard or order effect.
 **Normal targeted test:** `test_a8_no_trade_scorecard` in `tests/test_p15_rf035_23h_quant_shadow_owners.py`. Input→expected: candidates=[],entry_lane_forward_outcomes={},would_enter_count=0,opening_probe_would_enter=0,largecap_probe_would_enter=0 → status='no_shadow_data',candidate_count=0,behavior_effect='evaluation_only',forward_outcome_coverage=0.0. Verify original-preimage golden vs wrapper vs Owner, negative/error, AST actual body removal. If BLOCKED report exact reason and **continue remaining safe test/push**.
 
 ## FUTURE RESERVE — VERIFIED 6/6, DESIGN ONLY, NOT EXECUTABLE IN A-23
@@ -328,27 +328,6 @@ def _augment_missing_q9_commander_candidate(
     )
     payload["q9_decision_candidates"] = rows + [commander_row]
     return payload
-
-
-# The only top-level payload keys the closeout-path consumers read (candidate
-# evaluation, Q8 blocker review, strategist LLM evaluation). Everything else in
-# a shadow payload -- chiefly `q9_decision_candidates`, ~65% of the bytes -- is
-# dead weight for them. Closeout passes this to `keys=` so a full trading day
-# is not held in memory (the 10-06 closeout was OOM-killed at the 1 GiB cap).
-CANDIDATE_EVALUATION_PAYLOAD_KEYS: Tuple[str, ...] = ("candidates", "generated_at")
-
-# Keys of each `q9_decision_candidates` row that are ~83% of its bytes and that the full-chain
-# component review, the scanner-quality review and the cost-basis comparison never read
-# (verified statically and with access-trapping values on real days -- see
-# tests/test_closeout_memory_bounds.py). Those consumers pass `drop_q9_row_keys=` so a day of
-# q9 rows is not held in full. Consumers that DO read them (stage-2 authority, episode scanner
-# review, evaluation lens ...) must not use it.
-Q9_ROW_KEYS_UNUSED_BY_FULL_CHAIN: Tuple[str, ...] = (
-    "entry_lane_observation",
-    "score_breakdown",
-    "compact_feature_snapshot",
-    "below_vwap_reclaim_observation",
-)
 ```
 **Future targeted fixture:** payload={} windows_by_id={} → same payload identity; synthetic ranked candidate+window → append one C_COMMANDER_FINAL with q9_selected=False. **Safety/wrapper/monkeypatch:** in-memory copy/append only; no execution or actual Commander; preserve original same-signature thin wrapper, original golden and exceptions. Recheck SHA/target before issuance.
 
