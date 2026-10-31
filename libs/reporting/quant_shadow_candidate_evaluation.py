@@ -4,6 +4,7 @@ import json
 from collections import Counter
 from datetime import date, datetime, timedelta
 from pathlib import Path
+import sys
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
 
 from libs.reporting.json_array_stream import iter_json_array
@@ -22,6 +23,14 @@ from libs.reporting.quant_shadow_forward_outcomes import attach_forward_outcomes
 from libs.runtime.quant.enforcement import build_entry_quant_enforcement
 from libs.runtime.quant.entry_lane_observation import build_entry_lane_observation
 from libs.runtime.quant.vwap_reclaim_observation import classify_below_vwap_reclaim_observation
+from libs.reporting import quant_shadow_scalar_projection as _scalar_owner
+from libs.reporting import quant_shadow_day_projection as _day_owner
+from libs.reporting import quant_shadow_counter_projection as _counter_owner
+from libs.reporting import quant_shadow_blocker_projection as _blocker_owner
+from libs.reporting import quant_shadow_reason_projection as _reason_owner
+from libs.reporting import quant_shadow_runnerup_projection as _runnerup_owner
+from libs.reporting import quant_shadow_mean_projection as _mean_owner
+from libs.reporting import quant_shadow_scorecard_signal_projection as _scorecard_signal_owner
 
 
 def _text(value: Any) -> str:
@@ -30,11 +39,7 @@ def _text(value: Any) -> str:
 
 
 def _bool(value: Any) -> bool:
-    if isinstance(value, bool):
-        return value
-    if isinstance(value, (int, float)):
-        return bool(value)
-    return str(value or "").strip().lower() in {"1", "true", "yes", "y", "on"}
+    return _scalar_owner._bool(value)
 
 
 def _read_json(path: Path) -> Any:
@@ -49,12 +54,7 @@ def shadow_candidate_root_for_reports(reports_root: Path) -> Path:
 
 
 def _iter_days(start: str, end: str) -> Iterable[str]:
-    start_date = date.fromisoformat(str(start)[:10])
-    end_date = date.fromisoformat(str(end)[:10])
-    current = start_date
-    while current <= end_date:
-        yield current.isoformat()
-        current += timedelta(days=1)
+    yield from _day_owner._iter_days(start, end, facade=sys.modules[__name__])
 
 
 def _json_paths_for_day(root: Path, day: str) -> List[Path]:
@@ -259,24 +259,11 @@ def load_quant_shadow_candidate_payloads_for_range(
 
 
 def _top_counter(counter: Counter[str], *, limit: int = 8) -> List[Dict[str, Any]]:
-    return [
-        {"name": name, "count": count}
-        for name, count in counter.most_common(limit)
-        if name
-    ]
+    return _counter_owner._top_counter(counter, limit=limit)
 
 
 def _row_blockers(row: Mapping[str, Any]) -> List[str]:
-    blockers: List[str] = []
-    for value in (row.get("blockers"),):
-        if isinstance(value, list):
-            blockers.extend(_text(item) for item in value if _text(item))
-    decision = row.get("entry_quant_decision")
-    if isinstance(decision, Mapping):
-        value = decision.get("blockers")
-        if isinstance(value, list):
-            blockers.extend(_text(item) for item in value if _text(item))
-    return blockers
+    return _blocker_owner._row_blockers(row, facade=sys.modules[__name__])
 
 
 def _cost_floor_state(row: Mapping[str, Any]) -> str:
@@ -391,35 +378,11 @@ def _actionable_entry_guard_block(row: Mapping[str, Any]) -> bool:
 
 
 def _count_reason(candidates: Sequence[Mapping[str, Any]], names: set[str]) -> int:
-    total = 0
-    for row in candidates:
-        reason = _text(row.get("reason"))
-        primary = _text(row.get("primary_failure_axis"))
-        cost_floor = _cost_floor_state(row)
-        if reason in names or primary in names or cost_floor in names:
-            total += 1
-            continue
-        blockers = _row_blockers(row)
-        if any(blocker in names for blocker in blockers):
-            total += 1
-    return total
+    return _reason_owner._count_reason(candidates, names, facade=sys.modules[__name__])
 
 
 def _runner_up_risk_count(candidates: Sequence[Mapping[str, Any]]) -> int:
-    total = 0
-    for row in candidates:
-        if _text(row.get("shadow_role")) != "runner_up_evaluated":
-            continue
-        if _bool(row.get("would_enter")):
-            total += 1
-            continue
-        if _bool(row.get("runner_up_quality_blocked")) or _bool(row.get("weak_fallback_blocked")):
-            total += 1
-            continue
-        reason = _text(row.get("reason"))
-        if reason in {"runner_up_quality_gate_failed", "weak_fallback_pullback"}:
-            total += 1
-    return total
+    return _runnerup_owner._runner_up_risk_count(candidates, facade=sys.modules[__name__])
 
 
 def _entry_shape(row: Mapping[str, Any]) -> str:
@@ -559,10 +522,7 @@ def _entry_lane_observation_payload(candidates: Sequence[Mapping[str, Any]]) -> 
 
 
 def _mean(values: Sequence[float]) -> float | None:
-    clean = [float(value) for value in values if value is not None]
-    if not clean:
-        return None
-    return round(sum(clean) / float(len(clean)), 4)
+    return _mean_owner._mean(values)
 
 
 def _checkpoint_value(row: Mapping[str, Any], checkpoint: str, metric: str) -> float | None:
@@ -683,14 +643,7 @@ def _entry_lane_forward_outcomes(candidates: Sequence[Mapping[str, Any]]) -> Dic
 
 
 def _scorecard_return_signal(row: Mapping[str, Any]) -> float | None:
-    for key in ("avg_return_15m_pct", "avg_return_5m_pct", "avg_return_30m_pct", "avg_return_3m_pct"):
-        value = row.get(key)
-        if value not in (None, ""):
-            try:
-                return float(value)
-            except Exception:
-                continue
-    return None
+    return _scorecard_signal_owner._scorecard_return_signal(row)
 
 
 def _scorecard_rows(rows: Sequence[Mapping[str, Any]], *, mode: str, limit: int = 5) -> List[Dict[str, Any]]:
