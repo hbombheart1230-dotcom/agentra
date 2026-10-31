@@ -1,45 +1,16 @@
-# C01 — Codex B | B-20261101-02 | FAST-3 8 verified real SOURCE BODY MOVEs
+# C01 — Codex B | B-20261101-03-CONT | FAST-3 7 REMAINING verified real SOURCE BODY MOVEs
 
-**START ORDER — ONE FILE ONLY.** Read THIS document, then only the named code/test files. Do not read D00/RF/queue/C03/HANDOFF or select tasks yourself. Pin canonical HEAD `9e47ed5230d68814688ff6b48ae2764a8a25222f` (pre-issue), ORDER_BLOB, actor branch HEAD, and ORDER_ID at start; newer documents do not retroactively cancel a started order. Run ALL eight items; if blocked, record precise reason and proceed to the next independent safe item. Never redo completed old order. 
+**START ORDER — ONE FILE ONLY.** Read this C01 and ONLY named code/test paths. Pin actual integration HEAD, this C01 blob, actor remote HEAD and ORDER_ID at start. Do not read D00/RF/queue/C03/HANDOFF, choose your own work, or redo completed B1. Complete ALL seven remaining independent items B2–B8; if blocked, record exact reason and continue other safe items. This update does not retroactively cancel an order already in progress.
 
-**EVIDENCE:** C03 compared actor/integration exact source blobs, SOURCE original executable bodies, unique target path absence on both refs, RF ownership, and recent #11/#12/#32. Actor A old order A-20261101-01 8/8 REMOTE_DONE at 0cc2d549; B old order B-21 B1–B3 REMOTE_DONE at 30295cc1, B4–B8 remain unfinished and are carried as B1–B5 here, with B6–B8 new. Current C01 old blob `b9f6a1dfcc6e0ca746c738f80e599a12fe54ae49`, C02 old blob `606eb2ce8baaa1abf36b366675f9208878b0745c`. RunLab Exited(255), RUN_SOURCE_SHA=UNKNOWN, operational HOLD. No C03 code/test work or RF DONE is claimed.
+**C03 DELTA EVIDENCE:** previous C01 blob `c478e4901e2b2de1f81f48244c54b2d8d670e7a2`; B remote `30295cc1d492945a9b818bb1e8e1008cfad760a6` → `da1ec19b27aedefea64381ca88ba9c1d2c3fec20` (one commit, 3 files): B1 `run_m26_scorecard.py::_to_epoch` original body removed, `m26_scorecard_epoch_projection.py::_to_epoch` created, test `tests/test_p15_rf063_22h_projection_owners.py` added. B1 is **REMOTE_DONE (code structural only)** and MUST NOT be reassigned. The 7 below are still actual SOURCE BODY on B remote, their TARGETs are absent on B/integration. B source CURRENT_BLOB now `320abe9f61f75e4de06b46ee451aa878bbb79b62` (integration still older `4d5bb75ee8a22ad506ceff962e69e53a15d88563`). B1 new normal test evidence is only source/test presence; normal exit0 for B1 is NOT independently confirmed from #12 yet; do not count B1 as new G2. Previous B-02 order's other seven remain ready. #32 latest `6520075820`: RunLab Exited(255), RUN_SOURCE_SHA=UNKNOWN, operational HOLD.
 
-**RF/OWNER:** RF-063; CODEX_B exclusively owns all named source and target files. Actor writes only its `work/p15-b-operator-structure-20261022` code/test paths; no D00, RF, queue, STATUS, C04/C05, other actor branch, CI/frozen oracle, Git force-push. All eight target paths confirmed absent on actor and integration before issue. C04 performs selective integration/G3; C05 alone accepts RF DONE.
+**OWNER:** RF-063, CODEX_B exclusively. Actor writes ONLY its own `work/p15-b-operator-structure-20261022` code/test; no D00/RF/queue/STATUS/C04/C05, A branch, CI/frozen oracle, force-push. C03 does not write B code/tests. C04 handles selective integration/G3, C05 RF DONE.
 
-**SAFETY:** isolated fake in-memory mappings, monkeypatch and TemporaryDirectory only. No real trading, broker, order, guard, Step5C, UEF, RunLab operations, live network, runtime process/queue/lock mutation, operational State/DB/report paths, subprocess, actual CLI main, deploy/restart, or security policy change. Paths/env in these helpers must be fake/patched. Preserve exact public signatures, return type, exceptions, ordering, CLI callers, and SOURCE call-time monkeypatch seams. Source function must become a single-return thin delegation; new Owner must hold the ORIGINAL computation body, never import SOURCE (pass `facade=sys.modules[__name__]` when source globals are referenced). Use import inside SOURCE wrapper or safe top-level alias, no cycles. Capture original preimage golden before edits; compare golden vs SOURCE wrapper vs Owner with positive, negative, exception, and post-import monkeypatch cases; AST prove retired SOURCE calculation body absent, no duplicate/orphan statements.
+**SAFETY:** isolated fake dicts/TemporaryDirectory and patched env/clock only. No real trading/broker/order/Guard/Step5C/UEF/RunLab/live network/runtime process or operational State/DB/report path; no actual CLI main, subprocess or deployment. Preserve public signature/return/exception/ordering and SOURCE post-import monkeypatch seams. Move ORIGINAL calculation to unique Owner, SOURCE becomes single-return thin wrapper, Owner never imports SOURCE (use facade=sys.modules[__name__] when needed). Golden preimage parity, AST source body removal, direct Owner and wrapper parity required.
 
-**TEST/PUSH:** Create NEW `tests/test_p15_rf063_20261101_02h_diagnostics_owners.py` (do not overwrite old B21/A01 tests). Each test must pin exact input→expected below, original golden parity, Owner direct parity, thin-wrapper AST and patch seams. Run `python -m py_compile` on modified source and all new Owner modules; run `python -m unittest tests/test_p15_rf063_20261101_02h_diagnostics_owners.py -v` normal exit0; use safe isolated tests only. Commit ONLY actor code/test; normal non-force push actor branch; re-fetch actor HEAD and source/target/test blob SHAs. If pytest unavailable, stdlib unittest remains valid. If push authentication fails, mark PUSH_BLOCKED but continue other safe items. Report each item IMPLEMENTED/TEST_BLOCKED/PUSH_BLOCKED/SAFETY_BLOCKED/NOT_RUN with measured START/END, normal command exit and exact remote SHA to #12; do not claim G1 for local-only. No mandatory -O/full peer/per-RF hosted CI.
+**TEST/PUSH:** create NEW `tests/test_p15_rf063_20261101_03h_diagnostics_remaining_owners.py` with B2–B8 tests, keeping the B1 `test_p15_rf063_22h_projection_owners.py` unchanged. In the seven item sections below, the older referenced test names are method names; use this NEW 03h test file rather than the obsolete 02h proposed path. Run `python -m py_compile` on changed SOURCE and created Owners, then `python -m unittest tests/test_p15_rf063_20261101_03h_diagnostics_remaining_owners.py -v` normal exit0; optionally run B1's existing test for directly affected caller compatibility, not repeated as new work. Commit ONLY B code/new test, normal push actor branch, re-fetch remote HEAD and SOURCE/TARGET/test blobs. If Git auth fails, mark PUSH_BLOCKED and continue safe work. Report B2–B8 individual outcomes, normal exit, remote SHA and measured START/END to #12. No mandatory -O/full peer/hosted per-RF CI.
 
-## B1 | RF-063 | CODEX_B | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_to_epoch` @ L26 | CURRENT_BLOB `4d5bb75ee8a22ad506ceff962e69e53a15d88563`
-**NEW TARGET (404 on actor and integration):** `scripts/diagnostics/m26_scorecard_epoch_projection.py::_to_epoch`.
-**ORIGINAL EXECUTABLE CALCULATION BODY — MOVE, not KEEP or test-only (adapt global lookups through facade where noted):**
-```python
-def _to_epoch(ts: Any) -> Optional[int]:
-    if ts is None:
-        return None
-    if isinstance(ts, (int, float)):
-        return int(ts)
-    s = str(ts).strip()
-    if not s:
-        return None
-    try:
-        return int(float(s))
-    except Exception:
-        pass
-    if s.endswith("Z"):
-        s = s[:-1] + "+00:00"
-    try:
-        dt = datetime.fromisoformat(s)
-        if dt.tzinfo is None:
-            dt = dt.replace(tzinfo=timezone.utc)
-        return int(dt.timestamp())
-    except Exception:
-        return None
-```
-**Exact SOURCE thin-wrapper executable statement:** `return _epoch_owner._to_epoch(ts, facade=sys.modules[__name__])` (keep original signature, annotations, and any docstring; import `scripts.diagnostics.m26_scorecard_epoch_projection` under the shown `_..._owner` alias or inline in wrapper; remove ALL old calculation statements). **Caller/monkeypatch:** facade.datetime/timezone; no real clock needed for fixed timestamps. Owner signature adds keyword-only `facade` only when needed; read SOURCE globals through facade at invocation, never import SOURCE. Preserve negative/error parity and side-effect-free fake boundary.
-**Normal targeted test `test_b1_to_epoch`:** None→None; '0'→0; '1970-01-01T00:00:00Z'→0; invalid→None. Assert original-golden == wrapper == direct Owner, AST SOURCE thin wrapper and patched SOURCE-global seam. **On blocker:** log exact path/function/error and continue B2.
-
-## B2 | RF-063 | CODEX_B | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_utc_day` @ L49 | CURRENT_BLOB `4d5bb75ee8a22ad506ceff962e69e53a15d88563`
+## B2 | RF-063 | CODEX_B | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_utc_day` @ L31 | CURRENT_BLOB `320abe9f61f75e4de06b46ee451aa878bbb79b62`
 **NEW TARGET (404 on actor and integration):** `scripts/diagnostics/m26_scorecard_day_projection.py::_utc_day`.
 **ORIGINAL EXECUTABLE CALCULATION BODY — MOVE, not KEEP or test-only (adapt global lookups through facade where noted):**
 ```python
@@ -52,7 +23,7 @@ def _utc_day(ts: Any) -> str:
 **Exact SOURCE thin-wrapper executable statement:** `return _day_owner._utc_day(ts, facade=sys.modules[__name__])` (keep original signature, annotations, and any docstring; import `scripts.diagnostics.m26_scorecard_day_projection` under the shown `_..._owner` alias or inline in wrapper; remove ALL old calculation statements). **Caller/monkeypatch:** facade._to_epoch/datetime/timezone; preserve patched fallback clock. Owner signature adds keyword-only `facade` only when needed; read SOURCE globals through facade at invocation, never import SOURCE. Preserve negative/error parity and side-effect-free fake boundary.
 **Normal targeted test `test_b2_utc_day`:** 0→'1970-01-01'; 86400→'1970-01-02'; invalid with patched datetime. Assert original-golden == wrapper == direct Owner, AST SOURCE thin wrapper and patched SOURCE-global seam. **On blocker:** log exact path/function/error and continue B3.
 
-## B3 | RF-063 | CODEX_B | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_iter_jsonl` @ L56 | CURRENT_BLOB `4d5bb75ee8a22ad506ceff962e69e53a15d88563`
+## B3 | RF-063 | CODEX_B | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_iter_jsonl` @ L38 | CURRENT_BLOB `320abe9f61f75e4de06b46ee451aa878bbb79b62`
 **NEW TARGET (404 on actor and integration):** `scripts/diagnostics/m26_scorecard_jsonl_projection.py::_iter_jsonl`.
 **ORIGINAL EXECUTABLE CALCULATION BODY — MOVE, not KEEP or test-only (adapt global lookups through facade where noted):**
 ```python
@@ -76,7 +47,7 @@ def _iter_jsonl(path: Path) -> List[Dict[str, Any]]:
 **Exact SOURCE thin-wrapper executable statement:** `return _jsonl_owner._iter_jsonl(path, facade=sys.modules[__name__])` (keep original signature, annotations, and any docstring; import `scripts.diagnostics.m26_scorecard_jsonl_projection` under the shown `_..._owner` alias or inline in wrapper; remove ALL old calculation statements). **Caller/monkeypatch:** facade.json; temp only, preserve malformed-skip behavior. Owner signature adds keyword-only `facade` only when needed; read SOURCE globals through facade at invocation, never import SOURCE. Preserve negative/error parity and side-effect-free fake boundary.
 **Normal targeted test `test_b3_iter_jsonl`:** missing temp path→[]; temp '{"x":1}\nBAD\n[]\n'→[{'x':1}]. Assert original-golden == wrapper == direct Owner, AST SOURCE thin wrapper and patched SOURCE-global seam. **On blocker:** log exact path/function/error and continue B4.
 
-## B4 | RF-063 | CODEX_B | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_safe_int` @ L74 | CURRENT_BLOB `4d5bb75ee8a22ad506ceff962e69e53a15d88563`
+## B4 | RF-063 | CODEX_B | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_safe_int` @ L56 | CURRENT_BLOB `320abe9f61f75e4de06b46ee451aa878bbb79b62`
 **NEW TARGET (404 on actor and integration):** `scripts/diagnostics/m26_scorecard_int_projection.py::_safe_int`.
 **ORIGINAL EXECUTABLE CALCULATION BODY — MOVE, not KEEP or test-only (adapt global lookups through facade where noted):**
 ```python
@@ -89,7 +60,7 @@ def _safe_int(v: Any, default: int = 0) -> int:
 **Exact SOURCE thin-wrapper executable statement:** `return _int_owner._safe_int(v, default)` (keep original signature, annotations, and any docstring; import `scripts.diagnostics.m26_scorecard_int_projection` under the shown `_..._owner` alias or inline in wrapper; remove ALL old calculation statements). **Caller/monkeypatch:** pure numeric; preserve exceptions. Owner signature adds keyword-only `facade` only when needed; read SOURCE globals through facade at invocation, never import SOURCE. Preserve negative/error parity and side-effect-free fake boundary.
 **Normal targeted test `test_b4_safe_int`:** '3.9'→3; ('bad',4)→4; invalid default exception parity. Assert original-golden == wrapper == direct Owner, AST SOURCE thin wrapper and patched SOURCE-global seam. **On blocker:** log exact path/function/error and continue B5.
 
-## B5 | RF-063 | CODEX_B | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_safe_float` @ L81 | CURRENT_BLOB `4d5bb75ee8a22ad506ceff962e69e53a15d88563`
+## B5 | RF-063 | CODEX_B | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_safe_float` @ L63 | CURRENT_BLOB `320abe9f61f75e4de06b46ee451aa878bbb79b62`
 **NEW TARGET (404 on actor and integration):** `scripts/diagnostics/m26_scorecard_float_projection.py::_safe_float`.
 **ORIGINAL EXECUTABLE CALCULATION BODY — MOVE, not KEEP or test-only (adapt global lookups through facade where noted):**
 ```python
@@ -102,7 +73,7 @@ def _safe_float(v: Any, default: float = 0.0) -> float:
 **Exact SOURCE thin-wrapper executable statement:** `return _float_owner._safe_float(v, default)` (keep original signature, annotations, and any docstring; import `scripts.diagnostics.m26_scorecard_float_projection` under the shown `_..._owner` alias or inline in wrapper; remove ALL old calculation statements). **Caller/monkeypatch:** pure numeric; preserve exceptions. Owner signature adds keyword-only `facade` only when needed; read SOURCE globals through facade at invocation, never import SOURCE. Preserve negative/error parity and side-effect-free fake boundary.
 **Normal targeted test `test_b5_safe_float`:** '1.25'→1.25; ('bad',2.5)→2.5; NaN parity. Assert original-golden == wrapper == direct Owner, AST SOURCE thin wrapper and patched SOURCE-global seam. **On blocker:** log exact path/function/error and continue B6.
 
-## B6 | RF-063 | CODEX_B | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_load_close_price_by_symbol` @ L98 | CURRENT_BLOB `4d5bb75ee8a22ad506ceff962e69e53a15d88563`
+## B6 | RF-063 | CODEX_B | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_load_close_price_by_symbol` @ L80 | CURRENT_BLOB `320abe9f61f75e4de06b46ee451aa878bbb79b62`
 **NEW TARGET (404 on actor and integration):** `scripts/diagnostics/m26_scorecard_close_projection.py::_load_close_price_by_symbol`.
 **ORIGINAL EXECUTABLE CALCULATION BODY — MOVE, not KEEP or test-only (adapt global lookups through facade where noted):**
 ```python
@@ -135,7 +106,7 @@ def _load_close_price_by_symbol(path: Path, *, day: str) -> Dict[str, float]:
 **Exact SOURCE thin-wrapper executable statement:** `return _close_owner._load_close_price_by_symbol(path, day=day, facade=sys.modules[__name__])` (keep original signature, annotations, and any docstring; import `scripts.diagnostics.m26_scorecard_close_projection` under the shown `_..._owner` alias or inline in wrapper; remove ALL old calculation statements). **Caller/monkeypatch:** facade.csv/_utc_day/_safe_float; temp CSV only. Owner signature adds keyword-only `facade` only when needed; read SOURCE globals through facade at invocation, never import SOURCE. Preserve negative/error parity and side-effect-free fake boundary.
 **Normal targeted test `test_b6_load_close_price_by_symbol`:** temp CSV 'symbol,ts,close\nA,1970-01-01T00:00:00Z,10\n', day='1970-01-01'→{'A':10.0}; missing→{}. Assert original-golden == wrapper == direct Owner, AST SOURCE thin wrapper and patched SOURCE-global seam. **On blocker:** log exact path/function/error and continue B7.
 
-## B7 | RF-063 | CODEX_B | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_build_parser` @ L125 | CURRENT_BLOB `4d5bb75ee8a22ad506ceff962e69e53a15d88563`
+## B7 | RF-063 | CODEX_B | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_build_parser` @ L107 | CURRENT_BLOB `320abe9f61f75e4de06b46ee451aa878bbb79b62`
 **NEW TARGET (404 on actor and integration):** `scripts/diagnostics/m26_scorecard_parser_projection.py::_build_parser`.
 **ORIGINAL EXECUTABLE CALCULATION BODY — MOVE, not KEEP or test-only (adapt global lookups through facade where noted):**
 ```python
@@ -149,7 +120,7 @@ def _build_parser() -> argparse.ArgumentParser:
 **Exact SOURCE thin-wrapper executable statement:** `return _parser_owner._build_parser(facade=sys.modules[__name__])` (keep original signature, annotations, and any docstring; import `scripts.diagnostics.m26_scorecard_parser_projection` under the shown `_..._owner` alias or inline in wrapper; remove ALL old calculation statements). **Caller/monkeypatch:** facade.argparse; parser only, never main. Owner signature adds keyword-only `facade` only when needed; read SOURCE globals through facade at invocation, never import SOURCE. Preserve negative/error parity and side-effect-free fake boundary.
 **Normal targeted test `test_b7_build_parser`:** parse_args(['--day','2026-10-31','--json'])→day='2026-10-31', json=True. Assert original-golden == wrapper == direct Owner, AST SOURCE thin wrapper and patched SOURCE-global seam. **On blocker:** log exact path/function/error and continue B8.
 
-## B8 | RF-063 | CODEX_B | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_validate_required` @ L133 | CURRENT_BLOB `4d5bb75ee8a22ad506ceff962e69e53a15d88563`
+## B8 | RF-063 | CODEX_B | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_validate_required` @ L115 | CURRENT_BLOB `320abe9f61f75e4de06b46ee451aa878bbb79b62`
 **NEW TARGET (404 on actor and integration):** `scripts/diagnostics/m26_scorecard_validate_projection.py::_validate_required`.
 **ORIGINAL EXECUTABLE CALCULATION BODY — MOVE, not KEEP or test-only (adapt global lookups through facade where noted):**
 ```python
