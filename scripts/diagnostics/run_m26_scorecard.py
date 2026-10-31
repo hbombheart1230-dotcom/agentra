@@ -29,42 +29,23 @@ def _to_epoch(ts: Any) -> Optional[int]:
 
 
 def _utc_day(ts: Any) -> str:
-    ep = _to_epoch(ts)
-    if ep is None:
-        return datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    return datetime.fromtimestamp(ep, tz=timezone.utc).strftime("%Y-%m-%d")
+    from scripts.diagnostics import m26_scorecard_day_projection as _day_owner
+    return _day_owner._utc_day(ts, facade=sys.modules[__name__])
 
 
 def _iter_jsonl(path: Path) -> List[Dict[str, Any]]:
-    if not path.exists():
-        return []
-    out: List[Dict[str, Any]] = []
-    with path.open("r", encoding="utf-8") as f:
-        for line in f:
-            s = line.strip()
-            if not s:
-                continue
-            try:
-                obj = json.loads(s)
-            except Exception:
-                continue
-            if isinstance(obj, dict):
-                out.append(obj)
-    return out
+    from scripts.diagnostics import m26_scorecard_jsonl_projection as _jsonl_owner
+    return _jsonl_owner._iter_jsonl(path, facade=sys.modules[__name__])
 
 
 def _safe_int(v: Any, default: int = 0) -> int:
-    try:
-        return int(float(v))
-    except Exception:
-        return int(default)
+    from scripts.diagnostics import m26_scorecard_int_projection as _int_owner
+    return _int_owner._safe_int(v, default)
 
 
 def _safe_float(v: Any, default: float = 0.0) -> float:
-    try:
-        return float(v)
-    except Exception:
-        return float(default)
+    from scripts.diagnostics import m26_scorecard_float_projection as _float_owner
+    return _float_owner._safe_float(v, default)
 
 
 def _max_drawdown_ratio(equity: List[float]) -> Tuple[float, float]:
@@ -78,59 +59,18 @@ def _risk_adjusted(samples: List[float]) -> Dict[str, float]:
 
 
 def _load_close_price_by_symbol(path: Path, *, day: str) -> Dict[str, float]:
-    out: Dict[str, Tuple[str, float]] = {}
-    if not path.exists():
-        return {}
-    with path.open("r", encoding="utf-8", newline="") as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            symbol = str(row.get("symbol") or "").strip()
-            if not symbol:
-                continue
-            ts = str(row.get("ts") or "").strip()
-            d = _utc_day(ts)
-            close = _safe_float(row.get("close"), default=0.0)
-            if close <= 0.0:
-                continue
-            prev = out.get(symbol)
-            if day:
-                if d != day:
-                    continue
-                if prev is None or d >= prev[0]:
-                    out[symbol] = (d, close)
-            else:
-                if prev is None or d >= prev[0]:
-                    out[symbol] = (d, close)
-    return {k: v[1] for k, v in out.items()}
+    from scripts.diagnostics import m26_scorecard_close_projection as _close_owner
+    return _close_owner._load_close_price_by_symbol(path, day=day, facade=sys.modules[__name__])
 
 
 def _build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(description="M26 scorecard scaffold (PnL proxy / risk-adjusted / drawdown).")
-    p.add_argument("--dataset-root", default="data/eval/m26_fixed_dataset_v1")
-    p.add_argument("--day", default=None)
-    p.add_argument("--json", action="store_true")
-    return p
+    from scripts.diagnostics import m26_scorecard_parser_projection as _parser_owner
+    return _parser_owner._build_parser(facade=sys.modules[__name__])
 
 
 def _validate_required(dataset_root: Path) -> Tuple[List[str], List[str]]:
-    failures: List[str] = []
-    missing: List[str] = []
-    for rel in REQUIRED_FILES:
-        if not (dataset_root / rel).exists():
-            missing.append(rel)
-    if missing:
-        failures.append("missing_required_files")
-
-    manifest_path = dataset_root / "manifest.json"
-    if manifest_path.exists():
-        try:
-            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-        except Exception as e:
-            failures.append(f"invalid_manifest_json ({e})")
-            return failures, missing
-        if str(manifest.get("schema_version") or "") != "m26.dataset_manifest.v1":
-            failures.append("invalid_manifest_schema_version")
-    return failures, missing
+    from scripts.diagnostics import m26_scorecard_validate_projection as _validate_owner
+    return _validate_owner._validate_required(dataset_root, facade=sys.modules[__name__])
 
 
 def main(argv: Optional[List[str]] = None) -> int:
