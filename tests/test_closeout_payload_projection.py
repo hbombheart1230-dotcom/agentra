@@ -193,7 +193,7 @@ def _payload_keys_read(source_path: str, function_names: set[str]) -> set[str]:
 @pytest.mark.parametrize(
     "path,functions",
     [
-        ("libs/reporting/quant_shadow_candidate_evaluation.py", {"build_quant_shadow_candidate_evaluation"}),
+        ("libs/reporting/quant_shadow_evaluation_builder_projection.py", {"build_quant_shadow_candidate_evaluation"}),
         ("libs/reporting/q8_shadow_blocker_candidate_projection.py", {"_candidate_rows"}),
         ("libs/reporting/strategist_llm_evaluation_rows.py", {"_shadow_rows"}),
     ],
