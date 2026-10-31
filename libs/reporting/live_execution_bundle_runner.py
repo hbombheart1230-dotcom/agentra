@@ -229,11 +229,18 @@ from libs.reporting.reporter_bundle_runtime_parts.closed_sell_reconciliation imp
 from libs.reporting.reporter_bundle_runtime_parts.report_generation_policy import (
     report_generation_policy_gate,
 )
+from libs.reporting import live_bundle_env_bool_projection as _env_bool_owner
+from libs.reporting import live_bundle_bundle_role_projection as _bundle_role_owner
+from libs.reporting import live_bundle_trueish_projection as _trueish_owner
+from libs.reporting import live_bundle_lock_epoch_projection as _lock_epoch_owner
+from libs.reporting import live_bundle_duration_human_projection as _duration_human_owner
+from libs.reporting import live_bundle_trade_sequence_projection as _trade_seq_owner
+from libs.reporting import live_bundle_artifact_paths_projection as _artifact_paths_owner
+from libs.reporting import live_bundle_wmi_epoch_projection as _wmi_epoch_owner
 
 
 def _env_bool(name: str, default: bool = True) -> bool:
-    raw = str(os.getenv(name, "1" if default else "0")).strip().lower()
-    return raw in {"1", "true", "yes", "on"}
+    return _env_bool_owner._env_bool(name, default, facade=sys.modules[__name__])
 
 
 def _normalize_model_name(model: Any) -> str:
@@ -252,12 +259,11 @@ def _background_job_queue_path() -> Path:
 
 
 def _bundle_role(value: Any = "") -> str:
-    raw = str(value or "").strip()
-    return raw or "intraday_trade_report_bundle"
+    return _bundle_role_owner._bundle_role(value)
 
 
 def _is_trueish(value: Any) -> bool:
-    return str(value or "").strip().lower() in {"1", "true", "yes", "y", "on"}
+    return _trueish_owner._is_trueish(value)
 
 
 def _load_background_job_queue(path: Path) -> List[Dict[str, Any]]:
@@ -563,16 +569,7 @@ def _active_background_process(*, role: str) -> Dict[str, Any]:
 
 
 def _creation_epoch_from_wmi(value: Any) -> float:
-    raw = str(value or "").strip()
-    if not raw:
-        return 0.0
-    match = re.search(r"/Date\((\d+)", raw)
-    if match:
-        try:
-            return float(match.group(1)) / 1000.0
-        except Exception:
-            return 0.0
-    return 0.0
+    return _wmi_epoch_owner._creation_epoch_from_wmi(value, facade=sys.modules[__name__])
 
 
 def _stale_process_after_sec() -> float:
@@ -609,19 +606,7 @@ def _background_creationflags() -> int:
 
 
 def _lock_timestamp_epoch(payload: Dict[str, Any], *, stale_after_sec: float) -> float:
-    raw = (
-        payload.get("touched_at_epoch")
-        or payload.get("heartbeat_epoch")
-        or payload.get("started_at_epoch")
-    )
-    try:
-        epoch = float(raw or 0.0)
-    except Exception:
-        epoch = 0.0
-    if epoch > 0:
-        return epoch
-    started_at = str(payload.get("started_at") or "").strip()
-    return _to_epoch(started_at) or (time.time() - stale_after_sec - 1.0)
+    return _lock_epoch_owner._lock_timestamp_epoch(payload, stale_after_sec=stale_after_sec, facade=sys.modules[__name__])
 
 
 def _active_background_job(
@@ -1123,13 +1108,7 @@ def _generate_agent_pipeline_trace_report_fast(
 
 
 def _format_duration_human(seconds: int) -> str:
-    if seconds <= 0:
-        return "0m"
-    if seconds < 60:
-        return f"{seconds}s"
-    if seconds < 3600:
-        return f"{seconds / 60.0:.1f}m"
-    return f"{seconds / 3600.0:.1f}h"
+    return _duration_human_owner._format_duration_human(seconds)
 
 
 def _build_trade_id(day: str, symbol: str, seq: int) -> str:
@@ -1139,14 +1118,7 @@ def _build_trade_id(day: str, symbol: str, seq: int) -> str:
 
 
 def _trade_id_sequence(trade_id: str) -> int:
-    text = str(trade_id or "").strip()
-    if not text:
-        return 10**9
-    tail = text.rsplit("_", 1)[-1]
-    try:
-        return int(tail)
-    except Exception:
-        return 10**9
+    return _trade_seq_owner._trade_id_sequence(trade_id)
 
 
 def _existing_trade_run_ids(trade_dir: Path) -> List[str]:
@@ -1254,7 +1226,7 @@ def _align_sell_run_bundles_with_broker_fill_truth(
 
 
 def _resolve_existing_day_artifact(report_dir: Path, prefix: str, day: str) -> Tuple[Path, Path]:
-    return report_dir / f"{prefix}_{day}.md", report_dir / f"{prefix}_{day}.json"
+    return _artifact_paths_owner._resolve_existing_day_artifact(report_dir, prefix, day)
 
 
 def _load_or_generate_trade_explain(event_log_path: Path, analysis_root: Path, day: str) -> Tuple[Path, Path, Dict[str, Any]]:
