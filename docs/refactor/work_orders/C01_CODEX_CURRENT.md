@@ -1,144 +1,17 @@
-# C01 — Codex B | B-20261031-17 | FAST-3 eight NEW verified SOURCE BODY MOVEs
+# C01 — Codex B | B-20261031-18 | FAST-3 eight NEW verified SOURCE BODY MOVEs
 
-**CANONICAL_HEAD_AT_ISSUANCE:** `420b885efbff732bad9730202fa23f3afab926a2` · **OLD_ORDER_BLOB:** `24489087735d0affa3e87b2e7997ded2c51fcd57` · **B_REMOTE_HEAD_AT_DESIGN:** `c8efd3b1332d68d5de12dc95ca80477b066ac5b0` · **SOURCE_BLOBS:** `1dfc6fa273c691e1d0bc66b3d4adaa0d8034e23d`, `2c493ba7ba5b252033316202142d35fc94b4ff97`. #12 `6540466623` and remote B HEAD confirm prior B-20261031-16 B1–B8 REMOTE_DONE, normal 5/5 exit0 and new owner/test blobs. Prior completed items never reused. RF-063 owns `scripts/diagnostics/check_alert_policy_v1.py` and `scripts/diagnostics/check_metrics_schema_v1.py` exclusively; integration source blobs identical. B1–B6 promote previous verified reserves after recheck; B7/B8 separately inspected pure computations. All five new TARGET modules checked ABSENT 404 on B and integration.
+**CANONICAL_HEAD_AT_ISSUANCE:** `86bf6e034a8dbfaaca19cb744f74ad136e4b677a` · **OLD_ORDER_BLOB:** `b3e3860d0508133e30f9c462921ecd58a2c6850f` · **B_REMOTE_HEAD_AT_DESIGN:** `f5e41ab686a3ea97a99d5d2362b49ca228808513` · **SOURCE_BLOBS:** `68349976f3e988989cc3133f597297d6ca3bd887`, `da20247c7177389f4f020c99474a0734218461a7`.
+#12 `6540982789` and remote B HEAD confirm B-20261031-17 B1–B8 REMOTE_DONE, normal 4/4 exit0, remote test/source/Owner SHA. Do not reuse any of those eight. RF-063 exclusively owns both SOURCE files under scripts/diagnostics (RF-063 original Owner table checked). B1–B6 are previously verified reserve items **revalidated against current B SOURCE BODY**; B7–B8 are newly inspected pure scorecard calculations. All eight TARGET files verified 404 on B and integration before issuance.
 
-**Single-document execution contract:** Read this C01/C02 only, pin order blob, canonical HEAD and actor HEAD; do not read D00/RF/queue/C03/handoff or self-select. Move the entire exact SOURCE computation BODY to the named new actor-only TARGET; SOURCE keeps original signature/defaults/annotations as thin delegation wrapper, TARGET never imports SOURCE. For dynamic globals (including imports, constants and monkeypatchable helpers), TARGET accepts keyword-only `facade` and uses `facade.NAME` at call time; SOURCE passes `sys.modules[__name__]` or equivalent. Preserve byte output, identity, ordering, exceptions and caller patch seams; use golden original vs wrapper/Owner, thin-wrapper AST and post-import patch tests. Pure helpers may omit facade. Never count KEEP, same-SHA PASS, or pre-moved code as new BODY MOVE. Complete every safe item even if one is blocked; an already-started order is not retroactively cancelled.
+**Single-document contract:** Read only this C01; pin CANONICAL_HEAD/ORDER_BLOB/B_REMOTE_HEAD. No D00/RF/queue/C03/handoff lookup or self-selection. Move the exact BODY to the named new B Owner, preserve SOURCE public signature as thin wrapper, caller/monkeypatch/use-time global parity, outputs and exceptions. For global references use `facade` passed at invocation; no Owner→SOURCE import or duplicate calculation. Each of B1–B8 is mandatory; blocked item does not stop remaining safe items. A newer C01 does not retroactively cancel a started order.
 
-**Safety:** fake/in-memory/TemporaryDirectory and patched environment only. No actual reports/main(), real account/order/Broker/Guard/Step5C/UEF/RunLab, network, operational state, deployment, frozen oracle, CI workflow, force push, other actor branch or docs/RF/STATUS/C04/C05. One normal targeted unittest/pytest exit0 on changed scope is G2; no blanket -O/full peer/hosted CI. Actor commits/pushes code/test on own branch only (normal push or approved exact-tree expected-head lease), re-fetches remote HEAD/source/target/test blobs. HTTPS auth failure is PUSH_BLOCKED only; continue other safe items. C04 integration and C05 G1/G2/G3/DONE separate.
+**Safety:** read-only diagnostic projection and offline scorecard math; mock/fake/TemporaryDirectory only. Never invoke actual `main()`, PowerShell/process inspection, runtime health probes, real reports, broker/order/Guard/Step5C/UEF, RunLab, live network, operational DB/state, CI/frozen oracle or deployment. B code/test branch only; no docs/RF/STATUS/C04/C05 or force push. One normal targeted unittest/pytest exit0 is G2; no blanket -O/full peer/hosted CI. Terminal HTTPS auth failure is PUSH_BLOCKED only; approved exact-tree expected-head lease is permitted, not force. After B commit/push, re-fetch remote HEAD/source/Owner/test blob. C04 G3 integration and C05 DONE separate.
 
-**Allowed code/test:** `scripts/diagnostics/check_alert_policy_v1.py`, `scripts/diagnostics/check_metrics_schema_v1.py`, explicitly named new B target modules and `tests/test_p15_rf063_17h_diagnostic_owners.py` only.
+**Allowed code/test:** `scripts/diagnostics/check_q9_q12_readiness.py`, `scripts/diagnostics/run_m26_scorecard.py`, the eight exact new B TARGET paths below, and `tests/test_p15_rf063_18h_readiness_projection_owners.py` only.
 
-## B1 | RF-063 | SOURCE `scripts/diagnostics/check_alert_policy_v1.py::_to_float` @ L20 | SOURCE_BLOB=`1dfc6fa273c691e1d0bc66b3d4adaa0d8034e23d`
-**TARGET:** `scripts/diagnostics/alert_policy_scalar_projection.py::_to_float` (NEW B-exclusive, 404 on actor/integration). **Exact BODY to MOVE:**
-```python
-def _to_float(v: Any, default: float = 0.0) -> float:
-    try:
-        return float(v)
-    except Exception:
-        return default
-```
-**Wrapper/patch:** pure float fallback; preserve signature/callers/monkeypatch, no duplicate BODY. **Targeted normal test:** `test_b1_to_float` in `tests/test_p15_rf063_17h_diagnostic_owners.py`. **Input→expected:** '1.5' → 1.5; 'bad',default=2 → 2. Include original golden/wrapper/Owner parity, negative/exception, patch seam and thin-wrapper AST. **Normal:** `python -m py_compile scripts/diagnostics/check_alert_policy_v1.py scripts/diagnostics/alert_policy_scalar_projection.py` and after all eight `python -m unittest tests/test_p15_rf063_17h_diagnostic_owners.py -v` (equivalent scoped pytest allowed); report actual exit/PASS. Commit/push B source/Owner/test, re-fetch SHA/blob; if blocked continue B2.
-
-## B2 | RF-063 | SOURCE `scripts/diagnostics/check_alert_policy_v1.py::_to_int` @ L27 | SOURCE_BLOB=`1dfc6fa273c691e1d0bc66b3d4adaa0d8034e23d`
-**TARGET:** `scripts/diagnostics/alert_policy_scalar_projection.py::_to_int` (NEW B-exclusive, 404 on actor/integration). **Exact BODY to MOVE:**
-```python
-def _to_int(v: Any, default: int = 0) -> int:
-    try:
-        return int(float(v))
-    except Exception:
-        return default
-```
-**Wrapper/patch:** pure int(float) truncation; preserve signature/callers/monkeypatch, no duplicate BODY. **Targeted normal test:** `test_b2_to_int` in `tests/test_p15_rf063_17h_diagnostic_owners.py`. **Input→expected:** '2.9' → 2; 'bad',default=4 → 4. Include original golden/wrapper/Owner parity, negative/exception, patch seam and thin-wrapper AST. **Normal:** `python -m py_compile scripts/diagnostics/check_alert_policy_v1.py scripts/diagnostics/alert_policy_scalar_projection.py` and after all eight `python -m unittest tests/test_p15_rf063_17h_diagnostic_owners.py -v` (equivalent scoped pytest allowed); report actual exit/PASS. Commit/push B source/Owner/test, re-fetch SHA/blob; if blocked continue B3.
-
-## B3 | RF-063 | SOURCE `scripts/diagnostics/check_alert_policy_v1.py::_env_float` @ L34 | SOURCE_BLOB=`1dfc6fa273c691e1d0bc66b3d4adaa0d8034e23d`
-**TARGET:** `scripts/diagnostics/alert_policy_env_projection.py::_env_float` (NEW B-exclusive, 404 on actor/integration). **Exact BODY to MOVE:**
-```python
-def _env_float(name: str, default: float) -> float:
-    raw = str(os.getenv(name, "") or "").strip()
-    if not raw:
-        return float(default)
-    return _to_float(raw, float(default))
-```
-**Wrapper/patch:** os.getenv and _to_float via SOURCE facade; patched env only; preserve signature/callers/monkeypatch, no duplicate BODY. **Targeted normal test:** `test_b3_env_float` in `tests/test_p15_rf063_17h_diagnostic_owners.py`. **Input→expected:** unset default=0.7 → 0.7; env='0.4' → 0.4. Include original golden/wrapper/Owner parity, negative/exception, patch seam and thin-wrapper AST. **Normal:** `python -m py_compile scripts/diagnostics/check_alert_policy_v1.py scripts/diagnostics/alert_policy_env_projection.py` and after all eight `python -m unittest tests/test_p15_rf063_17h_diagnostic_owners.py -v` (equivalent scoped pytest allowed); report actual exit/PASS. Commit/push B source/Owner/test, re-fetch SHA/blob; if blocked continue B4.
-
-## B4 | RF-063 | SOURCE `scripts/diagnostics/check_alert_policy_v1.py::_env_int` @ L41 | SOURCE_BLOB=`1dfc6fa273c691e1d0bc66b3d4adaa0d8034e23d`
-**TARGET:** `scripts/diagnostics/alert_policy_env_projection.py::_env_int` (NEW B-exclusive, 404 on actor/integration). **Exact BODY to MOVE:**
-```python
-def _env_int(name: str, default: int) -> int:
-    raw = str(os.getenv(name, "") or "").strip()
-    if not raw:
-        return int(default)
-    return _to_int(raw, int(default))
-```
-**Wrapper/patch:** os.getenv and _to_int via SOURCE facade; patched env only; preserve signature/callers/monkeypatch, no duplicate BODY. **Targeted normal test:** `test_b4_env_int` in `tests/test_p15_rf063_17h_diagnostic_owners.py`. **Input→expected:** unset default=3 → 3; env='7.9' → 7. Include original golden/wrapper/Owner parity, negative/exception, patch seam and thin-wrapper AST. **Normal:** `python -m py_compile scripts/diagnostics/check_alert_policy_v1.py scripts/diagnostics/alert_policy_env_projection.py` and after all eight `python -m unittest tests/test_p15_rf063_17h_diagnostic_owners.py -v` (equivalent scoped pytest allowed); report actual exit/PASS. Commit/push B source/Owner/test, re-fetch SHA/blob; if blocked continue B5.
-
-## B5 | RF-063 | SOURCE `scripts/diagnostics/check_alert_policy_v1.py::_env_fail_on` @ L48 | SOURCE_BLOB=`1dfc6fa273c691e1d0bc66b3d4adaa0d8034e23d`
-**TARGET:** `scripts/diagnostics/alert_policy_env_projection.py::_env_fail_on` (NEW B-exclusive, 404 on actor/integration). **Exact BODY to MOVE:**
-```python
-def _env_fail_on(default: str = "critical") -> str:
-    raw = str(os.getenv("ALERT_POLICY_FAIL_ON", "") or "").strip().lower()
-    if raw in ("none", "warning", "critical"):
-        return raw
-    return str(default)
-```
-**Wrapper/patch:** os.getenv via SOURCE facade; patched env only; preserve signature/callers/monkeypatch, no duplicate BODY. **Targeted normal test:** `test_b5_env_fail_on` in `tests/test_p15_rf063_17h_diagnostic_owners.py`. **Input→expected:** env='WARNING' → 'warning'; env='other' → 'critical'. Include original golden/wrapper/Owner parity, negative/exception, patch seam and thin-wrapper AST. **Normal:** `python -m py_compile scripts/diagnostics/check_alert_policy_v1.py scripts/diagnostics/alert_policy_env_projection.py` and after all eight `python -m unittest tests/test_p15_rf063_17h_diagnostic_owners.py -v` (equivalent scoped pytest allowed); report actual exit/PASS. Commit/push B source/Owner/test, re-fetch SHA/blob; if blocked continue B6.
-
-## B6 | RF-063 | SOURCE `scripts/diagnostics/check_alert_policy_v1.py::_build_parser` @ L55 | SOURCE_BLOB=`1dfc6fa273c691e1d0bc66b3d4adaa0d8034e23d`
-**TARGET:** `scripts/diagnostics/alert_policy_cli_projection.py::_build_parser` (NEW B-exclusive, 404 on actor/integration). **Exact BODY to MOVE:**
-```python
-def _build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(description="Check alert policy threshold gates from metrics schema v1.")
-    p.add_argument("--event-log-path", default="data/logs/events.jsonl")
-    p.add_argument("--report-dir", default="reports/metrics")
-    p.add_argument("--day", default=None)
-    p.add_argument("--metrics-json-path", default="")
-
-    p.add_argument(
-        "--llm-success-rate-min",
-        type=float,
-        default=_env_float("ALERT_POLICY_LLM_SUCCESS_RATE_MIN", 0.70),
-    )
-    p.add_argument(
-        "--llm-circuit-open-rate-max",
-        type=float,
-        default=_env_float("ALERT_POLICY_LLM_CIRCUIT_OPEN_RATE_MAX", 0.30),
-    )
-    p.add_argument(
-        "--execution-blocked-rate-max",
-        type=float,
-        default=_env_float("ALERT_POLICY_EXECUTION_BLOCKED_RATE_MAX", 0.60),
-    )
-    p.add_argument(
-        "--execution-approved-executed-gap-max",
-        type=int,
-        default=_env_int("ALERT_POLICY_EXECUTION_APPROVED_EXECUTED_GAP_MAX", 0),
-    )
-    p.add_argument(
-        "--api-429-rate-max",
-        type=float,
-        default=_env_float("ALERT_POLICY_API_429_RATE_MAX", 0.20),
-    )
-    p.add_argument(
-        "--portfolio-guard-blocked-ratio-max",
-        type=float,
-        default=_env_float("ALERT_POLICY_PORTFOLIO_GUARD_BLOCKED_RATIO_MAX", 0.70),
-    )
-    p.add_argument(
-        "--portfolio-guard-strategy-budget-exceeded-max",
-        type=int,
-        default=_env_int("ALERT_POLICY_PORTFOLIO_GUARD_STRATEGY_BUDGET_EXCEEDED_MAX", 20),
-    )
-
-    p.add_argument("--fail-on", choices=["none", "warning", "critical"], default=_env_fail_on("critical"))
-    p.add_argument("--json", action="store_true")
-    return p
-```
-**Wrapper/patch:** argparse/_env_float/_env_int/_env_fail_on via SOURCE facade; fake argv only; preserve signature/callers/monkeypatch, no duplicate BODY. **Targeted normal test:** `test_b6_build_parser` in `tests/test_p15_rf063_17h_diagnostic_owners.py`. **Input→expected:** parse_args(['--json','--fail-on','none']) → json=True, fail_on='none'. Include original golden/wrapper/Owner parity, negative/exception, patch seam and thin-wrapper AST. **Normal:** `python -m py_compile scripts/diagnostics/check_alert_policy_v1.py scripts/diagnostics/alert_policy_cli_projection.py` and after all eight `python -m unittest tests/test_p15_rf063_17h_diagnostic_owners.py -v` (equivalent scoped pytest allowed); report actual exit/PASS. Commit/push B source/Owner/test, re-fetch SHA/blob; if blocked continue B7.
-
-## B7 | RF-063 | SOURCE `scripts/diagnostics/check_metrics_schema_v1.py::_is_number` @ L16 | SOURCE_BLOB=`2c493ba7ba5b252033316202142d35fc94b4ff97`
-**TARGET:** `scripts/diagnostics/metrics_schema_scalar_projection.py::_is_number` (NEW B-exclusive, 404 on actor/integration). **Exact BODY to MOVE:**
-```python
-def _is_number(v: Any) -> bool:
-    return isinstance(v, (int, float)) and not isinstance(v, bool)
-```
-**Wrapper/patch:** pure, bool excluded; preserve signature/callers/monkeypatch, no duplicate BODY. **Targeted normal test:** `test_b7_is_number` in `tests/test_p15_rf063_17h_diagnostic_owners.py`. **Input→expected:** 1 → True; 1.5 → True; True → False; '1' → False. Include original golden/wrapper/Owner parity, negative/exception, patch seam and thin-wrapper AST. **Normal:** `python -m py_compile scripts/diagnostics/check_metrics_schema_v1.py scripts/diagnostics/metrics_schema_scalar_projection.py` and after all eight `python -m unittest tests/test_p15_rf063_17h_diagnostic_owners.py -v` (equivalent scoped pytest allowed); report actual exit/PASS. Commit/push B source/Owner/test, re-fetch SHA/blob; if blocked continue B8.
-
-## B8 | RF-063 | SOURCE `scripts/diagnostics/check_metrics_schema_v1.py::_json_path_get` @ L28 | SOURCE_BLOB=`2c493ba7ba5b252033316202142d35fc94b4ff97`
-**TARGET:** `scripts/diagnostics/metrics_schema_path_projection.py::_json_path_get` (NEW B-exclusive, 404 on actor/integration). **Exact BODY to MOVE:**
-```python
-def _json_path_get(obj: Dict[str, Any], path: str) -> Tuple[bool, Any]:
-    cur: Any = obj
-    for part in path.split("."):
-        if not isinstance(cur, dict) or part not in cur:
-            return False, None
-        cur = cur[part]
-    return True, cur
-```
-**Wrapper/patch:** pure, preserve missing vs None; preserve signature/callers/monkeypatch, no duplicate BODY. **Targeted normal test:** `test_b8_json_path_get` in `tests/test_p15_rf063_17h_diagnostic_owners.py`. **Input→expected:** ({'a':{'b':0}},'a.b') → (True,0); 'a.c' → (False,None). Include original golden/wrapper/Owner parity, negative/exception, patch seam and thin-wrapper AST. **Normal:** `python -m py_compile scripts/diagnostics/check_metrics_schema_v1.py scripts/diagnostics/metrics_schema_path_projection.py` and after all eight `python -m unittest tests/test_p15_rf063_17h_diagnostic_owners.py -v` (equivalent scoped pytest allowed); report actual exit/PASS. Commit/push B source/Owner/test, re-fetch SHA/blob; if blocked continue Bhandoff.
-
-## FUTURE RESERVE — VERIFIED 6/6, DESIGN ONLY
-
-### R1 | RF-063 | SOURCE `scripts/diagnostics/check_q9_q12_readiness.py::_read_json` @ L31 | BLOB=`68349976f3e988989cc3133f597297d6ca3bd887` → TARGET `scripts/diagnostics/q9_readiness_json_projection.py::_read_json` (404 actor/integration)
+## B1 | RF-063 | SOURCE `scripts/diagnostics/check_q9_q12_readiness.py::_read_json` @ L31 | SOURCE_BLOB=`68349976f3e988989cc3133f597297d6ca3bd887`
+**TARGET:** `scripts/diagnostics/q9_readiness_json_projection.py::_read_json` (NEW, verified absent on B and integration; B-exclusive).
+**Exact computation BODY to MOVE (not a test-only/KEEP task):**
 ```python
 def _read_json(path: Path) -> dict[str, Any]:
     try:
@@ -147,9 +20,12 @@ def _read_json(path: Path) -> dict[str, Any]:
     except Exception:
         return {}
 ```
-**Safety/patch:** read-only diagnostic, fake/temp only; dynamic SOURCE globals through facade, no main/operational effect. **Future targeted normal input→expected:** missing temp path → {}; UTF-8-SIG object → dict. Original/wrapper/Owner golden and thin wrapper required. **RESERVE_VERIFIED design only; NOT executable this order.**
+**Wrapper/monkeypatch/callers:** Leave original function signature, defaults and exception semantics in SOURCE as thin delegation to TARGET. TARGET must not import SOURCE. json/Path via facade; UTF-8-SIG and exception fallback unchanged. If the function calls SOURCE globals, pass keyword-only `facade=sys.modules[__name__]` and resolve via facade at call time. Do not duplicate BODY; preserve callers, CLI behavior, output order/identity, patch seams and exceptions.
+**Normal targeted test:** `test_b1_read_json` in `tests/test_p15_rf063_18h_readiness_projection_owners.py`. Fixture input→expected: missing temp path → {}; BOM JSON object → dict. Compare original golden against facade wrapper and Owner, include negative/exception and monkeypatch seam parity, AST thin-wrapper check. Use temp paths/in-memory only. After all eight run `python -m py_compile scripts/diagnostics/check_q9_q12_readiness.py scripts/diagnostics/run_m26_scorecard.py scripts/diagnostics/*readiness*projection.py scripts/diagnostics/m26_scorecard_*_projection.py` and `python -m unittest tests/test_p15_rf063_18h_readiness_projection_owners.py -v` (equivalent scoped pytest allowed); record actual exit/PASS. Commit/push own B source/Owner/test and re-fetch HEAD/blob. If blocked record reason and **continue B2**.
 
-### R2 | RF-063 | SOURCE `scripts/diagnostics/check_q9_q12_readiness.py::_parse_dt` @ L39 | BLOB=`68349976f3e988989cc3133f597297d6ca3bd887` → TARGET `scripts/diagnostics/q9_readiness_time_projection.py::_parse_dt` (404 actor/integration)
+## B2 | RF-063 | SOURCE `scripts/diagnostics/check_q9_q12_readiness.py::_parse_dt` @ L39 | SOURCE_BLOB=`68349976f3e988989cc3133f597297d6ca3bd887`
+**TARGET:** `scripts/diagnostics/q9_readiness_time_projection.py::_parse_dt` (NEW, verified absent on B and integration; B-exclusive).
+**Exact computation BODY to MOVE (not a test-only/KEEP task):**
 ```python
 def _parse_dt(value: Any) -> datetime | None:
     text = str(value or "").strip()
@@ -163,9 +39,12 @@ def _parse_dt(value: Any) -> datetime | None:
         parsed = parsed.replace(tzinfo=timezone.utc)
     return parsed.astimezone(KST)
 ```
-**Safety/patch:** read-only diagnostic, fake/temp only; dynamic SOURCE globals through facade, no main/operational effect. **Future targeted normal input→expected:** 2026-10-31T00:00:00Z → 09:00 KST; invalid → None. Original/wrapper/Owner golden and thin wrapper required. **RESERVE_VERIFIED design only; NOT executable this order.**
+**Wrapper/monkeypatch/callers:** Leave original function signature, defaults and exception semantics in SOURCE as thin delegation to TARGET. TARGET must not import SOURCE. datetime/timezone/KST via facade; preserve naive UTC assumption. If the function calls SOURCE globals, pass keyword-only `facade=sys.modules[__name__]` and resolve via facade at call time. Do not duplicate BODY; preserve callers, CLI behavior, output order/identity, patch seams and exceptions.
+**Normal targeted test:** `test_b2_parse_dt` in `tests/test_p15_rf063_18h_readiness_projection_owners.py`. Fixture input→expected: 2026-10-31T00:00:00Z → 2026-10-31 09:00+09:00; invalid → None. Compare original golden against facade wrapper and Owner, include negative/exception and monkeypatch seam parity, AST thin-wrapper check. Use temp paths/in-memory only. After all eight run `python -m py_compile scripts/diagnostics/check_q9_q12_readiness.py scripts/diagnostics/run_m26_scorecard.py scripts/diagnostics/*readiness*projection.py scripts/diagnostics/m26_scorecard_*_projection.py` and `python -m unittest tests/test_p15_rf063_18h_readiness_projection_owners.py -v` (equivalent scoped pytest allowed); record actual exit/PASS. Commit/push own B source/Owner/test and re-fetch HEAD/blob. If blocked record reason and **continue B3**.
 
-### R3 | RF-063 | SOURCE `scripts/diagnostics/check_q9_q12_readiness.py::_artifact` @ L117 | BLOB=`68349976f3e988989cc3133f597297d6ca3bd887` → TARGET `scripts/diagnostics/q9_readiness_artifact_projection.py::_artifact` (404 actor/integration)
+## B3 | RF-063 | SOURCE `scripts/diagnostics/check_q9_q12_readiness.py::_artifact` @ L117 | SOURCE_BLOB=`68349976f3e988989cc3133f597297d6ca3bd887`
+**TARGET:** `scripts/diagnostics/q9_readiness_artifact_projection.py::_artifact` (NEW, verified absent on B and integration; B-exclusive).
+**Exact computation BODY to MOVE (not a test-only/KEEP task):**
 ```python
 def _artifact(path: Path) -> dict[str, Any]:
     payload = _read_json(path)
@@ -178,9 +57,12 @@ def _artifact(path: Path) -> dict[str, Any]:
         "evidence_status": payload.get("evidence_status") or "",
     }
 ```
-**Safety/patch:** read-only diagnostic, fake/temp only; dynamic SOURCE globals through facade, no main/operational effect. **Future targeted normal input→expected:** missing temp path → exists=False,size_bytes=0. Original/wrapper/Owner golden and thin wrapper required. **RESERVE_VERIFIED design only; NOT executable this order.**
+**Wrapper/monkeypatch/callers:** Leave original function signature, defaults and exception semantics in SOURCE as thin delegation to TARGET. TARGET must not import SOURCE. _read_json via facade; stat/existence and exception parity unchanged. If the function calls SOURCE globals, pass keyword-only `facade=sys.modules[__name__]` and resolve via facade at call time. Do not duplicate BODY; preserve callers, CLI behavior, output order/identity, patch seams and exceptions.
+**Normal targeted test:** `test_b3_artifact` in `tests/test_p15_rf063_18h_readiness_projection_owners.py`. Fixture input→expected: missing temp path → exists=False,size_bytes=0. Compare original golden against facade wrapper and Owner, include negative/exception and monkeypatch seam parity, AST thin-wrapper check. Use temp paths/in-memory only. After all eight run `python -m py_compile scripts/diagnostics/check_q9_q12_readiness.py scripts/diagnostics/run_m26_scorecard.py scripts/diagnostics/*readiness*projection.py scripts/diagnostics/m26_scorecard_*_projection.py` and `python -m unittest tests/test_p15_rf063_18h_readiness_projection_owners.py -v` (equivalent scoped pytest allowed); record actual exit/PASS. Commit/push own B source/Owner/test and re-fetch HEAD/blob. If blocked record reason and **continue B4**.
 
-### R4 | RF-063 | SOURCE `scripts/diagnostics/check_q9_q12_readiness.py::_q9_checks` @ L129 | BLOB=`68349976f3e988989cc3133f597297d6ca3bd887` → TARGET `scripts/diagnostics/q9_readiness_window_projection.py::_q9_checks` (404 actor/integration)
+## B4 | RF-063 | SOURCE `scripts/diagnostics/check_q9_q12_readiness.py::_q9_checks` @ L129 | SOURCE_BLOB=`68349976f3e988989cc3133f597297d6ca3bd887`
+**TARGET:** `scripts/diagnostics/q9_readiness_window_projection.py::_q9_checks` (NEW, verified absent on B and integration; B-exclusive).
+**Exact computation BODY to MOVE (not a test-only/KEEP task):**
 ```python
 def _q9_checks(reports_root: Path, day: str) -> dict[str, Any]:
     q9_path = reports_root / "operator_summary" / "daily" / day / "q9_decision_windows.json"
@@ -203,9 +85,12 @@ def _q9_checks(reports_root: Path, day: str) -> dict[str, Any]:
         "validity_warnings": validity.get("warnings") or [],
     }
 ```
-**Safety/patch:** read-only diagnostic, fake/temp only; dynamic SOURCE globals through facade, no main/operational effect. **Future targeted normal input→expected:** empty temp root → window_count=0. Original/wrapper/Owner golden and thin wrapper required. **RESERVE_VERIFIED design only; NOT executable this order.**
+**Wrapper/monkeypatch/callers:** Leave original function signature, defaults and exception semantics in SOURCE as thin delegation to TARGET. TARGET must not import SOURCE. _read_json/_parse_dt/_artifact via facade at invocation; preserve list/filter/order. If the function calls SOURCE globals, pass keyword-only `facade=sys.modules[__name__]` and resolve via facade at call time. Do not duplicate BODY; preserve callers, CLI behavior, output order/identity, patch seams and exceptions.
+**Normal targeted test:** `test_b4_q9_checks` in `tests/test_p15_rf063_18h_readiness_projection_owners.py`. Fixture input→expected: empty temp root/day → window_count=0 and no timestamps. Compare original golden against facade wrapper and Owner, include negative/exception and monkeypatch seam parity, AST thin-wrapper check. Use temp paths/in-memory only. After all eight run `python -m py_compile scripts/diagnostics/check_q9_q12_readiness.py scripts/diagnostics/run_m26_scorecard.py scripts/diagnostics/*readiness*projection.py scripts/diagnostics/m26_scorecard_*_projection.py` and `python -m unittest tests/test_p15_rf063_18h_readiness_projection_owners.py -v` (equivalent scoped pytest allowed); record actual exit/PASS. Commit/push own B source/Owner/test and re-fetch HEAD/blob. If blocked record reason and **continue B5**.
 
-### R5 | RF-063 | SOURCE `scripts/diagnostics/check_q9_q12_readiness.py::_baseline_artifacts` @ L151 | BLOB=`68349976f3e988989cc3133f597297d6ca3bd887` → TARGET `scripts/diagnostics/q9_readiness_baseline_projection.py::_baseline_artifacts` (404 actor/integration)
+## B5 | RF-063 | SOURCE `scripts/diagnostics/check_q9_q12_readiness.py::_baseline_artifacts` @ L151 | SOURCE_BLOB=`68349976f3e988989cc3133f597297d6ca3bd887`
+**TARGET:** `scripts/diagnostics/q9_readiness_baseline_projection.py::_baseline_artifacts` (NEW, verified absent on B and integration; B-exclusive).
+**Exact computation BODY to MOVE (not a test-only/KEEP task):**
 ```python
 def _baseline_artifacts(reports_root: Path, day: str) -> dict[str, Any]:
     artifacts = {
@@ -240,9 +125,12 @@ def _baseline_artifacts(reports_root: Path, day: str) -> dict[str, Any]:
         )
     return artifacts
 ```
-**Safety/patch:** read-only diagnostic, fake/temp only; dynamic SOURCE globals through facade, no main/operational effect. **Future targeted normal input→expected:** empty temp root → q10/q11/q12 keys, absent artifacts. Original/wrapper/Owner golden and thin wrapper required. **RESERVE_VERIFIED design only; NOT executable this order.**
+**Wrapper/monkeypatch/callers:** Leave original function signature, defaults and exception semantics in SOURCE as thin delegation to TARGET. TARGET must not import SOURCE. _artifact and Q10_LEAD_MARKET_ACTIVATION_DAY via facade; preserve q10/q11/q12 map. If the function calls SOURCE globals, pass keyword-only `facade=sys.modules[__name__]` and resolve via facade at call time. Do not duplicate BODY; preserve callers, CLI behavior, output order/identity, patch seams and exceptions.
+**Normal targeted test:** `test_b5_baseline_artifacts` in `tests/test_p15_rf063_18h_readiness_projection_owners.py`. Fixture input→expected: empty temp root/day → q10/q11/q12 groups with missing artifacts. Compare original golden against facade wrapper and Owner, include negative/exception and monkeypatch seam parity, AST thin-wrapper check. Use temp paths/in-memory only. After all eight run `python -m py_compile scripts/diagnostics/check_q9_q12_readiness.py scripts/diagnostics/run_m26_scorecard.py scripts/diagnostics/*readiness*projection.py scripts/diagnostics/m26_scorecard_*_projection.py` and `python -m unittest tests/test_p15_rf063_18h_readiness_projection_owners.py -v` (equivalent scoped pytest allowed); record actual exit/PASS. Commit/push own B source/Owner/test and re-fetch HEAD/blob. If blocked record reason and **continue B6**.
 
-### R6 | RF-063 | SOURCE `scripts/diagnostics/check_q9_q12_readiness.py::_evaluate` @ L185 | BLOB=`68349976f3e988989cc3133f597297d6ca3bd887` → TARGET `scripts/diagnostics/q9_readiness_evaluation_projection.py::_evaluate` (404 actor/integration)
+## B6 | RF-063 | SOURCE `scripts/diagnostics/check_q9_q12_readiness.py::_evaluate` @ L185 | SOURCE_BLOB=`68349976f3e988989cc3133f597297d6ca3bd887`
+**TARGET:** `scripts/diagnostics/q9_readiness_evaluation_projection.py::_evaluate` (NEW, verified absent on B and integration; B-exclusive).
+**Exact computation BODY to MOVE (not a test-only/KEEP task):**
 ```python
 def _evaluate(
     *,
@@ -294,8 +182,72 @@ def _evaluate(
             warnings.append({"code": "q9_day_not_final_valid", "status": q9.get("day_validity_status")})
     return blockers, warnings
 ```
-**Safety/patch:** read-only diagnostic, fake/temp only; dynamic SOURCE globals through facade, no main/operational effect. **Future targeted normal input→expected:** preopen,live.running=False,processes={} → live_session_not_running blocker. Original/wrapper/Owner golden and thin wrapper required. **RESERVE_VERIFIED design only; NOT executable this order.**
+**Wrapper/monkeypatch/callers:** Leave original function signature, defaults and exception semantics in SOURCE as thin delegation to TARGET. TARGET must not import SOURCE. datetime/KST/_parse_dt/to_int/Q10_LEAD_MARKET_ACTIVATION_DAY via facade; fake preopen only; do not query runtime. If the function calls SOURCE globals, pass keyword-only `facade=sys.modules[__name__]` and resolve via facade at call time. Do not duplicate BODY; preserve callers, CLI behavior, output order/identity, patch seams and exceptions.
+**Normal targeted test:** `test_b6_evaluate` in `tests/test_p15_rf063_18h_readiness_projection_owners.py`. Fixture input→expected: phase=preopen, live.running=False, processes={} → blocker live_session_not_running. Compare original golden against facade wrapper and Owner, include negative/exception and monkeypatch seam parity, AST thin-wrapper check. Use temp paths/in-memory only. After all eight run `python -m py_compile scripts/diagnostics/check_q9_q12_readiness.py scripts/diagnostics/run_m26_scorecard.py scripts/diagnostics/*readiness*projection.py scripts/diagnostics/m26_scorecard_*_projection.py` and `python -m unittest tests/test_p15_rf063_18h_readiness_projection_owners.py -v` (equivalent scoped pytest allowed); record actual exit/PASS. Commit/push own B source/Owner/test and re-fetch HEAD/blob. If blocked record reason and **continue B7**.
+
+## B7 | RF-063 | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_max_drawdown_ratio` @ L88 | SOURCE_BLOB=`da20247c7177389f4f020c99474a0734218461a7`
+**TARGET:** `scripts/diagnostics/m26_scorecard_drawdown_projection.py::_max_drawdown_ratio` (NEW, verified absent on B and integration; B-exclusive).
+**Exact computation BODY to MOVE (not a test-only/KEEP task):**
+```python
+def _max_drawdown_ratio(equity: List[float]) -> Tuple[float, float]:
+    if not equity:
+        return 0.0, 0.0
+    peak = float(equity[0])
+    max_dd = 0.0
+    max_dd_ratio = 0.0
+    for v in equity:
+        x = float(v)
+        if x > peak:
+            peak = x
+        dd = peak - x
+        if dd > max_dd:
+            max_dd = dd
+        denom = abs(peak) if abs(peak) > 1e-12 else 0.0
+        ratio = (dd / denom) if denom > 0.0 else 0.0
+        if ratio > max_dd_ratio:
+            max_dd_ratio = ratio
+    return float(max_dd), float(max_dd_ratio)
+```
+**Wrapper/monkeypatch/callers:** Leave original function signature, defaults and exception semantics in SOURCE as thin delegation to TARGET. TARGET must not import SOURCE. pure; preserve floating point exact arithmetic and empty branch. If the function calls SOURCE globals, pass keyword-only `facade=sys.modules[__name__]` and resolve via facade at call time. Do not duplicate BODY; preserve callers, CLI behavior, output order/identity, patch seams and exceptions.
+**Normal targeted test:** `test_b7_max_drawdown_ratio` in `tests/test_p15_rf063_18h_readiness_projection_owners.py`. Fixture input→expected: [] → (0.0,0.0); [100.0,80.0] → (20.0,0.2). Compare original golden against facade wrapper and Owner, include negative/exception and monkeypatch seam parity, AST thin-wrapper check. Use temp paths/in-memory only. After all eight run `python -m py_compile scripts/diagnostics/check_q9_q12_readiness.py scripts/diagnostics/run_m26_scorecard.py scripts/diagnostics/*readiness*projection.py scripts/diagnostics/m26_scorecard_*_projection.py` and `python -m unittest tests/test_p15_rf063_18h_readiness_projection_owners.py -v` (equivalent scoped pytest allowed); record actual exit/PASS. Commit/push own B source/Owner/test and re-fetch HEAD/blob. If blocked record reason and **continue B8**.
+
+## B8 | RF-063 | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_risk_adjusted` @ L108 | SOURCE_BLOB=`da20247c7177389f4f020c99474a0734218461a7`
+**TARGET:** `scripts/diagnostics/m26_scorecard_risk_projection.py::_risk_adjusted` (NEW, verified absent on B and integration; B-exclusive).
+**Exact computation BODY to MOVE (not a test-only/KEEP task):**
+```python
+def _risk_adjusted(samples: List[float]) -> Dict[str, float]:
+    if not samples:
+        return {
+            "sample_count": 0.0,
+            "pnl_mean": 0.0,
+            "pnl_std": 0.0,
+            "downside_std": 0.0,
+            "sharpe_proxy": 0.0,
+            "sortino_proxy": 0.0,
+        }
+
+    n = float(len(samples))
+    mean = float(statistics.fmean(samples))
+    std = float(statistics.pstdev(samples)) if len(samples) > 1 else 0.0
+    downside = [x for x in samples if x < 0.0]
+    downside_std = float(statistics.pstdev(downside)) if len(downside) > 1 else (float(abs(downside[0])) if len(downside) == 1 else 0.0)
+
+    sharpe = (mean / std) * math.sqrt(n) if std > 1e-12 else 0.0
+    sortino = (mean / downside_std) * math.sqrt(n) if downside_std > 1e-12 else 0.0
+    return {
+        "sample_count": n,
+        "pnl_mean": mean,
+        "pnl_std": std,
+        "downside_std": downside_std,
+        "sharpe_proxy": float(sharpe),
+        "sortino_proxy": float(sortino),
+    }
+```
+**Wrapper/monkeypatch/callers:** Leave original function signature, defaults and exception semantics in SOURCE as thin delegation to TARGET. TARGET must not import SOURCE. statistics/math via facade to preserve patch seams and floating point behavior. If the function calls SOURCE globals, pass keyword-only `facade=sys.modules[__name__]` and resolve via facade at call time. Do not duplicate BODY; preserve callers, CLI behavior, output order/identity, patch seams and exceptions.
+**Normal targeted test:** `test_b8_risk_adjusted` in `tests/test_p15_rf063_18h_readiness_projection_owners.py`. Fixture input→expected: [] → sample_count=0.0; [1.0,-1.0] → sample_count=2.0,pnl_mean=0.0. Compare original golden against facade wrapper and Owner, include negative/exception and monkeypatch seam parity, AST thin-wrapper check. Use temp paths/in-memory only. After all eight run `python -m py_compile scripts/diagnostics/check_q9_q12_readiness.py scripts/diagnostics/run_m26_scorecard.py scripts/diagnostics/*readiness*projection.py scripts/diagnostics/m26_scorecard_*_projection.py` and `python -m unittest tests/test_p15_rf063_18h_readiness_projection_owners.py -v` (equivalent scoped pytest allowed); record actual exit/PASS. Commit/push own B source/Owner/test and re-fetch HEAD/blob. If blocked record reason and **continue Bhandoff**.
+
+## FUTURE RESERVE — RESERVE_NOT_VERIFIED 0/6
+The six earlier verified q9 reserve items have been promoted to B1–B6; **none remains a verified reserve**. Candidate next: RF-063 `run_m26_scorecard.py` remaining `_to_epoch`, `_utc_day`, `_iter_jsonl`, `_safe_int`, `_safe_float`, `_load_close_price_by_symbol`. These are **not executable** and not counted until C03 verifies fresh body/blob, missing new target, side effects, caller/patch parity and normal fixture. Do not self-select.
 
 ## REPORT / PUSH
-
-#12: `ORDER_ID=B-20261031-17 | CANONICAL_HEAD | ORDER_BLOB | B_REMOTE_BEFORE→AFTER | B1..B8 ITEM_STATUS | SOURCE/TARGET/TEST_BLOBS | NORMAL_COMMAND/EXIT/PASS | MOVED_FUNCTIONS | SOURCE_LOC_BEFORE_AFTER | FIRST_BLOCKER | NEXT_SAFE_ITEM | PUSH_REMOTE_SHA/PUSH_BLOCKED | START_KST/END_KST/ELAPSED_MIN`. Times measured only. Terminal HTTPS auth may use approved exact-tree expected-head lease, never force. C03 document commit is not code G1/G2/G3 or RF_DONE. RunLab exit255/RUN_SOURCE_SHA UNKNOWN operating SAFETY_HOLD.
+#12: `ORDER_ID=B-20261031-18 | CANONICAL_HEAD | ORDER_BLOB | B_REMOTE_BEFORE→AFTER | B1..B8 ITEM_STATUS | SOURCE/TARGET/TEST_BLOBS | NORMAL_COMMAND/EXIT/PASS | MOVED_FUNCTIONS | SOURCE_LOC_BEFORE_AFTER | FIRST_BLOCKER | NEXT_SAFE_ITEM | PUSH_REMOTE_SHA/PUSH_BLOCKED | START_KST/END_KST/ELAPSED_MIN`. Times measured only. C03 document push is not code G1/G2/G3 or RF_DONE. RunLab SOURCE_UNKNOWN/exit255 remains SAFETY_HOLD.
