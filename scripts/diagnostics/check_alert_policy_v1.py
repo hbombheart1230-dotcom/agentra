@@ -18,86 +18,33 @@ _SEVERITY_RANK = {"info": 0, "warning": 1, "critical": 2}
 
 
 def _to_float(v: Any, default: float = 0.0) -> float:
-    try:
-        return float(v)
-    except Exception:
-        return default
+    from scripts.diagnostics.alert_policy_scalar_projection import _to_float as owner
+    return owner(v, default)
 
 
 def _to_int(v: Any, default: int = 0) -> int:
-    try:
-        return int(float(v))
-    except Exception:
-        return default
+    from scripts.diagnostics.alert_policy_scalar_projection import _to_int as owner
+    return owner(v, default)
 
 
 def _env_float(name: str, default: float) -> float:
-    raw = str(os.getenv(name, "") or "").strip()
-    if not raw:
-        return float(default)
-    return _to_float(raw, float(default))
+    from scripts.diagnostics.alert_policy_env_projection import _env_float as owner
+    return owner(name, default, facade=sys.modules[__name__])
 
 
 def _env_int(name: str, default: int) -> int:
-    raw = str(os.getenv(name, "") or "").strip()
-    if not raw:
-        return int(default)
-    return _to_int(raw, int(default))
+    from scripts.diagnostics.alert_policy_env_projection import _env_int as owner
+    return owner(name, default, facade=sys.modules[__name__])
 
 
 def _env_fail_on(default: str = "critical") -> str:
-    raw = str(os.getenv("ALERT_POLICY_FAIL_ON", "") or "").strip().lower()
-    if raw in ("none", "warning", "critical"):
-        return raw
-    return str(default)
+    from scripts.diagnostics.alert_policy_env_projection import _env_fail_on as owner
+    return owner(default, facade=sys.modules[__name__])
 
 
 def _build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(description="Check alert policy threshold gates from metrics schema v1.")
-    p.add_argument("--event-log-path", default="data/logs/events.jsonl")
-    p.add_argument("--report-dir", default="reports/metrics")
-    p.add_argument("--day", default=None)
-    p.add_argument("--metrics-json-path", default="")
-
-    p.add_argument(
-        "--llm-success-rate-min",
-        type=float,
-        default=_env_float("ALERT_POLICY_LLM_SUCCESS_RATE_MIN", 0.70),
-    )
-    p.add_argument(
-        "--llm-circuit-open-rate-max",
-        type=float,
-        default=_env_float("ALERT_POLICY_LLM_CIRCUIT_OPEN_RATE_MAX", 0.30),
-    )
-    p.add_argument(
-        "--execution-blocked-rate-max",
-        type=float,
-        default=_env_float("ALERT_POLICY_EXECUTION_BLOCKED_RATE_MAX", 0.60),
-    )
-    p.add_argument(
-        "--execution-approved-executed-gap-max",
-        type=int,
-        default=_env_int("ALERT_POLICY_EXECUTION_APPROVED_EXECUTED_GAP_MAX", 0),
-    )
-    p.add_argument(
-        "--api-429-rate-max",
-        type=float,
-        default=_env_float("ALERT_POLICY_API_429_RATE_MAX", 0.20),
-    )
-    p.add_argument(
-        "--portfolio-guard-blocked-ratio-max",
-        type=float,
-        default=_env_float("ALERT_POLICY_PORTFOLIO_GUARD_BLOCKED_RATIO_MAX", 0.70),
-    )
-    p.add_argument(
-        "--portfolio-guard-strategy-budget-exceeded-max",
-        type=int,
-        default=_env_int("ALERT_POLICY_PORTFOLIO_GUARD_STRATEGY_BUDGET_EXCEEDED_MAX", 20),
-    )
-
-    p.add_argument("--fail-on", choices=["none", "warning", "critical"], default=_env_fail_on("critical"))
-    p.add_argument("--json", action="store_true")
-    return p
+    from scripts.diagnostics.alert_policy_cli_projection import _build_parser as owner
+    return owner(facade=sys.modules[__name__])
 
 
 def _load_metrics(args: argparse.Namespace) -> tuple[int, Dict[str, Any], str]:

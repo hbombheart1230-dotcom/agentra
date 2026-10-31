@@ -14,7 +14,8 @@ from scripts.generate_metrics_report import generate_metrics_report
 
 
 def _is_number(v: Any) -> bool:
-    return isinstance(v, (int, float)) and not isinstance(v, bool)
+    from scripts.diagnostics.metrics_schema_scalar_projection import _is_number as owner
+    return owner(v)
 
 
 def _is_dict(v: Any) -> bool:
@@ -26,12 +27,8 @@ def _is_list(v: Any) -> bool:
 
 
 def _json_path_get(obj: Dict[str, Any], path: str) -> Tuple[bool, Any]:
-    cur: Any = obj
-    for part in path.split("."):
-        if not isinstance(cur, dict) or part not in cur:
-            return False, None
-        cur = cur[part]
-    return True, cur
+    from scripts.diagnostics.metrics_schema_path_projection import _json_path_get as owner
+    return owner(obj, path)
 
 
 def _build_parser() -> argparse.ArgumentParser:
