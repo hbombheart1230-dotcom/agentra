@@ -12,6 +12,8 @@ from libs.runtime.strategy_horizon_feedback import (
     update_post_exit_shadow_with_price_observations,
 )
 import sys as _r3_sys
+from libs.reporting import post_exit_shadow_scalar_projection as _scalar_owner
+from libs.reporting import post_exit_shadow_format_projection as _format_owner
 from libs.agents.reporter.narrative.post_exit_recap_bodies_01 import (  # R-4 owner bodies (facade-injected)
     _symbol_candidates_r4_impl,
     _rows_from_record_r4_impl,
@@ -91,11 +93,11 @@ def _write_text(path: Path, text: str) -> None:
 
 
 def _as_dict(value: Any) -> Dict[str, Any]:
-    return dict(value) if isinstance(value, dict) else {}
+    return _scalar_owner._as_dict(value)
 
 
 def _as_list(value: Any) -> List[Any]:
-    return list(value) if isinstance(value, list) else []
+    return _scalar_owner._as_list(value)
 
 
 def _symbol_candidates(symbol: str) -> List[str]:
@@ -272,17 +274,11 @@ def _checkpoint_summary(shadow: Mapping[str, Any]) -> Dict[str, Any]:
 
 
 def _pct(value: Any) -> str:
-    try:
-        return f"{float(value) * 100.0:.2f}%"
-    except Exception:
-        return "-"
+    return _format_owner._pct(value)
 
 
 def _price(value: Any) -> str:
-    try:
-        return f"{float(value):,.0f}"
-    except Exception:
-        return "-"
+    return _format_owner._price(value)
 
 
 def _trade_label(path: Path, report: Mapping[str, Any], shadow: Mapping[str, Any]) -> str:

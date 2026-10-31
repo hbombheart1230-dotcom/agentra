@@ -5,7 +5,7 @@ Module globals and helpers are resolved on ``facade`` (the q8_historical_review 
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Iterable
+from typing import Any, Iterable
 
 
 def _iter_days(start: str, end: str) -> Iterable[str]:
@@ -23,3 +23,7 @@ def _trade_id_from_path(path: Path) -> str:
         return path.parents[1].name
     except Exception:
         return ""
+
+
+def _quant_shadow_candidate_root(reports_root: Path, *, facade: Any) -> Path:
+    return facade.Path(reports_root).parent / "data" / "logs" / "quant_shadow_candidates"

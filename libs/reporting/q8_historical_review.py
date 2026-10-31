@@ -12,6 +12,7 @@ from libs.reporting import q8_historical_scalar_projection as _scalar_owner
 from libs.reporting import q8_historical_day_projection as _day_owner
 from libs.reporting import q8_historical_aggregate_projection as _aggregate_owner
 from libs.reporting import q8_historical_markdown_table_projection as _table_owner
+from libs.reporting import q8_historical_decision_projection as _decision_owner
 
 
 def _read_json(path: Path) -> Dict[str, Any]:
@@ -47,8 +48,7 @@ def _pct_from_ratio(value: Any) -> float | None:
 
 
 def _text(value: Any) -> str:
-    text = str(value or "").strip()
-    return "" if text.lower() in {"", "-", "none", "null", "unknown", "not_captured"} else text
+    return _scalar_owner._text(value)
 
 
 def _avg(values: Sequence[float]) -> float:
@@ -56,7 +56,7 @@ def _avg(values: Sequence[float]) -> float:
 
 
 def _weighted_avg(total: float, weight: int) -> float:
-    return round(total / weight, 4) if weight > 0 else 0.0
+    return _scalar_owner._weighted_avg(total, weight)
 
 
 def _iter_days(start: str, end: str) -> Iterable[str]:
@@ -64,7 +64,7 @@ def _iter_days(start: str, end: str) -> Iterable[str]:
 
 
 def _quant_shadow_candidate_root(reports_root: Path) -> Path:
-    return Path(reports_root).parent / "data" / "logs" / "quant_shadow_candidates"
+    return _day_owner._quant_shadow_candidate_root(reports_root, facade=sys.modules[__name__])
 
 
 def _iter_quant_shadow_candidate_rows(reports_root: Path, *, start: str, end: str) -> Iterable[Dict[str, Any]]:
@@ -237,23 +237,7 @@ class ForwardAccumulator:
 
 
 def _decision_for_reclaim_subtype(row: Mapping[str, Any]) -> str:
-    name = _text(row.get("name"))
-    observed = _int(row.get("observed_count"))
-    ret5 = _float(row.get("avg_return_5m_pct")) or 0.0
-    ret15 = _float(row.get("avg_return_15m_pct")) or 0.0
-    ret60 = _float(row.get("avg_return_60m_pct")) or 0.0
-    mae5 = _float(row.get("avg_mae_5m_pct")) or 0.0
-    if observed < 30:
-        return "retain_observation_sample_small"
-    if name.endswith("true_below_vwap_failure") and ret5 > 0 and ret15 > 0:
-        return "review_classifier_or_label"
-    if ret5 > 0 and ret15 > 0 and mae5 > -0.5:
-        return "adjust_and_retest_candidate"
-    if ret5 < 0 and ret15 < 0:
-        return "keep_blocked"
-    if ret60 > 0 and ret5 <= 0:
-        return "hold_observation_longer_horizon_only"
-    return "retain_under_observation"
+    return _decision_owner._decision_for_reclaim_subtype(row, facade=sys.modules[__name__])
 
 
 def _extract_trade_rows(reports_root: Path, *, start: str, end: str) -> List[Dict[str, Any]]:

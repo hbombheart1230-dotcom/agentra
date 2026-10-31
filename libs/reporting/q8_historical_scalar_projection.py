@@ -37,3 +37,12 @@ def _pct_from_ratio(value: Any, *, facade: Any) -> float | None:
 
 def _avg(values: Sequence[float]) -> float:
     return round(sum(values) / len(values), 4) if values else 0.0
+
+
+def _text(value: Any) -> str:
+    text = str(value or "").strip()
+    return "" if text.lower() in {"", "-", "none", "null", "unknown", "not_captured"} else text
+
+
+def _weighted_avg(total: float, weight: int) -> float:
+    return round(total / weight, 4) if weight > 0 else 0.0
