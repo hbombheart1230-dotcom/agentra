@@ -114,37 +114,8 @@ def _q9_checks(reports_root: Path, day: str) -> dict[str, Any]:
 
 
 def _baseline_artifacts(reports_root: Path, day: str) -> dict[str, Any]:
-    artifacts = {
-        "q10": {
-            "decisions": _artifact(reports_root / "evaluation" / "baseline_samsung_hynix" / day / "baseline_samsung_hynix_decisions.json"),
-            "forward": _artifact(reports_root / "evaluation" / "baseline_samsung_hynix" / day / "baseline_samsung_hynix_forward_returns.json"),
-            "comparison": _artifact(reports_root / "evaluation" / "baseline_samsung_hynix" / day / "q9_vs_samsung_hynix_daily_comparison.json"),
-        },
-        "q11": {
-            "signals": _artifact(reports_root / "evaluation" / "opportunity_engine_shadow" / day / "opportunity_engine_signals.json"),
-            "virtual_trades": _artifact(reports_root / "evaluation" / "opportunity_engine_shadow" / day / "opportunity_engine_virtual_trades.json"),
-            "report": _artifact(reports_root / "evaluation" / "opportunity_engine_shadow" / day / "opportunity_engine_daily_report.json"),
-        },
-        "q12": {
-            "decisions": _artifact(reports_root / "evaluation" / "baseline_btc_woori_tech" / day / "baseline_btc_woori_decisions.json"),
-            "forward": _artifact(reports_root / "evaluation" / "baseline_btc_woori_tech" / day / "baseline_btc_woori_forward_returns.json"),
-            "comparison": _artifact(reports_root / "evaluation" / "baseline_btc_woori_tech" / day / "baseline_btc_woori_comparison.json"),
-            "hypothesis_validation": _artifact(reports_root / "evaluation" / "baseline_btc_woori_tech" / day / "q12_btc_woori_hypothesis_validation.json"),
-            "hypothesis_cumulative": _artifact(reports_root / "evaluation" / "baseline_btc_woori_tech" / "hypothesis_validation" / "q12_btc_woori_hypothesis_cumulative.json"),
-        },
-    }
-    if day >= Q10_LEAD_MARKET_ACTIVATION_DAY:
-        forward_root = reports_root / "evaluation" / "baseline_samsung_hynix" / day / "q10_forward_validation"
-        artifacts["q10"].update(
-            {
-                "lead_market_preopen": _artifact(forward_root / "q10_preopen_signal_snapshot.json"),
-                "lead_market_reactions": _artifact(forward_root / "q10_actual_market_reactions.json"),
-                "lead_market_expected_actual": _artifact(forward_root / "q10_expected_vs_actual.json"),
-                "lead_market_shadow": _artifact(forward_root / "q10_shadow_entry_comparison.json"),
-                "lead_market_report": _artifact(forward_root / "q10_forward_validation_report.md"),
-            }
-        )
-    return artifacts
+    from scripts.diagnostics.q9_readiness_baseline_projection import _baseline_artifacts as owner
+    return owner(reports_root, day, facade=sys.modules[__name__])
 
 
 def _evaluate(

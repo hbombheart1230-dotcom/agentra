@@ -55,11 +55,18 @@ from libs.reporting import quant_shadow_scorecard_rows_projection as _scorecard_
 from libs.reporting import quant_shadow_named_forward_rows_projection as _named_rows_owner
 from libs.reporting import quant_shadow_format_rows_projection as _format_rows_owner
 from libs.reporting import quant_shadow_format_forward_projection as _format_forward_owner
+from libs.reporting import quant_shadow_text_projection as _text_owner
+from libs.reporting import quant_shadow_json_projection as _json_owner
+from libs.reporting import quant_shadow_day_paths_projection as _day_paths_owner
+from libs.reporting import quant_shadow_drop_q9_projection as _drop_q9_owner
+from libs.reporting import quant_shadow_format_scorecard_projection as _format_scorecard_owner
+from libs.reporting import quant_shadow_readiness_projection as _readiness_owner
+from libs.reporting import quant_shadow_root_projection as _root_owner
+from libs.reporting import quant_shadow_no_trade_scorecard_projection as _no_trade_owner
 
 
 def _text(value: Any) -> str:
-    text = str(value or "").strip()
-    return "" if text.lower() in {"", "-", "none", "null", "unknown", "not_captured"} else text
+    return _text_owner._text(value)
 
 
 def _bool(value: Any) -> bool:
@@ -67,14 +74,11 @@ def _bool(value: Any) -> bool:
 
 
 def _read_json(path: Path) -> Any:
-    try:
-        return json.loads(path.read_text(encoding="utf-8"))
-    except Exception:
-        return None
+    return _json_owner._read_json(path, facade=sys.modules[__name__])
 
 
 def shadow_candidate_root_for_reports(reports_root: Path) -> Path:
-    return Path(reports_root).parent / "data" / "logs" / "quant_shadow_candidates"
+    return _root_owner.shadow_candidate_root_for_reports(reports_root, facade=sys.modules[__name__])
 
 
 def _iter_days(start: str, end: str) -> Iterable[str]:
@@ -82,10 +86,7 @@ def _iter_days(start: str, end: str) -> Iterable[str]:
 
 
 def _json_paths_for_day(root: Path, day: str) -> List[Path]:
-    day_dir = root / str(day)[:10]
-    if not day_dir.exists():
-        return []
-    return sorted(path for path in day_dir.glob("*.json") if path.name != "latest.json")
+    return _day_paths_owner._json_paths_for_day(root, day)
 
 
 def _q9_windows_by_id(reports_root: Path, day: str) -> Dict[str, Dict[str, Any]]:
@@ -183,12 +184,7 @@ Q9_ROW_KEYS_UNUSED_BY_FULL_CHAIN: Tuple[str, ...] = (
 
 def _drop_q9_row_keys(payload: Dict[str, Any], drop: Optional[Sequence[str]]) -> Dict[str, Any]:
     """Remove `drop` keys from every q9 decision-candidate row of `payload` (no-op when `drop` is empty)."""
-    if drop:
-        for row in payload.get("q9_decision_candidates") or []:
-            if isinstance(row, dict):
-                for key in drop:
-                    row.pop(key, None)
-    return payload
+    return _drop_q9_owner._drop_q9_row_keys(payload, drop)
 
 
 def load_quant_shadow_candidate_payloads(
@@ -426,79 +422,7 @@ def _no_trade_scorecard(
     opening_probe_would_enter: int,
     largecap_probe_would_enter: int,
 ) -> Dict[str, Any]:
-    candidate_count = len(candidates)
-    outcome_count = sum(1 for row in candidates if _bool(_forward_outcome(row).get("available")))
-    coverage = float(outcome_count) / float(candidate_count) if candidate_count else 0.0
-    lane_rows = (
-        list(entry_lane_forward_outcomes.get("by_primary_lane") or [])
-        if isinstance(entry_lane_forward_outcomes, Mapping)
-        else []
-    )
-    lane_subtype_rows = (
-        list(entry_lane_forward_outcomes.get("by_lane_subtype") or [])
-        if isinstance(entry_lane_forward_outcomes, Mapping)
-        else []
-    )
-    combined_rows = [row for row in lane_rows + lane_subtype_rows if isinstance(row, Mapping)]
-    missed = _scorecard_rows(combined_rows, mode="missed", limit=6)
-    blocked = _scorecard_rows(combined_rows, mode="blocked", limit=6)
-    watchlist = _named_forward_rows(
-        lane_subtype_rows,
-        {
-            "pullback_quality:failed_pullback",
-            "vwap_reclaim:reclaim_in_progress_with_improving_volume",
-        },
-    )
-    promotion_ready_watchlist = [
-        row for row in watchlist if _text(row.get("review_state")) == "promotion_watch"
-    ]
-    if candidate_count <= 0:
-        status = "no_shadow_data"
-        verdict = "no shadow candidates were collected"
-    elif would_enter_count > 0 or opening_probe_would_enter > 0 or largecap_probe_would_enter > 0:
-        status = "trade_candidates_available"
-        verdict = "shadow candidates had would-enter paths; compare against actual execution"
-    elif missed and blocked:
-        status = "mixed_no_trade_day"
-        verdict = "major weak groups were blocked, but selected subtypes show missed-opportunity signals"
-    elif missed:
-        status = "possible_over_blocking"
-        verdict = "no would-enter candidates, but forward outcomes show positive missed-opportunity groups"
-    elif blocked:
-        status = "correctly_blocked"
-        verdict = "no would-enter candidates and blocked groups underperformed in forward outcomes"
-    else:
-        status = "inconclusive_no_trade_day"
-        verdict = "no would-enter candidates; forward evidence is not decisive"
-    evidence_quality = (
-        "high"
-        if outcome_count >= TRUSTED_FORWARD_MIN_COUNT and coverage >= TRUSTED_FORWARD_MIN_COVERAGE
-        else "medium"
-        if outcome_count >= 30
-        else "low"
-    )
-    return {
-        "behavior_effect": "evaluation_only",
-        "status": status,
-        "verdict": verdict,
-        "candidate_count": candidate_count,
-        "would_enter_count": int(would_enter_count),
-        "opening_momentum_probe_would_enter_count": int(opening_probe_would_enter),
-        "opening_largecap_surge_would_enter_count": int(largecap_probe_would_enter),
-        "forward_outcome_available_count": int(outcome_count),
-        "forward_outcome_coverage": coverage,
-        "evidence_quality": evidence_quality,
-        "correctly_blocked_signals": blocked,
-        "missed_opportunity_candidates": missed,
-        "promotion_watchlist": watchlist,
-        "next_review_action": (
-            "review_promotion_watchlist_for_probe_candidate"
-            if promotion_ready_watchlist
-            else "collect_repeatability_before_promotion_review"
-            if missed or watchlist
-            else "retain_current_guards_and_continue_observation"
-        ),
-    }
+    return _no_trade_owner._no_trade_scorecard(candidates=candidates, entry_lane_forward_outcomes=entry_lane_forward_outcomes, would_enter_count=would_enter_count, opening_probe_would_enter=opening_probe_would_enter, largecap_probe_would_enter=largecap_probe_would_enter, facade=sys.modules[__name__])
 
 
 def _evaluation_trust_gate(
@@ -608,42 +532,7 @@ def _promotion_candidate(candidates: Sequence[Mapping[str, Any]]) -> Dict[str, A
 
 
 def _shadow_readiness(candidates: Sequence[Mapping[str, Any]], promotion: Mapping[str, Any]) -> Dict[str, Any]:
-    candidate_count = len(candidates)
-    evaluated_count = sum(1 for row in candidates if _bool(row.get("evaluated")))
-    evaluated_ratio = float(evaluated_count) / float(candidate_count) if candidate_count else 0.0
-    candidate = _text(promotion.get("candidate"))
-    confidence = _text(promotion.get("confidence"))
-    action = _text(promotion.get("recommended_action")) or "hold"
-    ready = bool(
-        candidate_count >= TRUSTED_FORWARD_MIN_COUNT
-        and evaluated_count >= PROMOTION_CANDIDATE_MIN_OBSERVED
-        and evaluated_ratio >= TRUSTED_FORWARD_MIN_COVERAGE
-        and candidate not in {"", "hold"}
-        and confidence in {"medium", "high"}
-    )
-    if not candidate_count:
-        status = "hold_no_shadow_candidates"
-    elif ready:
-        status = "ready"
-    elif evaluated_count < PROMOTION_CANDIDATE_MIN_OBSERVED:
-        status = "hold_shadow_sample_insufficient"
-    elif evaluated_ratio < TRUSTED_FORWARD_MIN_COVERAGE:
-        status = "hold_shadow_coverage_insufficient"
-    else:
-        status = "review_shadow_signal_weak"
-    return {
-        "status": status,
-        "action": action if ready else "hold",
-        "candidate_count": candidate_count,
-        "evaluated_count": evaluated_count,
-        "evaluated_ratio": evaluated_ratio,
-        "sample_floor": TRUSTED_FORWARD_MIN_COUNT,
-        "evaluated_floor": PROMOTION_CANDIDATE_MIN_OBSERVED,
-        "coverage_floor": TRUSTED_FORWARD_MIN_COVERAGE,
-        "candidate": candidate or "hold",
-        "confidence": confidence or "none",
-        "promotion_scope": _text(promotion.get("promotion_scope")) or "none",
-    }
+    return _readiness_owner._shadow_readiness(candidates, promotion, facade=sys.modules[__name__])
 
 
 def build_quant_shadow_candidate_evaluation(
@@ -798,34 +687,7 @@ def _format_forward_rows(rows: Sequence[Mapping[str, Any]], *, limit: int = 4) -
 
 
 def _format_scorecard_rows(rows: Sequence[Mapping[str, Any]], *, limit: int = 4) -> str:
-    parts: List[str] = []
-    for row in list(rows)[:limit]:
-        name = _text(row.get("name"))
-        if not name:
-            continue
-        observed = int(row.get("observed_count") or 0)
-        count = int(row.get("candidate_count") or 0)
-        ret5 = row.get("avg_return_5m_pct")
-        ret15 = row.get("avg_return_15m_pct")
-        mfe5 = row.get("avg_mfe_5m_pct")
-        mae5 = row.get("avg_mae_5m_pct")
-        state = _text(row.get("review_state"))
-        text = (
-            f"{name} ({observed}/{count}, "
-            f"+5m {float(ret5):.4f}%"
-            if ret5 is not None
-            else f"{name} ({observed}/{count}, +5m n/a"
-        )
-        if ret15 is not None:
-            text += f", +15m {float(ret15):.4f}%"
-        if mfe5 is not None:
-            text += f", mfe5 {float(mfe5):.4f}%"
-        if mae5 is not None:
-            text += f", mae5 {float(mae5):.4f}%"
-        if state:
-            text += f", state {state}"
-        parts.append(text + ")")
-    return "; ".join(parts) if parts else "none"
+    return _format_scorecard_owner._format_scorecard_rows(rows, limit=limit, facade=sys.modules[__name__])
 
 
 def render_quant_shadow_candidate_evaluation_lines(payload: Mapping[str, Any] | None) -> List[str]:
