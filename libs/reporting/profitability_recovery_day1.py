@@ -3,11 +3,17 @@ from __future__ import annotations
 import json
 from collections import Counter
 from pathlib import Path
+import sys
 from typing import Any, Dict, Iterable, List
 
 from libs.reporting.llm_artifacts import iter_trade_dirs as _iter_trade_dirs
 from libs.reporting import profitability_recovery_scalar_projection as _scalar_owner
 from libs.reporting import profitability_recovery_trade_projection as _trade_owner
+from libs.reporting import profitability_recovery_evidence_projection as _evidence_owner
+from libs.reporting import profitability_recovery_status_projection as _status_owner
+from libs.reporting import profitability_recovery_weakness_projection as _weakness_owner
+from libs.reporting import profitability_recovery_io_projection as _io_owner
+from libs.reporting import profitability_recovery_artifact_projection as _artifact_owner
 
 
 REQUIRED_EXECUTION_FIELDS = (
@@ -21,13 +27,7 @@ REQUIRED_EXECUTION_FIELDS = (
 
 
 def _read_json(path: Path) -> Dict[str, Any]:
-    if not path.exists():
-        return {}
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-    except Exception:
-        return {}
-    return payload if isinstance(payload, dict) else {}
+    return _io_owner._read_json(path, facade=sys.modules[__name__])
 
 
 def iter_trade_dirs(reports_root: Path, day: str) -> List[Path]:
@@ -38,11 +38,7 @@ def iter_trade_dirs(reports_root: Path, day: str) -> List[Path]:
 
 
 def _artifact_path(trade_dir: Path, *candidates: str) -> Path:
-    for raw in candidates:
-        candidate = trade_dir / raw
-        if candidate.exists():
-            return candidate
-    return trade_dir / candidates[0]
+    return _artifact_owner._artifact_path(trade_dir, *candidates)
 
 
 def _safe_float(value: Any) -> float | None:
@@ -58,22 +54,15 @@ def _linkage_surface_present(linkage: Dict[str, Any]) -> bool:
 
 
 def _execution_missing_fields(execution_details: Dict[str, Any]) -> List[str]:
-    execution_details = execution_details if isinstance(execution_details, dict) else {}
-    missing: List[str] = []
-    for key in REQUIRED_EXECUTION_FIELDS:
-        if key not in execution_details or execution_details.get(key) in (None, "", []):
-            missing.append(str(key))
-    return missing
+    return _evidence_owner._execution_missing_fields(execution_details, facade=sys.modules[__name__])
 
 
 def _bundle_artifacts(lifecycle_bundle: Dict[str, Any]) -> Dict[str, Any]:
-    artifacts = lifecycle_bundle.get("artifacts")
-    return artifacts if isinstance(artifacts, dict) else {}
+    return _evidence_owner._bundle_artifacts(lifecycle_bundle)
 
 
 def _section_provenance(lifecycle_bundle: Dict[str, Any]) -> Dict[str, Any]:
-    section_provenance = lifecycle_bundle.get("section_provenance")
-    return section_provenance if isinstance(section_provenance, dict) else {}
+    return _evidence_owner._section_provenance(lifecycle_bundle)
 
 
 def _read_hold_payload(trade_dir: Path) -> Dict[str, Any]:
@@ -252,32 +241,13 @@ def _resolve_ai_trade_report_status(
     ai_component: Dict[str, Any],
     ai_trade_report_llm_exists: bool,
 ) -> str:
-    diagnostics = lifecycle_bundle.get("ai_report_diagnostics")
-    diagnostics = diagnostics if isinstance(diagnostics, dict) else {}
-    for candidate in (
-        ai_component.get("status"),
-        diagnostics.get("ai_trade_report_status"),
-        lifecycle_bundle.get("ai_trade_report_status"),
-    ):
-        value = str(candidate or "").strip().lower()
-        if value:
-            return value
-    if ai_trade_report_llm_exists:
-        return "ok"
-    return ""
+    return _status_owner._resolve_ai_trade_report_status(lifecycle_bundle, ai_component, ai_trade_report_llm_exists)
 
 
 def _is_closed_trade_report_generation_regression(
     *, closed_trade: bool, ai_trade_report_llm_exists: bool, ai_status: str
 ) -> bool:
-    if not closed_trade:
-        return False
-    if not ai_trade_report_llm_exists:
-        return True
-    normalized = str(ai_status or "").strip().lower()
-    if not normalized:
-        return False
-    return normalized in {"failed", "error", "skipped"}
+    return _status_owner._is_closed_trade_report_generation_regression(closed_trade=closed_trade, ai_trade_report_llm_exists=ai_trade_report_llm_exists, ai_status=ai_status)
 
 
 def read_trade_diagnostic_row(trade_dir: Path) -> Dict[str, Any]:
@@ -362,21 +332,7 @@ def iter_trade_diagnostic_rows(reports_root: Path, day: str) -> List[Dict[str, A
 
 
 def _top_recurring_weakness(rows: Iterable[Dict[str, Any]]) -> str:
-    counter: Counter[str] = Counter()
-    for row in rows:
-        if bool(row.get("closed_trade_report_generation_regression")):
-            counter["closed_trade_report_generation_regression"] += 1
-        if bool(row.get("closed_trade_decision_only_misclassification")):
-            counter["closed_trade_decision_only_misclassification"] += 1
-        if bool(row.get("holding_evidence_thin")):
-            counter["holding_evidence_thin"] += 1
-        if bool(row.get("same_day_linkage_missing")):
-            counter["same_day_linkage_missing"] += 1
-        if int(row.get("execution_missing_fields_count") or 0) > 0:
-            counter["execution_fields_missing"] += 1
-    if not counter:
-        return "none"
-    return str(counter.most_common(1)[0][0])
+    return _weakness_owner._top_recurring_weakness(rows, facade=sys.modules[__name__])
 
 
 def audit_profitability_recovery_day(reports_root: Path, day: str) -> Dict[str, Any]:
