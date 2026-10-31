@@ -1,164 +1,16 @@
-# C01 — Codex B | B-20261031-13 | FAST-3 CONTINUATION — SIX VERIFIED REMAINING BODY MOVES
+# C01 — Codex B | B-20261031-14 | FAST-3 VERIFIED EIGHT BODY MOVES
 
-**PIN AT START:** integration/p1.5 HEAD at issuance `bd46731caf6d4950af3457694d689e0bbb0f784b`; ORDER_FILE_BLOB_SHA=fetch this document from `integration/p1.5`; B actor remote HEAD at design `10a234f02c87f0210e5c50b4e039f7d6907e7aa4`. Previous B-20261031-10 order blob `fa87f666b9ef9769b815d3d200f8ebfba20150e3` was 2/8 REMOTE_DONE and 6/8 still unimplemented remotely. #12 comment 6538201693 reports B5/B6 `_print_human`/`_print_summary` moved to `scripts/diagnostics/strategist_query_render_projection.py` and normal unittest 2 exit0; remote B source blob `ca96ad4782c7557c66c21d808a829c925655f39d`, Owner blob `2c786e7a3d0cac485b645d354ae299fea84cac84` verified. **B5/B6 are REMOTE_DONE, NOT executable and NOT to be repeated.** Their old SOURCE_BLOB `f368e15c` is stale and deliberately removed from this order.
+**PIN AT START:** CANONICAL_HEAD_AT_ISSUANCE=`967fce1a8288c851f1d835cb495b14e95c7e6750`; fetch live ORDER_FILE_BLOB_SHA from `integration/p1.5`; ACTOR_REMOTE_SHA_AT_DESIGN=`9ea1f2354617080699fc245e7cd79c666ba3cca0`; OLD_ORDER_BLOB=`42676d182915e35b9a14d66f06f8b9e9e8c49638`. Latest #12 6538827947 / 6538870463 and C04/C05 #36 6539112357 / 6539183890 prove previous B1–B4/B7–B8 6/6 actual SOURCE BODY MOVEs REMOTE_DONE at actor SHA. **Do not repeat any old body, same-SHA PASS, KEEP, or previous test.** Current order is new 8 items, each independently executable. Exact actor and integration source blobs were inspected; every listed target path was 404 on actor branch and absent from integration directory listing. The six previous reserves have been promoted to executable items only in this new document; two additional source functions were inspected and verified. Current six *future* reserves are NOT VERIFIED (see bottom).
 
-**SIX EXECUTABLE REMAINING ITEMS ONLY:** B1–B4 and B7–B8 below are RF-063 B-exclusive diagnostics calculation BODY moves. Actual original source still present: `query_m25_notification_events.py` SOURCE_BLOB `ec1f122a60875da5fbea743d42ddeca75bc07c7f`, `query_commander_resilience_events.py` SOURCE_BLOB `caebd5b1466a7f408a70be98ee94b89d5cda5e01`. Their three target modules `notification_query_time_projection.py`, `notification_query_env_projection.py`, `notification_query_cli_projection.py` and `commander_resilience_query_projection.py` were rechecked 404 at B HEAD. Six independent safe moves remain, so D00 replacement threshold (<6) is NOT met. The prior LOCAL_ONLY B1–B4/B7–B8 bytes were pruned and do not count as remote completion; reimplement from exact pinned bodies below, not stale local commit. All six must be executed or individually evidence-BLOCKED; do not stop at first PASS, partial commit or push error.
+## SINGLE FILE EXECUTION CONTRACT (NO EXTERNAL DOCUMENTS)
 
-**Single execution contract:** Do NOT read D00, RF, queue, C03 or handoffs, and do not independently select work. At start pin CANONICAL_HEAD/ORDER_FILE_BLOB_SHA/OWNER_REMOTE_SHA. Move real BODY to target once, SOURCE keeps same-signature thin wrapper, caller and use-time monkeypatch seam, exception/output/generator behavior; no reverse target→source import. Normal targeted unittest/pytest exit0 once per changed scope suffices G2; no mandatory -O/full peer/hosted CI. Actor modifies/pushes own code/tests only; no docs/RF/STATUS/queue. Fake/temp only, no live network, Broker/Guard/Step5C/UEF, operating State, RunLab, frozen oracle, deployment or force push. If terminal push blocked, continue all safe items and preserve exact-tree evidence; LOCAL_ONLY is not G1. C04 integrates, C05 judges G1/G2/G3/DONE.
+Read only this C01 file; do NOT read D00, RF, queue, C03, handoffs, or choose work. At start pin CANONICAL_HEAD, ORDER_FILE_BLOB_SHA, ACTOR_REMOTE_SHA, and each SOURCE_BLOB. Actor owns RF-063 scripts/diagnostics read-only incident/commander projections; other actor code is forbidden. Do all eight A/B items, not only first success. If one item is blocked or source changes, record its exact reason and continue the other seven. Move **exact computation BODY** to TARGET, retaining SOURCE same-name, same-signature, defaults, annotations, public import and only a thin delegation wrapper. Never leave a second copy of BODY in SOURCE, never import SOURCE from TARGET. Use lazy import inside SOURCE wrapper if needed to preserve caller import timing. For module-global references in the original body, Owner takes keyword-only `facade` and resolves `facade.NAME` at call time, SOURCE passes `sys.modules[__name__]` or existing `_migration_sys.modules[__name__]`; preserve monkeypatch after import and recursion semantics. For pure functions, no facade needed. Preserve exceptions, stdout, key ordering, generator laziness and all callers. If a function is already moved on fresh actor HEAD, mark REMOTE_DONE and do NOT reimplement; notify C03 of depleted supply.
 
-## B1 | RF-063 | scripts/diagnostics/query_m25_notification_events.py::_to_epoch @ L26 | SOURCE_BLOB=ec1f122a60875da5fbea743d42ddeca75bc07c7f
+**Safety:** Only fake/in-memory/TemporaryDirectory tests. Absolutely no live broker/account, real orders, operating State, Guard, Step5C, UEF, RunLab, network, deployment, CI workflow, frozen oracle, force push or protected policy edits. Do not run `main` or touch live paths. Only own source, new Owner module and new targeted test paths. No RF/STATUS/queue/D00/C03/C04/C05/doc edits. Normal targeted unittest or pytest exit0 is sufficient G2; no full-peer/-O/full-CI blanket requirements. Commit own code/tests, approved non-force remote delivery, then independently re-fetch actor HEAD and exact SOURCE/TARGET/test blobs; local-only is NOT G1, failed terminal HTTPS is PUSH_BLOCKED and must not stop other safe items. C04 owns integration, C05 owns G1/G2/G3 and RF/STATUS/DONE.
 
-**TARGET:** `scripts/diagnostics/notification_query_time_projection.py::_to_epoch` (confirmed function ABSENT at Actor HEAD; same Actor RF Owner). **EXACT COMPUTATION BODY TO MOVE:**
+## B1 | RF-063 | SOURCE `scripts/diagnostics/query_commander_resilience_events.py::_summary` @ L40 | SOURCE_BLOB=`45e2b5b26564cd6b891651f021dc2d3d0dfd608e`
 
-```python
-def _to_epoch(ts: Any) -> Optional[int]:
-    if ts is None:
-        return None
-    if isinstance(ts, (int, float)):
-        return int(ts)
-    s = str(ts).strip()
-    if not s:
-        return None
-    try:
-        return int(float(s))
-    except Exception:
-        pass
-    if s.endswith("Z"):
-        s = s[:-1] + "+00:00"
-    try:
-        dt = datetime.fromisoformat(s)
-        if dt.tzinfo is None:
-            dt = dt.replace(tzinfo=timezone.utc)
-        return int(dt.timestamp())
-    except Exception:
-        return None
-```
-
-**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. facade.datetime/timezone. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles.
-
-**Mandatory normal targeted test:** `tests/test_p15_rf063_10h_b1_to_epoch_owner.py`, explicit input→expected: '2026-10-31T00:00:00Z'->UTC epoch; ''->None. Verify original baseline vs owner vs wrapper, negative/exception and patch seam, fake/temp only. Run `python -m py_compile scripts/diagnostics/query_m25_notification_events.py scripts/diagnostics/notification_query_time_projection.py` then `python -m unittest tests/test_p15_rf063_10h_b1_to_epoch_owner.py -v` normal exit0. Commit ONLY own code/test, push normally, re-fetch remote SOURCE/TARGET/test blobs. If blocked, record exact error and continue all other safe items.
-
-## B2 | RF-063 | scripts/diagnostics/query_m25_notification_events.py::_utc_day @ L49 | SOURCE_BLOB=ec1f122a60875da5fbea743d42ddeca75bc07c7f
-
-**TARGET:** `scripts/diagnostics/notification_query_time_projection.py::_utc_day` (confirmed function ABSENT at Actor HEAD; same Actor RF Owner). **EXACT COMPUTATION BODY TO MOVE:**
-
-```python
-def _utc_day(ts: Any) -> str:
-    epoch = _to_epoch(ts)
-    if epoch is None:
-        return datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    return datetime.fromtimestamp(epoch, tz=timezone.utc).strftime("%Y-%m-%d")
-```
-
-**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. facade._to_epoch/datetime/timezone; freeze clock. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles.
-
-**Mandatory normal targeted test:** `tests/test_p15_rf063_10h_b2_utc_day_owner.py`, explicit input→expected: '2026-10-31T01:00:00Z'->'2026-10-31'; None->mocked UTC date. Verify original baseline vs owner vs wrapper, negative/exception and patch seam, fake/temp only. Run `python -m py_compile scripts/diagnostics/query_m25_notification_events.py scripts/diagnostics/notification_query_time_projection.py` then `python -m unittest tests/test_p15_rf063_10h_b2_utc_day_owner.py -v` normal exit0. Commit ONLY own code/test, push normally, re-fetch remote SOURCE/TARGET/test blobs. If blocked, record exact error and continue all other safe items.
-
-## B3 | RF-063 | scripts/diagnostics/query_m25_notification_events.py::_env_str @ L21 | SOURCE_BLOB=ec1f122a60875da5fbea743d42ddeca75bc07c7f
-
-**TARGET:** `scripts/diagnostics/notification_query_env_projection.py::_env_str` (confirmed function ABSENT at Actor HEAD; same Actor RF Owner). **EXACT COMPUTATION BODY TO MOVE:**
-
-```python
-def _env_str(name: str, default: str) -> str:
-    raw = str(os.getenv(name, "") or "").strip()
-    return raw if raw else str(default)
-```
-
-**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. facade.os; mock getenv, no .env. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles.
-
-**Mandatory normal targeted test:** `tests/test_p15_rf063_10h_b3_env_str_owner.py`, explicit input→expected: fake env ' yes '->'yes'; missing->default. Verify original baseline vs owner vs wrapper, negative/exception and patch seam, fake/temp only. Run `python -m py_compile scripts/diagnostics/query_m25_notification_events.py scripts/diagnostics/notification_query_env_projection.py` then `python -m unittest tests/test_p15_rf063_10h_b3_env_str_owner.py -v` normal exit0. Commit ONLY own code/test, push normally, re-fetch remote SOURCE/TARGET/test blobs. If blocked, record exact error and continue all other safe items.
-
-## B4 | RF-063 | scripts/diagnostics/query_m25_notification_events.py::_build_parser @ L60 | SOURCE_BLOB=ec1f122a60875da5fbea743d42ddeca75bc07c7f
-
-**TARGET:** `scripts/diagnostics/notification_query_cli_projection.py::_build_parser` (confirmed function ABSENT at Actor HEAD; same Actor RF Owner). **EXACT COMPUTATION BODY TO MOVE:**
-
-```python
-def _build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(description="Query M25 notification event log summary.")
-    p.add_argument(
-        "--event-log-path",
-        default=_env_str("M25_NOTIFY_EVENT_LOG_PATH", "data/logs/milestones/m25/notify_events.jsonl"),
-    )
-    p.add_argument("--day", default=None)
-    p.add_argument("--provider", default="", help="Filter by provider (webhook/slack_webhook/none).")
-    p.add_argument("--only-escalated", action="store_true", help="Only include escalated route events.")
-    p.add_argument(
-        "--min-portfolio-guard-alert-total",
-        type=int,
-        default=0,
-        help="Only include events with portfolio_guard_alert_total >= N.",
-    )
-    p.add_argument("--json", action="store_true")
-    return p
-```
-
-**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. facade.argparse/_env_str; parse only. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles.
-
-**Mandatory normal targeted test:** `tests/test_p15_rf063_10h_b4_build_parser_owner.py`, explicit input→expected: parse_args(['--json']).json is True; fake env default. Verify original baseline vs owner vs wrapper, negative/exception and patch seam, fake/temp only. Run `python -m py_compile scripts/diagnostics/query_m25_notification_events.py scripts/diagnostics/notification_query_cli_projection.py` then `python -m unittest tests/test_p15_rf063_10h_b4_build_parser_owner.py -v` normal exit0. Commit ONLY own code/test, push normally, re-fetch remote SOURCE/TARGET/test blobs. If blocked, record exact error and continue all other safe items.
-
-## B7 | RF-063 | scripts/diagnostics/query_commander_resilience_events.py::_is_incident_event @ L24 | SOURCE_BLOB=caebd5b1466a7f408a70be98ee94b89d5cda5e01
-
-**TARGET:** `scripts/diagnostics/commander_resilience_query_projection.py::_is_incident_event` (confirmed function ABSENT at Actor HEAD; same Actor RF Owner). **EXACT COMPUTATION BODY TO MOVE:**
-
-```python
-def _is_incident_event(rec: Dict[str, Any]) -> bool:
-    event = str(rec.get("event") or "")
-    payload = rec.get("payload") if isinstance(rec.get("payload"), dict) else {}
-    if event == "error":
-        return True
-    if event == "transition" and str(payload.get("transition") or "") == "cooldown":
-        return True
-    if event == "resilience":
-        reason = str(payload.get("reason") or "")
-        if reason in ("cooldown_active", "incident_threshold_cooldown"):
-            return True
-    return False
-```
-
-**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. pure read-only event label. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles.
-
-**Mandatory normal targeted test:** `tests/test_p15_rf063_10h_b7_is_incident_event_owner.py`, explicit input→expected: {'event':'error'}->True; {'event':'route'}->False. Verify original baseline vs owner vs wrapper, negative/exception and patch seam, fake/temp only. Run `python -m py_compile scripts/diagnostics/query_commander_resilience_events.py scripts/diagnostics/commander_resilience_query_projection.py` then `python -m unittest tests/test_p15_rf063_10h_b7_is_incident_event_owner.py -v` normal exit0. Commit ONLY own code/test, push normally, re-fetch remote SOURCE/TARGET/test blobs. If blocked, record exact error and continue all other safe items.
-
-## B8 | RF-063 | scripts/diagnostics/query_commander_resilience_events.py::_filtered_events @ L38 | SOURCE_BLOB=caebd5b1466a7f408a70be98ee94b89d5cda5e01
-
-**TARGET:** `scripts/diagnostics/commander_resilience_query_projection.py::_filtered_events` (confirmed function ABSENT at Actor HEAD; same Actor RF Owner). **EXACT COMPUTATION BODY TO MOVE:**
-
-```python
-def _filtered_events(
-    rows: List[Dict[str, Any]],
-    *,
-    run_id: str = "",
-    only_incidents: bool = False,
-    include_route: bool = False,
-) -> List[Dict[str, Any]]:
-    out: List[Dict[str, Any]] = []
-    for rec in rows:
-        if rec.get("stage") != "commander_router":
-            continue
-        event = str(rec.get("event") or "")
-        if event == "route" and not include_route:
-            continue
-        if run_id and str(rec.get("run_id") or "") != run_id:
-            continue
-        if only_incidents and not _is_incident_event(rec):
-            continue
-        out.append(rec)
-    return out
-```
-
-**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. facade._is_incident_event; stable order. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles.
-
-**Mandatory normal targeted test:** `tests/test_p15_rf063_10h_b8_filtered_events_owner.py`, explicit input→expected: commander_router/error and other/error -> one commander_router/error. Verify original baseline vs owner vs wrapper, negative/exception and patch seam, fake/temp only. Run `python -m py_compile scripts/diagnostics/query_commander_resilience_events.py scripts/diagnostics/commander_resilience_query_projection.py` then `python -m unittest tests/test_p15_rf063_10h_b8_filtered_events_owner.py -v` normal exit0. Commit ONLY own code/test, push normally, re-fetch remote SOURCE/TARGET/test blobs. If blocked, record exact error and continue all other safe items.
-
-## SIX VERIFIED FUTURE RESERVES — NOT EXECUTABLE THIS ORDER
-
-Revalidated at B remote `10a234f02c87f0210e5c50b4e039f7d6907e7aa4`: commander source blob `caebd5b1466a7f408a70be98ee94b89d5cda5e01`, incident timeline source blob `c47b817cef0c29957d010c105487594ae5a874c6`; all six named reserve target modules still absent (404). These remain design-only and cannot replace an executable item without a new C03 order.
-
-All six have actual SOURCE BODY and exclusive absent TARGET verified at Actor HEAD; no reserve is code implementation or test PASS. Promote only by a future new C03 order.
-
-### R1 VERIFIED | RF-063 | scripts/diagnostics/query_commander_resilience_events.py::_summary @ L60 | SOURCE_BLOB=caebd5b1466a7f408a70be98ee94b89d5cda5e01
-
-**TARGET:** `scripts/diagnostics/commander_resilience_summary_projection.py::_summary` (confirmed function ABSENT at Actor HEAD; same Actor RF Owner). **EXACT COMPUTATION BODY TO MOVE:**
+**TARGET:** `scripts/diagnostics/commander_resilience_summary_projection.py::_summary` — NEW exclusive B Owner, verified ABSENT (404) at actor HEAD. **EXACT ORIGINAL BODY TO MOVE:**
 
 ```python
 def _summary(rows: List[Dict[str, Any]], *, total_matched: int) -> Dict[str, Any]:
@@ -209,13 +61,13 @@ def _summary(rows: List[Dict[str, Any]], *, total_matched: int) -> Dict[str, Any
     }
 ```
 
-**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. pure read-only counters. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles.
+**Wrapper/callers/monkeypatch:** SOURCE retains original signature and only delegates; pure counters; keep dict insertion/order and latest fields. Keep original imports and caller entrypoints; test wrapper, Owner, and pre-move baseline equality for normal, negative, exceptions, ordering and post-import monkeypatch. Do not alter unrelated callers or tests. **Isolation:** in-memory fake event list.
 
-**Reserve hypothesis, NOT EXECUTABLE NOW:** `tests/test_p15_rf063_10h_b1_summary_owner.py`, explicit input→expected: [error] total_matched=1 -> error_total=1, shown=1. Verify original baseline vs owner vs wrapper, negative/exception and patch seam, fake/temp only. Reverify blob/target at promotion; reserve is not code completion or G1/G2.
+**Targeted normal test (new, not yet run):** `tests/test_p15_rf063_14h_b1_summary_owner.py`. Input → expected: rows `[{'event':'error','run_id':'R','payload':{'status':'failed'}}]`, total_matched=1 → `error_total=1`, `shown=1`, `latest_run_id='R'`; empty rows → zero counts. Run `python -m py_compile scripts/diagnostics/query_commander_resilience_events.py scripts/diagnostics/commander_resilience_summary_projection.py` then `python -m unittest tests/test_p15_rf063_14h_b1_summary_owner.py -v` (or equivalent exact-scope pytest); require actual normal exit0, never fabricate PASS. Commit/push only actor code+test, refetch SHA/blob. If blocked, report precise blocker and **continue B2**.
 
-### R2 VERIFIED | RF-063 | scripts/diagnostics/query_commander_resilience_events.py::_print_human @ L108 | SOURCE_BLOB=caebd5b1466a7f408a70be98ee94b89d5cda5e01
+## B2 | RF-063 | SOURCE `scripts/diagnostics/query_commander_resilience_events.py::_print_human` @ L88 | SOURCE_BLOB=`45e2b5b26564cd6b891651f021dc2d3d0dfd608e`
 
-**TARGET:** `scripts/diagnostics/commander_resilience_render_projection.py::_print_human` (confirmed function ABSENT at Actor HEAD; same Actor RF Owner). **EXACT COMPUTATION BODY TO MOVE:**
+**TARGET:** `scripts/diagnostics/commander_resilience_render_projection.py::_print_human` — NEW exclusive B Owner, verified ABSENT (404) at actor HEAD. **EXACT ORIGINAL BODY TO MOVE:**
 
 ```python
 def _print_human(path: Path, rows: List[Dict[str, Any]], summary: Dict[str, Any]) -> None:
@@ -256,13 +108,13 @@ def _print_human(path: Path, rows: List[Dict[str, Any]], summary: Dict[str, Any]
         print(f"{ts} run_id={run_id} event={event} {key}".strip())
 ```
 
-**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. redirect stdout only. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles.
+**Wrapper/callers/monkeypatch:** SOURCE retains original signature and only delegates; stdout print via call-time facade/builtins lookup; preserve exact order/newlines, patch seam and Path string. Keep original imports and caller entrypoints; test wrapper, Owner, and pre-move baseline equality for normal, negative, exceptions, ordering and post-import monkeypatch. Do not alter unrelated callers or tests. **Isolation:** redirect_stdout(StringIO), fake path only.
 
-**Reserve hypothesis, NOT EXECUTABLE NOW:** `tests/test_p15_rf063_10h_b2_print_human_owner.py`, explicit input→expected: empty rows stdout header and totals. Verify original baseline vs owner vs wrapper, negative/exception and patch seam, fake/temp only. Reverify blob/target at promotion; reserve is not code completion or G1/G2.
+**Targeted normal test (new, not yet run):** `tests/test_p15_rf063_14h_b2_print_human_owner.py`. Input → expected: empty rows with summary `{'total_matched':0,'shown':0,'cooldown_transition_total':0,'intervention_total':0,'error_total':0}` → stdout starts `=== Commander Resilience Events ===` and includes `total_matched=0 shown=0`; one fake error row prints its error_type. Run `python -m py_compile scripts/diagnostics/query_commander_resilience_events.py scripts/diagnostics/commander_resilience_render_projection.py` then `python -m unittest tests/test_p15_rf063_14h_b2_print_human_owner.py -v` (or equivalent exact-scope pytest); require actual normal exit0, never fabricate PASS. Commit/push only actor code+test, refetch SHA/blob. If blocked, report precise blocker and **continue B3**.
 
-### R3 VERIFIED | RF-063 | scripts/diagnostics/reconstruct_incident_timeline.py::_incident_trigger @ L57 | SOURCE_BLOB=c47b817cef0c29957d010c105487594ae5a874c6
+## B3 | RF-063 | SOURCE `scripts/diagnostics/reconstruct_incident_timeline.py::_incident_trigger` @ L57 | SOURCE_BLOB=`c47b817cef0c29957d010c105487594ae5a874c6`
 
-**TARGET:** `scripts/diagnostics/incident_timeline_trigger_projection.py::_incident_trigger` (confirmed function ABSENT at Actor HEAD; same Actor RF Owner). **EXACT COMPUTATION BODY TO MOVE:**
+**TARGET:** `scripts/diagnostics/incident_timeline_trigger_projection.py::_incident_trigger` — NEW exclusive B Owner, verified ABSENT (404) at actor HEAD. **EXACT ORIGINAL BODY TO MOVE:**
 
 ```python
 def _incident_trigger(row: Dict[str, Any]) -> Tuple[bool, str]:
@@ -292,13 +144,13 @@ def _incident_trigger(row: Dict[str, Any]) -> Tuple[bool, str]:
     return False, ""
 ```
 
-**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. pure incident labeling, no Guard effects. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles.
+**Wrapper/callers/monkeypatch:** SOURCE retains original signature and only delegates; pure stage/event classification; no runtime effect. Keep original imports and caller entrypoints; test wrapper, Owner, and pre-move baseline equality for normal, negative, exceptions, ordering and post-import monkeypatch. Do not alter unrelated callers or tests. **Isolation:** in-memory events only.
 
-**Reserve hypothesis, NOT EXECUTABLE NOW:** `tests/test_p15_rf063_10h_b3_incident_trigger_owner.py`, explicit input→expected: commander_router/error error_type=E -> (True,'commander_router:error:E'). Verify original baseline vs owner vs wrapper, negative/exception and patch seam, fake/temp only. Reverify blob/target at promotion; reserve is not code completion or G1/G2.
+**Targeted normal test (new, not yet run):** `tests/test_p15_rf063_14h_b3_incident_trigger_owner.py`. Input → expected: `{'stage':'commander_router','event':'error','payload':{'error_type':'E'}}` → `(True,'commander_router:error:E')`; route event → `(False,'')`. Run `python -m py_compile scripts/diagnostics/reconstruct_incident_timeline.py scripts/diagnostics/incident_timeline_trigger_projection.py` then `python -m unittest tests/test_p15_rf063_14h_b3_incident_trigger_owner.py -v` (or equivalent exact-scope pytest); require actual normal exit0, never fabricate PASS. Commit/push only actor code+test, refetch SHA/blob. If blocked, report precise blocker and **continue B4**.
 
-### R4 VERIFIED | RF-063 | scripts/diagnostics/reconstruct_incident_timeline.py::_is_recovery @ L84 | SOURCE_BLOB=c47b817cef0c29957d010c105487594ae5a874c6
+## B4 | RF-063 | SOURCE `scripts/diagnostics/reconstruct_incident_timeline.py::_is_recovery` @ L84 | SOURCE_BLOB=`c47b817cef0c29957d010c105487594ae5a874c6`
 
-**TARGET:** `scripts/diagnostics/incident_timeline_recovery_projection.py::_is_recovery` (confirmed function ABSENT at Actor HEAD; same Actor RF Owner). **EXACT COMPUTATION BODY TO MOVE:**
+**TARGET:** `scripts/diagnostics/incident_timeline_recovery_projection.py::_is_recovery` — NEW exclusive B Owner, verified ABSENT (404) at actor HEAD. **EXACT ORIGINAL BODY TO MOVE:**
 
 ```python
 def _is_recovery(row: Dict[str, Any]) -> Tuple[bool, str]:
@@ -321,13 +173,13 @@ def _is_recovery(row: Dict[str, Any]) -> Tuple[bool, str]:
     return False, ""
 ```
 
-**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. pure recovery labeling. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles.
+**Wrapper/callers/monkeypatch:** SOURCE retains original signature and only delegates; pure recovery label, not guard/resume operation. Keep original imports and caller entrypoints; test wrapper, Owner, and pre-move baseline equality for normal, negative, exceptions, ordering and post-import monkeypatch. Do not alter unrelated callers or tests. **Isolation:** in-memory events only.
 
-**Reserve hypothesis, NOT EXECUTABLE NOW:** `tests/test_p15_rf063_10h_b4_is_recovery_owner.py`, explicit input→expected: commander_router/intervention -> (True,'commander_router:intervention'). Verify original baseline vs owner vs wrapper, negative/exception and patch seam, fake/temp only. Reverify blob/target at promotion; reserve is not code completion or G1/G2.
+**Targeted normal test (new, not yet run):** `tests/test_p15_rf063_14h_b4_is_recovery_owner.py`. Input → expected: `{'stage':'commander_router','event':'intervention'}` → `(True,'commander_router:intervention')`; route → `(False,'')`. Run `python -m py_compile scripts/diagnostics/reconstruct_incident_timeline.py scripts/diagnostics/incident_timeline_recovery_projection.py` then `python -m unittest tests/test_p15_rf063_14h_b4_is_recovery_owner.py -v` (or equivalent exact-scope pytest); require actual normal exit0, never fabricate PASS. Commit/push only actor code+test, refetch SHA/blob. If blocked, report precise blocker and **continue B5**.
 
-### R5 VERIFIED | RF-063 | scripts/diagnostics/reconstruct_incident_timeline.py::_event_reason @ L104 | SOURCE_BLOB=c47b817cef0c29957d010c105487594ae5a874c6
+## B5 | RF-063 | SOURCE `scripts/diagnostics/reconstruct_incident_timeline.py::_event_reason` @ L104 | SOURCE_BLOB=`c47b817cef0c29957d010c105487594ae5a874c6`
 
-**TARGET:** `scripts/diagnostics/incident_timeline_reason_projection.py::_event_reason` (confirmed function ABSENT at Actor HEAD; same Actor RF Owner). **EXACT COMPUTATION BODY TO MOVE:**
+**TARGET:** `scripts/diagnostics/incident_timeline_reason_projection.py::_event_reason` — NEW exclusive B Owner, verified ABSENT (404) at actor HEAD. **EXACT ORIGINAL BODY TO MOVE:**
 
 ```python
 def _event_reason(row: Dict[str, Any]) -> str:
@@ -339,13 +191,13 @@ def _event_reason(row: Dict[str, Any]) -> str:
     return ""
 ```
 
-**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. pure. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles.
+**Wrapper/callers/monkeypatch:** SOURCE retains original signature and only delegates; pure ordered payload key lookup. Keep original imports and caller entrypoints; test wrapper, Owner, and pre-move baseline equality for normal, negative, exceptions, ordering and post-import monkeypatch. Do not alter unrelated callers or tests. **Isolation:** in-memory events only.
 
-**Reserve hypothesis, NOT EXECUTABLE NOW:** `tests/test_p15_rf063_10h_b5_event_reason_owner.py`, explicit input→expected: payload.reason='x' -> 'x'; {}->''. Verify original baseline vs owner vs wrapper, negative/exception and patch seam, fake/temp only. Reverify blob/target at promotion; reserve is not code completion or G1/G2.
+**Targeted normal test (new, not yet run):** `tests/test_p15_rf063_14h_b5_event_reason_owner.py`. Input → expected: `{'payload':{'reason':'x'}}` → `'x'`; `{}` → `''`. Run `python -m py_compile scripts/diagnostics/reconstruct_incident_timeline.py scripts/diagnostics/incident_timeline_reason_projection.py` then `python -m unittest tests/test_p15_rf063_14h_b5_event_reason_owner.py -v` (or equivalent exact-scope pytest); require actual normal exit0, never fabricate PASS. Commit/push only actor code+test, refetch SHA/blob. If blocked, report precise blocker and **continue B6**.
 
-### R6 VERIFIED | RF-063 | scripts/diagnostics/reconstruct_incident_timeline.py::_build_markdown @ L113 | SOURCE_BLOB=c47b817cef0c29957d010c105487594ae5a874c6
+## B6 | RF-063 | SOURCE `scripts/diagnostics/reconstruct_incident_timeline.py::_build_markdown` @ L113 | SOURCE_BLOB=`c47b817cef0c29957d010c105487594ae5a874c6`
 
-**TARGET:** `scripts/diagnostics/incident_timeline_markdown_projection.py::_build_markdown` (confirmed function ABSENT at Actor HEAD; same Actor RF Owner). **EXACT COMPUTATION BODY TO MOVE:**
+**TARGET:** `scripts/diagnostics/incident_timeline_markdown_projection.py::_build_markdown` — NEW exclusive B Owner, verified ABSENT (404) at actor HEAD. **EXACT ORIGINAL BODY TO MOVE:**
 
 ```python
 def _build_markdown(out: Dict[str, Any]) -> str:
@@ -401,11 +253,76 @@ def _build_markdown(out: Dict[str, Any]) -> str:
     return "\n".join(lines)
 ```
 
-**Thin wrapper / callers / monkeypatch / isolation:** SOURCE retains same signature, defaults, annotations, import/caller surface and exception timing; only delegates to Owner, with no duplicate BODY. TARGET never imports SOURCE. Where source globals are used, Owner accepts keyword-only `facade` and resolves global names at call time, SOURCE passes `sys.modules[__name__]`; preserve monkeypatch after import. Generator uses `yield from` (not eager list) and lazy exception timing. pure markdown, no IO. No live orders, Broker/Guard/UEF/Step5C, network, operating state, CI, deploy, RunLab or frozen oracles.
+**Wrapper/callers/monkeypatch:** SOURCE retains original signature and only delegates; pure formatting, exact byte output/newlines, sorted trigger/recovery counts. Keep original imports and caller entrypoints; test wrapper, Owner, and pre-move baseline equality for normal, negative, exceptions, ordering and post-import monkeypatch. Do not alter unrelated callers or tests. **Isolation:** in-memory dict only, no file writes.
 
-**Reserve hypothesis, NOT EXECUTABLE NOW:** `tests/test_p15_rf063_10h_b6_build_markdown_owner.py`, explicit input→expected: day=2026-10-31 events=0 -> header and zero events. Verify original baseline vs owner vs wrapper, negative/exception and patch seam, fake/temp only. Reverify blob/target at promotion; reserve is not code completion or G1/G2.
+**Targeted normal test (new, not yet run):** `tests/test_p15_rf063_14h_b6_build_markdown_owner.py`. Input → expected: `{'day':'2026-10-31','ok':True,'events':0,'runs':0,'incident_total':0}` → begins `# Incident Timeline Reconstruction (2026-10-31)` and contains `- events: **0**`, `## Failures`; missing totals → `(none)`. Run `python -m py_compile scripts/diagnostics/reconstruct_incident_timeline.py scripts/diagnostics/incident_timeline_markdown_projection.py` then `python -m unittest tests/test_p15_rf063_14h_b6_build_markdown_owner.py -v` (or equivalent exact-scope pytest); require actual normal exit0, never fabricate PASS. Commit/push only actor code+test, refetch SHA/blob. If blocked, report precise blocker and **continue B7**.
 
+## B7 | RF-063 | SOURCE `scripts/diagnostics/reconstruct_incident_timeline.py::_to_epoch` @ L19 | SOURCE_BLOB=`c47b817cef0c29957d010c105487594ae5a874c6`
 
-## REPORT AND CONTINUITY
+**TARGET:** `scripts/diagnostics/incident_timeline_time_projection.py::_to_epoch` — NEW exclusive B Owner, verified ABSENT (404) at actor HEAD. **EXACT ORIGINAL BODY TO MOVE:**
 
-Report to #12: `ORDER_ID=B-20261031-13 | CANONICAL_HEAD | ORDER_BLOB | B_REMOTE_HEAD_BEFORE/AFTER | B1,B2,B3,B4,B7,B8 IMPLEMENTED/REMOTE_DONE/BLOCKED | B5,B6 REMOTE_DONE_FROM_PREVIOUS | SOURCE/TARGET/TEST_BLOBS | NORMAL_COMMAND/EXIT/PASS | NEW_BODY_MOVES | FIRST_BLOCKER | NEXT_SAFE_ITEM | START_KST/END_KST/ELAPSED_MIN`. Times measured only, never inferred from comment timestamps. B5/B6 are not new work. R1–R6 reserve is design-only, NOT executable. Normal push and re-fetch branch HEAD/blob; report PUSH_BLOCKED separately if auth fails, continue remaining safe items. No C04/C05/RF/STATUS/doc edits.
+```python
+def _to_epoch(ts: Any) -> Optional[int]:
+    if ts is None:
+        return None
+    if isinstance(ts, (int, float)):
+        return int(ts)
+    s = str(ts).strip()
+    if not s:
+        return None
+    try:
+        return int(float(s))
+    except Exception:
+        pass
+    if s.endswith("Z"):
+        s = s[:-1] + "+00:00"
+    try:
+        dt = datetime.fromisoformat(s)
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return int(dt.timestamp())
+    except Exception:
+        return None
+```
+
+**Wrapper/callers/monkeypatch:** SOURCE retains original signature and only delegates; `datetime`, `timezone` through call-time facade; preserve naive UTC and invalid fallback; independent incident-timeline source, NOT earlier notification source. Keep original imports and caller entrypoints; test wrapper, Owner, and pre-move baseline equality for normal, negative, exceptions, ordering and post-import monkeypatch. Do not alter unrelated callers or tests. **Isolation:** pure timestamp conversion.
+
+**Targeted normal test (new, not yet run):** `tests/test_p15_rf063_14h_b7_to_epoch_owner.py`. Input → expected: `'2026-10-31T00:00:00Z'` → `1793404800`; `''` → `None`; numeric `0` → `0`. Run `python -m py_compile scripts/diagnostics/reconstruct_incident_timeline.py scripts/diagnostics/incident_timeline_time_projection.py` then `python -m unittest tests/test_p15_rf063_14h_b7_to_epoch_owner.py -v` (or equivalent exact-scope pytest); require actual normal exit0, never fabricate PASS. Commit/push only actor code+test, refetch SHA/blob. If blocked, report precise blocker and **continue B8**.
+
+## B8 | RF-063 | SOURCE `scripts/diagnostics/reconstruct_incident_timeline.py::_build_parser` @ L166 | SOURCE_BLOB=`c47b817cef0c29957d010c105487594ae5a874c6`
+
+**TARGET:** `scripts/diagnostics/incident_timeline_cli_projection.py::_build_parser` — NEW exclusive B Owner, verified ABSENT (404) at actor HEAD. **EXACT ORIGINAL BODY TO MOVE:**
+
+```python
+def _build_parser() -> argparse.ArgumentParser:
+    p = argparse.ArgumentParser(description="Reconstruct incident timelines from JSONL event logs.")
+    p.add_argument("--event-log-path", default="data/logs/events.jsonl")
+    p.add_argument("--report-dir", default="reports/incident_timeline")
+    p.add_argument("--day", default=None)
+    p.add_argument("--run-id", default="")
+    p.add_argument("--window-before-sec", type=int, default=120)
+    p.add_argument("--window-after-sec", type=int, default=900)
+    p.add_argument("--require-incidents", action="store_true")
+    p.add_argument("--require-recovered", action="store_true")
+    p.add_argument("--json", action="store_true")
+    return p
+```
+
+**Wrapper/callers/monkeypatch:** SOURCE retains original signature and only delegates; `argparse` via call-time facade; parser construction only, do not invoke main. Keep original imports and caller entrypoints; test wrapper, Owner, and pre-move baseline equality for normal, negative, exceptions, ordering and post-import monkeypatch. Do not alter unrelated callers or tests. **Isolation:** parse fake argv only, no IO.
+
+**Targeted normal test (new, not yet run):** `tests/test_p15_rf063_14h_b8_build_parser_owner.py`. Input → expected: `parse_args(['--json','--window-before-sec','30'])` → `json=True`, `window_before_sec=30`; empty args → `window_after_sec=900`. Run `python -m py_compile scripts/diagnostics/reconstruct_incident_timeline.py scripts/diagnostics/incident_timeline_cli_projection.py` then `python -m unittest tests/test_p15_rf063_14h_b8_build_parser_owner.py -v` (or equivalent exact-scope pytest); require actual normal exit0, never fabricate PASS. Commit/push only actor code+test, refetch SHA/blob. If blocked, report precise blocker and **continue report and handoff**.
+
+## FUTURE RESERVE QUEUE — 0/6 VERIFIED, RESERVE_NOT_VERIFIED
+
+All six earlier VERIFIED reserve items were promoted to current B1–B6. **No additional future item is VERIFIED**: do not execute these suggestions, do not count as safe backlog, and do not assign target paths without C03 direct source/target/owner/test verification. C03 next cycle must validate six new functions or record SUPPLY_GAP; the following are investigation leads, not assignments:
+
+- R1 RESERVE_NOT_VERIFIED: reconstruct_incident_timeline.py::_utc_day — prior timestamp owner duplication risk
+- R2 RESERVE_NOT_VERIFIED: reconstruct_incident_timeline.py::_iter_rows — file IO boundary, effect review
+- R3 RESERVE_NOT_VERIFIED: reconstruct_incident_timeline.py::_numeric_summary — already delegated, likely KEEP
+- R4 RESERVE_NOT_VERIFIED: query_commander_resilience_events.py::_load_jsonl — file IO boundary, effect review
+- R5 RESERVE_NOT_VERIFIED: query_m25_notification_events.py::_iter_rows — file IO boundary, effect review
+- R6 RESERVE_NOT_VERIFIED: query_commander_resilience_events.py::main — CLI/IO boundary, likely KEEP
+
+## REPORT / PUSH / CONTINUITY
+
+Report to #12: `ORDER_ID=B-20261031-14 | CANONICAL_HEAD | ORDER_BLOB_SHA | ACTOR_REMOTE_BEFORE/AFTER | B1..B8 ITEM_STATUS | SOURCE/TARGET/TEST_BLOBS | NORMAL_COMMAND/EXIT/PASS | MOVED_FUNCTIONS | SOURCE_LOC_BEFORE_AFTER | FIRST_BLOCKER | NEXT_SAFE_ITEM | PUSH_REMOTE_SHA/PUSH_BLOCKED | START_KST/END_KST/ELAPSED_MIN`. Times only when measured. If any of eight blocked, continue all remaining safe tasks; no NO_DELTA if current safe work remains. G1/G2 actor source evidence is distinct from C04 G3 and C05 RF_DONE. RUN_SOURCE_SHA UNKNOWN/RunLab exit255 remains separate SAFETY_HOLD; no runtime changes.
