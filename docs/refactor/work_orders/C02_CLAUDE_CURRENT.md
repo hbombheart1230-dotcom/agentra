@@ -1,136 +1,18 @@
-# C02 — Claude A | A-20261101-01 | FAST-3 NEW 8 VERIFIED SOURCE BODY MOVEs + one regression guard repair
+# C02 — Claude A | A-20261101-02 | FAST-3 8 verified real SOURCE BODY MOVEs
 
-**INPUT_SHA:** integration bda559f8931c8184f5693b7f8196d60b96701569 | A remote 0add890cd2484edcfe730cc177311a7f3f8fbf5e | B remote 32ed205327a36f2041ebd9a3257c02cba1cd41cd | OLD_C02_BLOB ce3fca564cbb33ea4e7de33e17ea3f6a93501446 | C01_BLOB fb882c992842fc133138c5726b525f4c521d3f6e | SOURCE_BLOB a4a6ccbc36b8f65fbf017977f5c4b1281aeb6501 (identical A/integration verified earlier this run).
-**NEW DELTA:** #11 comment 6545319970: A-20261101-00 8/8 actual BODY MOVE pushed 0add890cd2484edcfe730cc177311a7f3f8fbf5e, targeted unittest 8/8 exit0; previous C02 is REMOTE_DONE and must NOT be replayed. A reported one new structural guard failure in `tests/test_closeout_payload_projection.py` because `build_quant_shadow_candidate_evaluation` body moved to its new owner. #12 comment 6545189506: B3 `_evaluate` local fake test 3/3 but duplicate legacy body, NOT_DELIVERED; B remote unchanged 32ed205327a36f2041ebd9a3257c02cba1cd41cd and B3-B8 remain six remote-available safe items; C01 retained. #32 latest 6520075820 runtime Exited(255), RUN_SOURCE_SHA UNKNOWN, operational HOLD.
-**RF OWNER:** RF-035 / CLAUDE_A exclusive `libs/reporting` per current RF-035 source coverage and source ownership; this is report-bundle pure projection extraction, NOT actual trading. SOURCE `libs/reporting/live_execution_bundle_runner.py` at current blob `a4a6ccbc36b8f65fbf017977f5c4b1281aeb6501`; no Actor B source/target overlap. All 8 new TARGETs and 6 reserve TARGETs absent in integration and A directory inventory; test path absent on both.
-**ONE FILE:** Read ONLY C02 and code/test paths below. No D00/RF/queue/C03/HANDOFF. Pin start canonical HEAD, C02 blob, A remote HEAD and ORDER_ID. Execute ALL eight A1-A8 independently, mark exact per-item IMPLEMENTED/TEST_BLOCKED/PUSH_BLOCKED/SAFETY_BLOCKED; blocked item => continue remaining safe items. Do not self-select work. Do not redo completed A-00 or claim KEEP/test-only as BODY MOVE.
-**SAFETY:** Only pure scalar, path-string, timestamp and report metadata calculations; no `main`, subprocess, PID inspection, lock/queue writes, background job lifecycle, real broker/order, Guard, Step5C, UEF, RunLab, real report/State/DB, live network, frozen oracle, CI policy, deployment or force-push. The SOURCE file also contains effectful code; NEVER execute it or change its behavior except thin wrappers for exactly listed pure functions. Use patched fakes and TemporaryDirectory; if any item proves effectful, SAFETY_BLOCKED and continue.
-**MOVE:** Capture ORIGINAL golden behavior before editing. Move exact BODY below into one new TARGET Owner (same function name), replace SOURCE body with a same-signature thin delegation only; no duplicated computation or imports back from Owner to SOURCE. Owner accepts keyword-only `facade`, passed by SOURCE as `sys.modules[__name__]`; SOURCE already imports sys. For names referenced in original body (os, time, re, _to_epoch, ROOT, Path), resolve through facade at call time, preserve monkeypatch, errors, output and ordering. Each Owner uses `from __future__ import annotations` and necessary local typing imports. Keep original callers/public API and all existing tests intact except the ONE authorized guard test row below.
-**NORMAL G2:** Create ONLY `tests/test_p15_rf035_20261101_01h_live_bundle_pure_owners.py` with `test_a1_env_bool` … `test_a8_wmi_epoch`, golden(original) vs wrapper vs direct Owner, negative cases and call-time monkeypatch. `python -m py_compile libs/reporting/live_execution_bundle_runner.py` plus all eight target files; `python -m unittest tests/test_p15_rf035_20261101_01h_live_bundle_pure_owners.py -v` normal exit0. No mandatory -O/full peer/hosted CI. Commit only listed A source/targets/new test and exact guard test repair; normal non-force push A branch, refetch remote A HEAD and SOURCE/TARGET/test blob; report measured START/END, actual LOC and individual results #11. C04 integrates and C05 decides G1/G2/G3/DONE; document publication itself is not code progress.
-**ADDITIONAL G2 REGRESSION REPAIR (NOT a BODY MOVE; explicitly authorized):** `tests/test_closeout_payload_projection.py::test_converted_consumers_read_only_the_projected_keys`: in the single `@pytest.mark.parametrize` row for `build_quant_shadow_candidate_evaluation`, replace SOURCE path `libs/reporting/quant_shadow_candidate_evaluation.py` with `libs/reporting/quant_shadow_evaluation_builder_projection.py`, keep `{"build_quant_shadow_candidate_evaluation"}` and other rows untouched. New Owner is A remote at 0add890cd2484edcfe730cc177311a7f3f8fbf5e; source wrapper has no payload key reads. Run `python -m pytest tests/test_closeout_payload_projection.py -q -k converted_consumers_read_only_the_projected_keys` expected 3 passed normal exit0; if pytest missing, report TEST_BLOCKED but continue eight BODY MOVEs. Do NOT modify test AST scanning logic, frozen oracle or any unrelated test. This repair is G2 test-location correction only, not a ninth MOVE.
+**START ORDER — ONE FILE ONLY.** Read THIS document, then only the named code/test files. Do not read D00/RF/queue/C03/HANDOFF or select tasks yourself. Pin canonical HEAD `9e47ed5230d68814688ff6b48ae2764a8a25222f` (pre-issue), ORDER_BLOB, actor branch HEAD, and ORDER_ID at start; newer documents do not retroactively cancel a started order. Run ALL eight items; if blocked, record precise reason and proceed to the next independent safe item. Never redo completed old order. 
 
-## A1 | RF-035 | Owner CLAUDE_A | SOURCE `libs/reporting/live_execution_bundle_runner.py::_env_bool` L234 | CURRENT_BLOB `a4a6ccbc36b8f65fbf017977f5c4b1281aeb6501`
-**TARGET:** `libs/reporting/live_bundle_env_bool_projection.py::_env_bool` — NEW, verified absent A/integration.
-**EXACT CALCULATION BODY TO MOVE (delete from SOURCE, retain thin wrapper):**
-```python
-def _env_bool(name: str, default: bool = True) -> bool:
-    raw = str(os.getenv(name, "1" if default else "0")).strip().lower()
-    return raw in {"1", "true", "yes", "on"}
-```
-**Wrapper/callers/monkeypatch:** facade.os.getenv (call-time), preserve default and truthy tokens; do not touch environment outside patched tests; Owner must not import SOURCE. Preserve original signature, exceptions and outputs; wrapper delegates at call-time via facade.
-**Targeted normal test `test_a1_env_bool`:** monkeypatch facade.os.getenv to return 'YES' => True, 'off' => False; missing with default=False => False. Compare golden vs SOURCE wrapper vs direct Owner and post-import monkeypatch. Fake/temp only. If BLOCKED record exact first blocker and continue A2.
+**EVIDENCE:** C03 compared actor/integration exact source blobs, SOURCE original executable bodies, unique target path absence on both refs, RF ownership, and recent #11/#12/#32. Actor A old order A-20261101-01 8/8 REMOTE_DONE at 0cc2d549; B old order B-21 B1–B3 REMOTE_DONE at 30295cc1, B4–B8 remain unfinished and are carried as B1–B5 here, with B6–B8 new. Current C01 old blob `b9f6a1dfcc6e0ca746c738f80e599a12fe54ae49`, C02 old blob `606eb2ce8baaa1abf36b366675f9208878b0745c`. RunLab Exited(255), RUN_SOURCE_SHA=UNKNOWN, operational HOLD. No C03 code/test work or RF DONE is claimed.
 
-## A2 | RF-035 | Owner CLAUDE_A | SOURCE `libs/reporting/live_execution_bundle_runner.py::_bundle_role` L254 | CURRENT_BLOB `a4a6ccbc36b8f65fbf017977f5c4b1281aeb6501`
-**TARGET:** `libs/reporting/live_bundle_bundle_role_projection.py::_bundle_role` — NEW, verified absent A/integration.
-**EXACT CALCULATION BODY TO MOVE (delete from SOURCE, retain thin wrapper):**
-```python
-def _bundle_role(value: Any = "") -> str:
-    raw = str(value or "").strip()
-    return raw or "intraday_trade_report_bundle"
-```
-**Wrapper/callers/monkeypatch:** pure str/strip; keep empty-string fallback and original signature; Owner must not import SOURCE. Preserve original signature, exceptions and outputs; wrapper delegates at call-time via facade.
-**Targeted normal test `test_a2_bundle_role`:** value=' audit ' => 'audit'; value=' ' => 'intraday_trade_report_bundle'; value=None => default. Compare golden vs SOURCE wrapper vs direct Owner and post-import monkeypatch. Fake/temp only. If BLOCKED record exact first blocker and continue A3.
+**RF/OWNER:** RF-035; CLAUDE_A exclusively owns all named source and target files. Actor writes only its `work/p15-a-reporter-pure-20261021` code/test paths; no D00, RF, queue, STATUS, C04/C05, other actor branch, CI/frozen oracle, Git force-push. All eight target paths confirmed absent on actor and integration before issue. C04 performs selective integration/G3; C05 alone accepts RF DONE.
 
-## A3 | RF-035 | Owner CLAUDE_A | SOURCE `libs/reporting/live_execution_bundle_runner.py::_is_trueish` L259 | CURRENT_BLOB `a4a6ccbc36b8f65fbf017977f5c4b1281aeb6501`
-**TARGET:** `libs/reporting/live_bundle_trueish_projection.py::_is_trueish` — NEW, verified absent A/integration.
-**EXACT CALCULATION BODY TO MOVE (delete from SOURCE, retain thin wrapper):**
-```python
-def _is_trueish(value: Any) -> bool:
-    return str(value or "").strip().lower() in {"1", "true", "yes", "y", "on"}
-```
-**Wrapper/callers/monkeypatch:** pure conversion; exact set of accepted tokens; no operational flag change; Owner must not import SOURCE. Preserve original signature, exceptions and outputs; wrapper delegates at call-time via facade.
-**Targeted normal test `test_a3_trueish`:** 'YES' => True, 'y' => True, 'on' => True, 'false' => False, None => False. Compare golden vs SOURCE wrapper vs direct Owner and post-import monkeypatch. Fake/temp only. If BLOCKED record exact first blocker and continue A4.
+**SAFETY:** isolated fake in-memory mappings, monkeypatch and TemporaryDirectory only. No real trading, broker, order, guard, Step5C, UEF, RunLab operations, live network, runtime process/queue/lock mutation, operational State/DB/report paths, subprocess, actual CLI main, deploy/restart, or security policy change. Paths/env in these helpers must be fake/patched. Preserve exact public signatures, return type, exceptions, ordering, CLI callers, and SOURCE call-time monkeypatch seams. Source function must become a single-return thin delegation; new Owner must hold the ORIGINAL computation body, never import SOURCE (pass `facade=sys.modules[__name__]` when source globals are referenced). Use import inside SOURCE wrapper or safe top-level alias, no cycles. Capture original preimage golden before edits; compare golden vs SOURCE wrapper vs Owner with positive, negative, exception, and post-import monkeypatch cases; AST prove retired SOURCE calculation body absent, no duplicate/orphan statements.
 
-## A4 | RF-035 | Owner CLAUDE_A | SOURCE `libs/reporting/live_execution_bundle_runner.py::_lock_timestamp_epoch` L611 | CURRENT_BLOB `a4a6ccbc36b8f65fbf017977f5c4b1281aeb6501`
-**TARGET:** `libs/reporting/live_bundle_lock_epoch_projection.py::_lock_timestamp_epoch` — NEW, verified absent A/integration.
-**EXACT CALCULATION BODY TO MOVE (delete from SOURCE, retain thin wrapper):**
-```python
-def _lock_timestamp_epoch(payload: Dict[str, Any], *, stale_after_sec: float) -> float:
-    raw = (
-        payload.get("touched_at_epoch")
-        or payload.get("heartbeat_epoch")
-        or payload.get("started_at_epoch")
-    )
-    try:
-        epoch = float(raw or 0.0)
-    except Exception:
-        epoch = 0.0
-    if epoch > 0:
-        return epoch
-    started_at = str(payload.get("started_at") or "").strip()
-    return _to_epoch(started_at) or (time.time() - stale_after_sec - 1.0)
-```
-**Wrapper/callers/monkeypatch:** facade._to_epoch and facade.time.time dynamically; no actual lock read/write; exact fallback precedence; Owner must not import SOURCE. Preserve original signature, exceptions and outputs; wrapper delegates at call-time via facade.
-**Targeted normal test `test_a4_lock_epoch`:** payload={'touched_at_epoch':123.5}, stale_after_sec=30 => 123.5; {'started_at':'fake'} with patched _to_epoch returning 500 => 500; empty payload with patched _to_epoch None and time.time=1000, stale_after_sec=30 => 969.0. Compare golden vs SOURCE wrapper vs direct Owner and post-import monkeypatch. Fake/temp only. If BLOCKED record exact first blocker and continue A5.
+**TEST/PUSH:** Create NEW `tests/test_p15_rf035_20261101_02h_reporting_owners.py` (do not overwrite old B21/A01 tests). Each test must pin exact input→expected below, original golden parity, Owner direct parity, thin-wrapper AST and patch seams. Run `python -m py_compile` on modified source and all new Owner modules; run `python -m unittest tests/test_p15_rf035_20261101_02h_reporting_owners.py -v` normal exit0; use safe isolated tests only. Commit ONLY actor code/test; normal non-force push actor branch; re-fetch actor HEAD and source/target/test blob SHAs. If pytest unavailable, stdlib unittest remains valid. If push authentication fails, mark PUSH_BLOCKED but continue other safe items. Report each item IMPLEMENTED/TEST_BLOCKED/PUSH_BLOCKED/SAFETY_BLOCKED/NOT_RUN with measured START/END, normal command exit and exact remote SHA to #11; do not claim G1 for local-only. No mandatory -O/full peer/per-RF hosted CI.
 
-## A5 | RF-035 | Owner CLAUDE_A | SOURCE `libs/reporting/live_execution_bundle_runner.py::_format_duration_human` L1125 | CURRENT_BLOB `a4a6ccbc36b8f65fbf017977f5c4b1281aeb6501`
-**TARGET:** `libs/reporting/live_bundle_duration_human_projection.py::_format_duration_human` — NEW, verified absent A/integration.
-**EXACT CALCULATION BODY TO MOVE (delete from SOURCE, retain thin wrapper):**
-```python
-def _format_duration_human(seconds: int) -> str:
-    if seconds <= 0:
-        return "0m"
-    if seconds < 60:
-        return f"{seconds}s"
-    if seconds < 3600:
-        return f"{seconds / 60.0:.1f}m"
-    return f"{seconds / 3600.0:.1f}h"
-```
-**Wrapper/callers/monkeypatch:** pure formatting; preserve numeric comparisons, rounding and exception parity; Owner must not import SOURCE. Preserve original signature, exceptions and outputs; wrapper delegates at call-time via facade.
-**Targeted normal test `test_a5_duration_human`:** seconds 0 => '0m', 59 => '59s', 90 => '1.5m', 7200 => '2.0h'. Compare golden vs SOURCE wrapper vs direct Owner and post-import monkeypatch. Fake/temp only. If BLOCKED record exact first blocker and continue A6.
-
-## A6 | RF-035 | Owner CLAUDE_A | SOURCE `libs/reporting/live_execution_bundle_runner.py::_trade_id_sequence` L1141 | CURRENT_BLOB `a4a6ccbc36b8f65fbf017977f5c4b1281aeb6501`
-**TARGET:** `libs/reporting/live_bundle_trade_sequence_projection.py::_trade_id_sequence` — NEW, verified absent A/integration.
-**EXACT CALCULATION BODY TO MOVE (delete from SOURCE, retain thin wrapper):**
-```python
-def _trade_id_sequence(trade_id: str) -> int:
-    text = str(trade_id or "").strip()
-    if not text:
-        return 10**9
-    tail = text.rsplit("_", 1)[-1]
-    try:
-        return int(tail)
-    except Exception:
-        return 10**9
-```
-**Wrapper/callers/monkeypatch:** pure suffix parse; preserve sentinel 10**9, int conversion and exception behavior; Owner must not import SOURCE. Preserve original signature, exceptions and outputs; wrapper delegates at call-time via facade.
-**Targeted normal test `test_a6_trade_sequence`:** 'TRD_20261101_005930_12' => 12; '' => 1000000000; 'broken' => 1000000000. Compare golden vs SOURCE wrapper vs direct Owner and post-import monkeypatch. Fake/temp only. If BLOCKED record exact first blocker and continue A7.
-
-## A7 | RF-035 | Owner CLAUDE_A | SOURCE `libs/reporting/live_execution_bundle_runner.py::_resolve_existing_day_artifact` L1256 | CURRENT_BLOB `a4a6ccbc36b8f65fbf017977f5c4b1281aeb6501`
-**TARGET:** `libs/reporting/live_bundle_artifact_paths_projection.py::_resolve_existing_day_artifact` — NEW, verified absent A/integration.
-**EXACT CALCULATION BODY TO MOVE (delete from SOURCE, retain thin wrapper):**
-```python
-def _resolve_existing_day_artifact(report_dir: Path, prefix: str, day: str) -> Tuple[Path, Path]:
-    return report_dir / f"{prefix}_{day}.md", report_dir / f"{prefix}_{day}.json"
-```
-**Wrapper/callers/monkeypatch:** pure Path composition; no read/write or real reports; Owner must not import SOURCE. Preserve original signature, exceptions and outputs; wrapper delegates at call-time via facade.
-**Targeted normal test `test_a7_artifact_paths`:** report_dir=Path('/tmp/fake'), prefix='daily', day='2026-11-01' => (Path('/tmp/fake/daily_2026-11-01.md'), Path('/tmp/fake/daily_2026-11-01.json')). Compare golden vs SOURCE wrapper vs direct Owner and post-import monkeypatch. Fake/temp only. If BLOCKED record exact first blocker and continue A8.
-
-## A8 | RF-035 | Owner CLAUDE_A | SOURCE `libs/reporting/live_execution_bundle_runner.py::_creation_epoch_from_wmi` L565 | CURRENT_BLOB `a4a6ccbc36b8f65fbf017977f5c4b1281aeb6501`
-**TARGET:** `libs/reporting/live_bundle_wmi_epoch_projection.py::_creation_epoch_from_wmi` — NEW, verified absent A/integration.
-**EXACT CALCULATION BODY TO MOVE (delete from SOURCE, retain thin wrapper):**
-```python
-def _creation_epoch_from_wmi(value: Any) -> float:
-    raw = str(value or "").strip()
-    if not raw:
-        return 0.0
-    match = re.search(r"/Date\((\d+)", raw)
-    if match:
-        try:
-            return float(match.group(1)) / 1000.0
-        except Exception:
-            return 0.0
-    return 0.0
-```
-**Wrapper/callers/monkeypatch:** facade.re.search call-time; string parse only, no WMI process access; Owner must not import SOURCE. Preserve original signature, exceptions and outputs; wrapper delegates at call-time via facade.
-**Targeted normal test `test_a8_wmi_epoch`:** '/Date(123000)/' => 123.0; '' => 0.0; 'nonsense' => 0.0. Compare golden vs SOURCE wrapper vs direct Owner and post-import monkeypatch. Fake/temp only. If BLOCKED record exact first blocker and continue Afinish/test/push.
-
-## FUTURE RESERVE — VERIFIED 6/6 (DESIGN ONLY, DO NOT EXECUTE)
-These six distinct actual SOURCE bodies and unoccupied TARGETs are verified against RF-035 Owner, SOURCE blob, A/integration directory inventory and pure/temp test feasibility. A must NOT execute reserve items without next C03 reissue and fresh SHA/target check.
-
-### R1 | RF-035 | Owner CLAUDE_A | SOURCE `libs/reporting/live_execution_bundle_runner.py::_stale_process_after_sec` L578 | SOURCE_BLOB `a4a6ccbc36b8f65fbf017977f5c4b1281aeb6501`
-**TARGET:** `libs/reporting/live_bundle_stale_timeout_projection.py::_stale_process_after_sec` — 404 absent A/integration (verified directory listing).
-**ACTUAL BODY (DESIGN ONLY):**
+## A1 | RF-035 | CLAUDE_A | SOURCE `libs/reporting/live_execution_bundle_runner.py::_stale_process_after_sec` @ L575 | CURRENT_BLOB `4d49f344036dd15580976b0c6e7222cbcce25e16`
+**NEW TARGET (404 on actor and integration):** `libs/reporting/live_bundle_stale_timeout_projection.py::_stale_process_after_sec`.
+**ORIGINAL EXECUTABLE CALCULATION BODY — MOVE, not KEEP or test-only (adapt global lookups through facade where noted):**
 ```python
 def _stale_process_after_sec() -> float:
     try:
@@ -138,11 +20,12 @@ def _stale_process_after_sec() -> float:
     except Exception:
         return 180.0
 ```
-**Future normal fixture:** patched os.getenv '12' => 30.0, '45' => 45.0, invalid => 180.0. **Safety/seam:** facade.os.getenv, never inspect or kill processes. Do not execute before next C03 issuance.
+**Exact SOURCE thin-wrapper executable statement:** `return _stale_timeout_owner._stale_process_after_sec(facade=sys.modules[__name__])` (keep original signature, annotations, and any docstring; import `libs.reporting.live_bundle_stale_timeout_projection` under the shown `_..._owner` alias or inline in wrapper; remove ALL old calculation statements). **Caller/monkeypatch:** facade.os.getenv; never query/terminate real processes. Owner signature adds keyword-only `facade` only when needed; read SOURCE globals through facade at invocation, never import SOURCE. Preserve negative/error parity and side-effect-free fake boundary.
+**Normal targeted test `test_a1_stale_process_after_sec`:** os.getenv('INTRADAY_TRADE_REPORT_STALE_PROCESS_SEC') patched to '12'→30.0; '45'→45.0; 'bad'→180.0. Assert original-golden == wrapper == direct Owner, AST SOURCE thin wrapper and patched SOURCE-global seam. **On blocker:** log exact path/function/error and continue A2.
 
-### R2 | RF-035 | Owner CLAUDE_A | SOURCE `libs/reporting/live_execution_bundle_runner.py::_background_job_lock_path` L243 | SOURCE_BLOB `a4a6ccbc36b8f65fbf017977f5c4b1281aeb6501`
-**TARGET:** `libs/reporting/live_bundle_lock_path_projection.py::_background_job_lock_path` — 404 absent A/integration (verified directory listing).
-**ACTUAL BODY (DESIGN ONLY):**
+## A2 | RF-035 | CLAUDE_A | SOURCE `libs/reporting/live_execution_bundle_runner.py::_background_job_lock_path` @ L250 | CURRENT_BLOB `4d49f344036dd15580976b0c6e7222cbcce25e16`
+**NEW TARGET (404 on actor and integration):** `libs/reporting/live_bundle_lock_path_projection.py::_background_job_lock_path`.
+**ORIGINAL EXECUTABLE CALCULATION BODY — MOVE, not KEEP or test-only (adapt global lookups through facade where noted):**
 ```python
 def _background_job_lock_path() -> Path | None:
     raw = str(os.getenv("INTRADAY_TRADE_REPORT_JOB_LOCK_PATH") or "").strip()
@@ -150,20 +33,22 @@ def _background_job_lock_path() -> Path | None:
         return Path(raw)
     return ROOT / "reports" / "runtime" / "intraday_trade_report_bundle.lock"
 ```
-**Future normal fixture:** patched os.getenv empty, facade.ROOT=Path('/tmp/fake') => Path('/tmp/fake/reports/runtime/intraday_trade_report_bundle.lock'). **Safety/seam:** facade.os.getenv/ROOT/Path; path calculation only. Do not execute before next C03 issuance.
+**Exact SOURCE thin-wrapper executable statement:** `return _lock_path_owner._background_job_lock_path(facade=sys.modules[__name__])` (keep original signature, annotations, and any docstring; import `libs.reporting.live_bundle_lock_path_projection` under the shown `_..._owner` alias or inline in wrapper; remove ALL old calculation statements). **Caller/monkeypatch:** facade.os.getenv/Path/ROOT; compute path only; never write lock. Owner signature adds keyword-only `facade` only when needed; read SOURCE globals through facade at invocation, never import SOURCE. Preserve negative/error parity and side-effect-free fake boundary.
+**Normal targeted test `test_a2_background_job_lock_path`:** facade.ROOT=Path('/tmp/fake'), getenv empty→Path('/tmp/fake/reports/runtime/intraday_trade_report_bundle.lock'); getenv='/tmp/custom.lock'→Path('/tmp/custom.lock'). Assert original-golden == wrapper == direct Owner, AST SOURCE thin wrapper and patched SOURCE-global seam. **On blocker:** log exact path/function/error and continue A3.
 
-### R3 | RF-035 | Owner CLAUDE_A | SOURCE `libs/reporting/live_execution_bundle_runner.py::_background_job_queue_path` L250 | SOURCE_BLOB `a4a6ccbc36b8f65fbf017977f5c4b1281aeb6501`
-**TARGET:** `libs/reporting/live_bundle_queue_path_projection.py::_background_job_queue_path` — 404 absent A/integration (verified directory listing).
-**ACTUAL BODY (DESIGN ONLY):**
+## A3 | RF-035 | CLAUDE_A | SOURCE `libs/reporting/live_execution_bundle_runner.py::_background_job_queue_path` @ L257 | CURRENT_BLOB `4d49f344036dd15580976b0c6e7222cbcce25e16`
+**NEW TARGET (404 on actor and integration):** `libs/reporting/live_bundle_queue_path_projection.py::_background_job_queue_path`.
+**ORIGINAL EXECUTABLE CALCULATION BODY — MOVE, not KEEP or test-only (adapt global lookups through facade where noted):**
 ```python
 def _background_job_queue_path() -> Path:
     return ROOT / "reports" / "runtime" / "intraday_trade_report_bundle.queue.json"
 ```
-**Future normal fixture:** patched facade.ROOT=Path('/tmp/fake') => Path('/tmp/fake/reports/runtime/intraday_trade_report_bundle.queue.json'). **Safety/seam:** facade.ROOT, no queue IO. Do not execute before next C03 issuance.
+**Exact SOURCE thin-wrapper executable statement:** `return _queue_path_owner._background_job_queue_path(facade=sys.modules[__name__])` (keep original signature, annotations, and any docstring; import `libs.reporting.live_bundle_queue_path_projection` under the shown `_..._owner` alias or inline in wrapper; remove ALL old calculation statements). **Caller/monkeypatch:** facade.ROOT; never read/write operational queue. Owner signature adds keyword-only `facade` only when needed; read SOURCE globals through facade at invocation, never import SOURCE. Preserve negative/error parity and side-effect-free fake boundary.
+**Normal targeted test `test_a3_background_job_queue_path`:** facade.ROOT=Path('/tmp/fake')→Path('/tmp/fake/reports/runtime/intraday_trade_report_bundle.queue.json'). Assert original-golden == wrapper == direct Owner, AST SOURCE thin wrapper and patched SOURCE-global seam. **On blocker:** log exact path/function/error and continue A4.
 
-### R4 | RF-035 | Owner CLAUDE_A | SOURCE `libs/reporting/live_execution_bundle_runner.py::_read_json` L784 | SOURCE_BLOB `a4a6ccbc36b8f65fbf017977f5c4b1281aeb6501`
-**TARGET:** `libs/reporting/live_bundle_json_read_projection.py::_read_json` — 404 absent A/integration (verified directory listing).
-**ACTUAL BODY (DESIGN ONLY):**
+## A4 | RF-035 | CLAUDE_A | SOURCE `libs/reporting/live_execution_bundle_runner.py::_read_json` @ L769 | CURRENT_BLOB `4d49f344036dd15580976b0c6e7222cbcce25e16`
+**NEW TARGET (404 on actor and integration):** `libs/reporting/live_bundle_json_read_projection.py::_read_json`.
+**ORIGINAL EXECUTABLE CALCULATION BODY — MOVE, not KEEP or test-only (adapt global lookups through facade where noted):**
 ```python
 def _read_json(path: Path) -> Dict[str, Any]:
     if not path.exists():
@@ -174,11 +59,12 @@ def _read_json(path: Path) -> Dict[str, Any]:
         return {}
     return obj if isinstance(obj, dict) else {}
 ```
-**Future normal fixture:** TemporaryDirectory JSON {'a':1} => {'a':1}; malformed JSON => {}; missing path => {}. **Safety/seam:** read only temp paths; facade.json and Path seam. Do not execute before next C03 issuance.
+**Exact SOURCE thin-wrapper executable statement:** `return _json_read_owner._read_json(path, facade=sys.modules[__name__])` (keep original signature, annotations, and any docstring; import `libs.reporting.live_bundle_json_read_projection` under the shown `_..._owner` alias or inline in wrapper; remove ALL old calculation statements). **Caller/monkeypatch:** facade.json; temp paths only; no operational State/DB. Owner signature adds keyword-only `facade` only when needed; read SOURCE globals through facade at invocation, never import SOURCE. Preserve negative/error parity and side-effect-free fake boundary.
+**Normal targeted test `test_a4_read_json`:** TemporaryDirectory file '{"a":1}'→{'a':1}; malformed→{}; absent→{}. Assert original-golden == wrapper == direct Owner, AST SOURCE thin wrapper and patched SOURCE-global seam. **On blocker:** log exact path/function/error and continue A5.
 
-### R5 | RF-035 | Owner CLAUDE_A | SOURCE `libs/reporting/live_execution_bundle_runner.py::_iter_jsonl` L766 | SOURCE_BLOB `a4a6ccbc36b8f65fbf017977f5c4b1281aeb6501`
-**TARGET:** `libs/reporting/live_bundle_jsonl_iter_projection.py::_iter_jsonl` — 404 absent A/integration (verified directory listing).
-**ACTUAL BODY (DESIGN ONLY):**
+## A5 | RF-035 | CLAUDE_A | SOURCE `libs/reporting/live_execution_bundle_runner.py::_iter_jsonl` @ L751 | CURRENT_BLOB `4d49f344036dd15580976b0c6e7222cbcce25e16`
+**NEW TARGET (404 on actor and integration):** `libs/reporting/live_bundle_jsonl_iter_projection.py::_iter_jsonl`.
+**ORIGINAL EXECUTABLE CALCULATION BODY — MOVE, not KEEP or test-only (adapt global lookups through facade where noted):**
 ```python
 def _iter_jsonl(path: Path) -> Iterable[Dict[str, Any]]:
     if not path.exists():
@@ -197,17 +83,128 @@ def _iter_jsonl(path: Path) -> Iterable[Dict[str, Any]]:
                 out.append(obj)
     return out
 ```
-**Future normal fixture:** temp JSONL '{"a":1}\nBAD\n[]\n' => [{'a':1}]; missing path => []. **Safety/seam:** read only temp paths; facade.json; preserve list return. Do not execute before next C03 issuance.
+**Exact SOURCE thin-wrapper executable statement:** `return _jsonl_iter_owner._iter_jsonl(path, facade=sys.modules[__name__])` (keep original signature, annotations, and any docstring; import `libs.reporting.live_bundle_jsonl_iter_projection` under the shown `_..._owner` alias or inline in wrapper; remove ALL old calculation statements). **Caller/monkeypatch:** facade.json; preserve list/iteration order; temp paths only. Owner signature adds keyword-only `facade` only when needed; read SOURCE globals through facade at invocation, never import SOURCE. Preserve negative/error parity and side-effect-free fake boundary.
+**Normal targeted test `test_a5_iter_jsonl`:** temp JSONL '{"a":1}\nBAD\n[]\n'→[{'a':1}]; absent→[]. Assert original-golden == wrapper == direct Owner, AST SOURCE thin wrapper and patched SOURCE-global seam. **On blocker:** log exact path/function/error and continue A6.
 
-### R6 | RF-035 | Owner CLAUDE_A | SOURCE `libs/reporting/live_execution_bundle_runner.py::_build_trade_id` L1135 | SOURCE_BLOB `a4a6ccbc36b8f65fbf017977f5c4b1281aeb6501`
-**TARGET:** `libs/reporting/live_bundle_trade_id_projection.py::_build_trade_id` — 404 absent A/integration (verified directory listing).
-**ACTUAL BODY (DESIGN ONLY):**
+## A6 | RF-035 | CLAUDE_A | SOURCE `libs/reporting/live_execution_bundle_runner.py::_build_trade_id` @ L1114 | CURRENT_BLOB `4d49f344036dd15580976b0c6e7222cbcce25e16`
+**NEW TARGET (404 on actor and integration):** `libs/reporting/live_bundle_trade_id_projection.py::_build_trade_id`.
+**ORIGINAL EXECUTABLE CALCULATION BODY — MOVE, not KEEP or test-only (adapt global lookups through facade where noted):**
 ```python
 def _build_trade_id(day: str, symbol: str, seq: int) -> str:
     compact_day = str(day or "").replace("-", "")
     clean_symbol = normalize_symbol(symbol or "", allow_test_symbols=True) or "UNKNOWN"
     return f"TRD_{compact_day}_{clean_symbol}_{int(seq):02d}"
 ```
-**Future normal fixture:** patched facade.normalize_symbol returns '005930'; day='2026-11-01', symbol='005930', seq=2 => 'TRD_20261101_005930_02'. **Safety/seam:** facade.normalize_symbol at call time, no order creation. Do not execute before next C03 issuance.
+**Exact SOURCE thin-wrapper executable statement:** `return _trade_id_owner._build_trade_id(day, symbol, seq, facade=sys.modules[__name__])` (keep original signature, annotations, and any docstring; import `libs.reporting.live_bundle_trade_id_projection` under the shown `_..._owner` alias or inline in wrapper; remove ALL old calculation statements). **Caller/monkeypatch:** facade.normalize_symbol at invocation; pure string only; never create actual trade/order. Owner signature adds keyword-only `facade` only when needed; read SOURCE globals through facade at invocation, never import SOURCE. Preserve negative/error parity and side-effect-free fake boundary.
+**Normal targeted test `test_a6_build_trade_id`:** patch facade.normalize_symbol→'005930'; ('2026-11-01','005930',2)→'TRD_20261101_005930_02'. Assert original-golden == wrapper == direct Owner, AST SOURCE thin wrapper and patched SOURCE-global seam. **On blocker:** log exact path/function/error and continue A7.
 
-**SUPPLY ACCOUNTING:** A-00 REMOTE_DONE 8/8; A-01 NEW_READY 8 actual BODY MOVEs; A reserve VERIFIED 6/6; B-21 B3–B8 six remote-pending (B3 requires clean source wrapper), B reserve 6/6 subject to fresh recheck. No C03 code/test implementation, G1/G2/G3, integration or RF DONE claim.
+## A7 | RF-035 | CLAUDE_A | SOURCE `libs/reporting/quant_tactic_report.py::_items` @ L13 | CURRENT_BLOB `1e837b5bf9739a6e1a7aaa7775a23591b2bfcc7f`
+**NEW TARGET (404 on actor and integration):** `libs/reporting/quant_tactic_items_projection.py::_items`.
+**ORIGINAL EXECUTABLE CALCULATION BODY — MOVE, not KEEP or test-only (adapt global lookups through facade where noted):**
+```python
+def _items(value: Any) -> List[str]:
+    if not isinstance(value, (list, tuple)):
+        return []
+    return [str(item or "").strip() for item in value if str(item or "").strip()]
+```
+**Exact SOURCE thin-wrapper executable statement:** `return _items_owner._items(value)` (keep original signature, annotations, and any docstring; import `libs.reporting.quant_tactic_items_projection` under the shown `_..._owner` alias or inline in wrapper; remove ALL old calculation statements). **Caller/monkeypatch:** pure list/tuple normalization; no runtime classifier. Owner signature adds keyword-only `facade` only when needed; read SOURCE globals through facade at invocation, never import SOURCE. Preserve negative/error parity and side-effect-free fake boundary.
+**Normal targeted test `test_a7_items`:** [' A ',None,'B','']→['A','B']; {'x':1}→[]. Assert original-golden == wrapper == direct Owner, AST SOURCE thin wrapper and patched SOURCE-global seam. **On blocker:** log exact path/function/error and continue A8.
+
+## A8 | RF-035 | CLAUDE_A | SOURCE `libs/reporting/quant_tactic_report.py::_fmt` @ L19 | CURRENT_BLOB `1e837b5bf9739a6e1a7aaa7775a23591b2bfcc7f`
+**NEW TARGET (404 on actor and integration):** `libs/reporting/quant_tactic_fmt_projection.py::_fmt`.
+**ORIGINAL EXECUTABLE CALCULATION BODY — MOVE, not KEEP or test-only (adapt global lookups through facade where noted):**
+```python
+def _fmt(value: Any) -> str:
+    if value in (None, ""):
+        return "-"
+    if isinstance(value, float):
+        return f"{value:.4f}".rstrip("0").rstrip(".")
+    return str(value)
+```
+**Exact SOURCE thin-wrapper executable statement:** `return _fmt_owner._fmt(value)` (keep original signature, annotations, and any docstring; import `libs.reporting.quant_tactic_fmt_projection` under the shown `_..._owner` alias or inline in wrapper; remove ALL old calculation statements). **Caller/monkeypatch:** pure string formatting; preserve float precision. Owner signature adds keyword-only `facade` only when needed; read SOURCE globals through facade at invocation, never import SOURCE. Preserve negative/error parity and side-effect-free fake boundary.
+**Normal targeted test `test_a8_fmt`:** None→'-'; 1.2500→'1.25'; 'abc'→'abc'. Assert original-golden == wrapper == direct Owner, AST SOURCE thin wrapper and patched SOURCE-global seam. **On blocker:** log exact path/function/error and continue all remaining tests, commit/push and remote re-fetch.
+
+## FUTURE RESERVE — VERIFIED 6/6, DESIGN ONLY; NOT PART OF THIS ORDER
+All six are distinct, current actor/integration SOURCE bodies and unique absent target paths; not executable until C03 fresh issuance. Never count reserve as G1 or reuse previous completed work.
+
+### R1 | RF-035 | CLAUDE_A | SOURCE `libs/reporting/quant_tactic_report.py::_mapping` @ L9 | CURRENT_BLOB `1e837b5bf9739a6e1a7aaa7775a23591b2bfcc7f`
+**TARGET absent actor/integration:** `libs/reporting/quant_tactic_mapping_projection.py::_mapping`. **ACTUAL BODY (DESIGN ONLY):**
+```python
+def _mapping(value: Any) -> Dict[str, Any]:
+    return dict(value or {}) if isinstance(value, Mapping) else {}
+```
+**Future isolated normal test:** {'x':1}→{'x':1}; []→{}. **Safety/seam:** Mapping (facade if patching); no IO; fake/temp only, no main/effect. Fresh source/target/Owner/consumer recheck required before issue.
+
+### R2 | RF-035 | CLAUDE_A | SOURCE `libs/reporting/quant_tactic_report.py::_pct` @ L27 | CURRENT_BLOB `1e837b5bf9739a6e1a7aaa7775a23591b2bfcc7f`
+**TARGET absent actor/integration:** `libs/reporting/quant_tactic_pct_projection.py::_pct`. **ACTUAL BODY (DESIGN ONLY):**
+```python
+def _pct(value: Any) -> str:
+    if value in (None, ""):
+        return "-"
+    try:
+        num = float(value)
+    except Exception:
+        return str(value)
+    return f"{num * 100.0:.2f}%"
+```
+**Future isolated normal test:** 0.125→'12.50%'; None→'-'; 'bad'→'bad'. **Safety/seam:** pure numeric formatting; fake/temp only, no main/effect. Fresh source/target/Owner/consumer recheck required before issue.
+
+### R3 | RF-035 | CLAUDE_A | SOURCE `libs/reporting/quant_tactic_report.py::_decision_label` @ L37 | CURRENT_BLOB `1e837b5bf9739a6e1a7aaa7775a23591b2bfcc7f`
+**TARGET absent actor/integration:** `libs/reporting/quant_tactic_decision_label_projection.py::_decision_label`. **ACTUAL BODY (DESIGN ONLY):**
+```python
+def _decision_label(value: Any) -> str:
+    raw = str(value or "").strip()
+    mapping = {
+        "entry_ready": "진입 준비",
+        "block_recommended": "진입 차단 권고",
+        "wait": "대기",
+        "hold_watch": "보유 관찰",
+        "hard_exit": "즉시 청산 허용",
+        "confirm_before_exit_recommended": "청산 전 확인 권고",
+        "early_exit_warning": "조기 청산 경고",
+        "exit_aligned": "청산 정합",
+    }
+    return mapping.get(raw, raw or "-")
+```
+**Future isolated normal test:** 'entry_ready'→'진입 준비'; 'unknown'→'unknown'. **Safety/seam:** pure lookup, no policy mutation; fake/temp only, no main/effect. Fresh source/target/Owner/consumer recheck required before issue.
+
+### R4 | RF-035 | CLAUDE_A | SOURCE `libs/reporting/quant_tactic_report.py::_reason_text` @ L52 | CURRENT_BLOB `1e837b5bf9739a6e1a7aaa7775a23591b2bfcc7f`
+**TARGET absent actor/integration:** `libs/reporting/quant_tactic_reason_text_projection.py::_reason_text`. **ACTUAL BODY (DESIGN ONLY):**
+```python
+def _reason_text(values: Any) -> str:
+    rows = _items(values)
+    return ", ".join(rows[:5]) if rows else "-"
+```
+**Future isolated normal test:** ['a','b']→'a, b'; []→'-'. **Safety/seam:** call-time facade._items; pure; fake/temp only, no main/effect. Fresh source/target/Owner/consumer recheck required before issue.
+
+### R5 | RF-035 | CLAUDE_A | SOURCE `libs/reporting/quant_tactic_report.py::_monitor` @ L57 | CURRENT_BLOB `1e837b5bf9739a6e1a7aaa7775a23591b2bfcc7f`
+**TARGET absent actor/integration:** `libs/reporting/quant_tactic_monitor_projection.py::_monitor`. **ACTUAL BODY (DESIGN ONLY):**
+```python
+def _monitor(report: Mapping[str, Any]) -> Dict[str, Any]:
+    monitor = _mapping(report.get("monitor_snapshot"))
+    if not monitor:
+        monitor = _mapping(report.get("monitor_output"))
+    return monitor
+```
+**Future isolated normal test:** {'monitor_output':{'x':1}}→{'x':1}. **Safety/seam:** call-time facade._mapping; no monitor runtime calls; fake/temp only, no main/effect. Fresh source/target/Owner/consumer recheck required before issue.
+
+### R6 | RF-035 | CLAUDE_A | SOURCE `libs/reporting/quant_tactic_report.py::_nested_dicts` @ L64 | CURRENT_BLOB `1e837b5bf9739a6e1a7aaa7775a23591b2bfcc7f`
+**TARGET absent actor/integration:** `libs/reporting/quant_tactic_nested_dicts_projection.py::_nested_dicts`. **ACTUAL BODY (DESIGN ONLY):**
+```python
+def _nested_dicts(value: Any, *, max_depth: int = 9) -> List[Dict[str, Any]]:
+    if max_depth < 0:
+        return []
+    out: List[Dict[str, Any]] = []
+    if isinstance(value, Mapping):
+        item = dict(value)
+        out.append(item)
+        for child in item.values():
+            out.extend(_nested_dicts(child, max_depth=max_depth - 1))
+    elif isinstance(value, (list, tuple)):
+        for child in value:
+            out.extend(_nested_dicts(child, max_depth=max_depth - 1))
+    return out
+```
+**Future isolated normal test:** {'a':{'b':1}} max_depth=1→[{'a':{'b':1}},{'b':1}]. **Safety/seam:** call-time facade.Mapping/_nested_dicts recursion; fake data; fake/temp only, no main/effect. Fresh source/target/Owner/consumer recheck required before issue.
+
+**G1/G2/G3:** This C03 document issue is supply only, not code implementation/test/integration or RF DONE. Source/target conflicts, operational effects, missing tests or push failures are individually BLOCKED, never silently PASS. C04/C05 retain their exclusive gates.
