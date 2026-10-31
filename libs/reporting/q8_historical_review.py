@@ -1,12 +1,17 @@
 from __future__ import annotations
 
 import json
+import sys
 from collections import Counter, defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, Sequence
 
 from libs.runtime.quant.vwap_reclaim_observation import classify_below_vwap_reclaim_observation
+from libs.reporting import q8_historical_scalar_projection as _scalar_owner
+from libs.reporting import q8_historical_day_projection as _day_owner
+from libs.reporting import q8_historical_aggregate_projection as _aggregate_owner
+from libs.reporting import q8_historical_markdown_table_projection as _table_owner
 
 
 def _read_json(path: Path) -> Dict[str, Any]:
@@ -30,31 +35,15 @@ def _write_md(path: Path, text: str) -> None:
 
 
 def _float(value: Any) -> float | None:
-    try:
-        if value in (None, ""):
-            return None
-        text = str(value).strip().replace("%", "").replace(",", "")
-        if not text:
-            return None
-        return float(text)
-    except Exception:
-        return None
+    return _scalar_owner._float(value)
 
 
 def _int(value: Any) -> int:
-    try:
-        if value in (None, ""):
-            return 0
-        return int(float(str(value).replace(",", "")))
-    except Exception:
-        return 0
+    return _scalar_owner._int(value)
 
 
 def _pct_from_ratio(value: Any) -> float | None:
-    parsed = _float(value)
-    if parsed is None:
-        return None
-    return parsed * 100.0 if abs(parsed) <= 1.0 else parsed
+    return _scalar_owner._pct_from_ratio(value, facade=sys.modules[__name__])
 
 
 def _text(value: Any) -> str:
@@ -63,7 +52,7 @@ def _text(value: Any) -> str:
 
 
 def _avg(values: Sequence[float]) -> float:
-    return round(sum(values) / len(values), 4) if values else 0.0
+    return _scalar_owner._avg(values)
 
 
 def _weighted_avg(total: float, weight: int) -> float:
@@ -71,13 +60,7 @@ def _weighted_avg(total: float, weight: int) -> float:
 
 
 def _iter_days(start: str, end: str) -> Iterable[str]:
-    from datetime import date, timedelta
-
-    current = date.fromisoformat(str(start)[:10])
-    last = date.fromisoformat(str(end)[:10])
-    while current <= last:
-        yield current.isoformat()
-        current += timedelta(days=1)
+    yield from _day_owner._iter_days(start, end)
 
 
 def _quant_shadow_candidate_root(reports_root: Path) -> Path:
@@ -100,10 +83,7 @@ def _iter_quant_shadow_candidate_rows(reports_root: Path, *, start: str, end: st
 
 
 def _trade_id_from_path(path: Path) -> str:
-    try:
-        return path.parents[1].name
-    except Exception:
-        return ""
+    return _day_owner._trade_id_from_path(path)
 
 
 @dataclass
@@ -314,28 +294,7 @@ def _extract_trade_rows(reports_root: Path, *, start: str, end: str) -> List[Dic
 
 
 def _aggregate_return_rows(rows: Sequence[Mapping[str, Any]], key: str, *, limit: int = 12) -> List[Dict[str, Any]]:
-    grouped: Dict[str, List[float]] = defaultdict(list)
-    for row in rows:
-        value = _text(row.get(key)) or "missing"
-        pnl = row.get("pnl_pct")
-        if isinstance(pnl, (int, float)):
-            grouped[value].append(float(pnl))
-    out: List[Dict[str, Any]] = []
-    for name, values in grouped.items():
-        if not values:
-            continue
-        out.append(
-            {
-                "name": name,
-                "count": len(values),
-                "win_count": sum(1 for value in values if value > 0),
-                "loss_count": sum(1 for value in values if value < 0),
-                "win_rate": round(sum(1 for value in values if value > 0) / len(values), 4),
-                "avg_return_pct": _avg(values),
-            }
-        )
-    out.sort(key=lambda row: (int(row["count"]), abs(float(row["avg_return_pct"]))), reverse=True)
-    return out[:limit]
+    return _aggregate_owner._aggregate_return_rows(rows, key, limit=limit, facade=sys.modules[__name__])
 
 
 def _daily_summary_rows(reports_root: Path, *, start: str, end: str) -> List[Dict[str, Any]]:
@@ -688,10 +647,7 @@ def build_q8_historical_review_payload(
 
 
 def _md_table(headers: Sequence[str], rows: Sequence[Sequence[Any]]) -> List[str]:
-    out = ["| " + " | ".join(headers) + " |", "| " + " | ".join("---" for _ in headers) + " |"]
-    for row in rows:
-        out.append("| " + " | ".join(str(item) for item in row) + " |")
-    return out
+    return _table_owner._md_table(headers, rows)
 
 
 def render_q8_historical_review_markdown(payload: Mapping[str, Any]) -> str:

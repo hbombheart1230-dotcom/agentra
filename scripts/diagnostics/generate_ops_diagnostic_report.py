@@ -24,44 +24,18 @@ def _iter_events(path: Path) -> Iterable[Dict[str, Any]]:
 
 
 def _to_epoch(ts: Any) -> Optional[int]:
-    if ts is None:
-        return None
-    if isinstance(ts, (int, float)):
-        return int(ts)
-
-    s = str(ts).strip()
-    if not s:
-        return None
-    try:
-        return int(float(s))
-    except Exception:
-        pass
-
-    if s.endswith("Z"):
-        s = s[:-1] + "+00:00"
-    try:
-        dt = datetime.fromisoformat(s)
-        if dt.tzinfo is None:
-            dt = dt.replace(tzinfo=timezone.utc)
-        return int(dt.timestamp())
-    except Exception:
-        return None
+    from scripts.diagnostics.ops_diagnostic_scalar_projection import _to_epoch as owner
+    return owner(ts, facade=_migration_sys.modules[__name__])
 
 
 def _utc_day(ts: Any) -> str:
-    epoch = _to_epoch(ts)
-    if epoch is None:
-        return date.today().isoformat()
-    return datetime.fromtimestamp(epoch, tz=timezone.utc).strftime("%Y-%m-%d")
+    from scripts.diagnostics.ops_diagnostic_scalar_projection import _utc_day as owner
+    return owner(ts, facade=_migration_sys.modules[__name__])
 
 
 def _to_float(v: Any) -> Optional[float]:
-    try:
-        if v is None:
-            return None
-        return float(v)
-    except Exception:
-        return None
+    from scripts.diagnostics.ops_diagnostic_scalar_projection import _to_float as owner
+    return owner(v, facade=_migration_sys.modules[__name__])
 
 
 def _numeric_summary(values: List[float]) -> Dict[str, float]:
@@ -73,196 +47,16 @@ def _broker_code_success(value: Any) -> Optional[bool]:
 
 
 def _extract_noop_reason(payload: Dict[str, Any]) -> str:
-    packet = payload.get("decision_packet") if isinstance(payload.get("decision_packet"), dict) else {}
-    intent = packet.get("intent") if isinstance(packet.get("intent"), dict) else {}
-    reason = str(intent.get("reason") or "").strip()
-    if reason:
-        return reason
-    trace = payload.get("trace") if isinstance(payload.get("trace"), dict) else {}
-    raw_intent = trace.get("raw_intent") if isinstance(trace.get("raw_intent"), dict) else {}
-    reason = str(raw_intent.get("reason") or "").strip()
-    return reason or "unknown"
+    from scripts.diagnostics.ops_diagnostic_summary_projection import _extract_noop_reason as owner
+    return owner(payload, facade=_migration_sys.modules[__name__])
 
 
 def _build_summary(rows: List[Dict[str, Any]], *, day: str) -> Dict[str, Any]:
-    run_ids = {str(r.get("run_id") or "") for r in rows if str(r.get("run_id") or "").strip()}
-
-    verdict_reason_total: Counter[str] = Counter()
-    broker_code_total: Counter[str] = Counter()
-    broker_failure_total: Counter[str] = Counter()
-    noop_reason_total: Counter[str] = Counter()
-    llm_latency_ms: List[float] = []
-    llm_total = 0
-    llm_ok_total = 0
-    llm_error_total = 0
-    execution_total = 0
-    verdict_block_total = 0
-    broker_success_total = 0
-    broker_fail_total = 0
-    broker_unknown_total = 0
-
-    for r in rows:
-        stage = str(r.get("stage") or "")
-        event = str(r.get("event") or "")
-        payload = r.get("payload") if isinstance(r.get("payload"), dict) else {}
-
-        if stage == "execute_from_packet" and event == "verdict":
-            if payload.get("allowed") is False:
-                verdict_block_total += 1
-                reason = str(payload.get("reason") or "").strip() or "unknown"
-                verdict_reason_total[reason] += 1
-
-        if stage == "execute_from_packet" and event == "execution":
-            execution_total += 1
-            ex_payload = payload.get("payload") if isinstance(payload.get("payload"), dict) else {}
-            bcode = str(ex_payload.get("broker_code") or "").strip()
-            if bcode:
-                broker_code_total[bcode] += 1
-            b_ok = _broker_code_success(ex_payload.get("broker_code"))
-            if b_ok is None:
-                if "api_ok" in ex_payload:
-                    b_ok = bool(ex_payload.get("api_ok"))
-                else:
-                    broker_unknown_total += 1
-            if b_ok is True:
-                broker_success_total += 1
-            elif b_ok is False:
-                broker_fail_total += 1
-                k = bcode or "unknown"
-                broker_failure_total[k] += 1
-
-        if stage == "decision" and event == "trace":
-            packet = payload.get("decision_packet") if isinstance(payload.get("decision_packet"), dict) else {}
-            intent = packet.get("intent") if isinstance(packet.get("intent"), dict) else {}
-            action = str(intent.get("action") or "").strip().upper()
-            if action == "NOOP":
-                noop_reason_total[_extract_noop_reason(payload)] += 1
-
-        if stage == "strategist_llm" and event == "result":
-            llm_total += 1
-            if payload.get("ok") is True:
-                llm_ok_total += 1
-            else:
-                llm_error_total += 1
-            lat = _to_float(payload.get("latency_ms"))
-            if lat is not None and lat >= 0.0:
-                llm_latency_ms.append(float(lat))
-
-    noop_total = int(sum(noop_reason_total.values()))
-    noop_reason_ratio = {
-        str(k): (float(v) / float(noop_total) if noop_total > 0 else 0.0)
-        for k, v in noop_reason_total.items()
-    }
-    focus_noop_reasons = ("model_no_signal", "missing_rationale", "post_exit_cooldown")
-    focus_ratio = {k: float(noop_reason_ratio.get(k, 0.0)) for k in focus_noop_reasons}
-
-    out = {
-        "schema_version": "ops_diagnostic.v1",
-        "day": day,
-        "events": int(len(rows)),
-        "runs": int(len(run_ids)),
-        "execution": {
-            "execution_total": int(execution_total),
-            "verdict_block_total": int(verdict_block_total),
-            "verdict_reason_topN": [
-                {"reason": str(reason), "count": int(cnt)}
-                for reason, cnt in verdict_reason_total.most_common(10)
-            ],
-            "broker_success_total": int(broker_success_total),
-            "broker_fail_total": int(broker_fail_total),
-            "broker_unknown_total": int(broker_unknown_total),
-            "broker_success_rate": (
-                float(broker_success_total) / float(execution_total) if execution_total > 0 else 0.0
-            ),
-            "broker_code_topN": [
-                {"broker_code": str(code), "count": int(cnt)}
-                for code, cnt in broker_code_total.most_common(10)
-            ],
-            "broker_failure_topN": [
-                {"broker_code": str(code), "count": int(cnt)}
-                for code, cnt in broker_failure_total.most_common(10)
-            ],
-        },
-        "noop": {
-            "total": int(noop_total),
-            "reason_total": {str(k): int(v) for k, v in noop_reason_total.items()},
-            "reason_ratio": {str(k): float(v) for k, v in noop_reason_ratio.items()},
-            "focus_reason_ratio": focus_ratio,
-        },
-        "strategist_llm": {
-            "total": int(llm_total),
-            "ok_total": int(llm_ok_total),
-            "error_total": int(llm_error_total),
-            "latency_ms": _numeric_summary(llm_latency_ms),
-        },
-    }
-    return out
-
-
+    from scripts.diagnostics.ops_diagnostic_summary_projection import _build_summary as owner
+    return owner(rows, day=day, facade=_migration_sys.modules[__name__])
 def _build_markdown(summary: Dict[str, Any]) -> str:
-    exe = summary.get("execution") if isinstance(summary.get("execution"), dict) else {}
-    noop = summary.get("noop") if isinstance(summary.get("noop"), dict) else {}
-    llm = summary.get("strategist_llm") if isinstance(summary.get("strategist_llm"), dict) else {}
-
-    lines: List[str] = [
-        f"# Ops Diagnostic Report ({summary.get('day')})",
-        "",
-        f"- schema_version: **{summary.get('schema_version')}**",
-        f"- events: **{int(summary.get('events') or 0)}**",
-        f"- runs: **{int(summary.get('runs') or 0)}**",
-        "",
-        "## Execution",
-        "",
-        f"- execution_total: **{int(exe.get('execution_total') or 0)}**",
-        f"- verdict_block_total: **{int(exe.get('verdict_block_total') or 0)}**",
-        f"- broker_success_total: **{int(exe.get('broker_success_total') or 0)}**",
-        f"- broker_fail_total: **{int(exe.get('broker_fail_total') or 0)}**",
-        f"- broker_unknown_total: **{int(exe.get('broker_unknown_total') or 0)}**",
-        f"- broker_success_rate: **{float(exe.get('broker_success_rate') or 0.0):.2%}**",
-        "",
-        "### verdict_reason_topN",
-        "",
-    ]
-
-    top_verdict = exe.get("verdict_reason_topN") if isinstance(exe.get("verdict_reason_topN"), list) else []
-    if top_verdict:
-        for row in top_verdict:
-            if not isinstance(row, dict):
-                continue
-            lines.append(f"- {row.get('reason')}: {int(row.get('count') or 0)}")
-    else:
-        lines.append("- (none)")
-
-    lines += ["", "### broker_failure_topN", ""]
-    top_fail = exe.get("broker_failure_topN") if isinstance(exe.get("broker_failure_topN"), list) else []
-    if top_fail:
-        for row in top_fail:
-            if not isinstance(row, dict):
-                continue
-            lines.append(f"- {row.get('broker_code')}: {int(row.get('count') or 0)}")
-    else:
-        lines.append("- (none)")
-
-    lines += ["", "## NOOP", "", f"- total: **{int(noop.get('total') or 0)}**", "", "### focus_reason_ratio", ""]
-    focus = noop.get("focus_reason_ratio") if isinstance(noop.get("focus_reason_ratio"), dict) else {}
-    for key in ("model_no_signal", "missing_rationale", "post_exit_cooldown"):
-        lines.append(f"- {key}: {float(focus.get(key) or 0.0):.2%}")
-
-    latency = llm.get("latency_ms") if isinstance(llm.get("latency_ms"), dict) else {}
-    lines += [
-        "",
-        "## Strategist LLM",
-        "",
-        f"- total: **{int(llm.get('total') or 0)}**",
-        f"- ok_total: **{int(llm.get('ok_total') or 0)}**",
-        f"- error_total: **{int(llm.get('error_total') or 0)}**",
-        f"- latency_ms_p50: **{float(latency.get('p50') or 0.0):.1f}**",
-        f"- latency_ms_p95: **{float(latency.get('p95') or 0.0):.1f}**",
-        "",
-    ]
-    return "\n".join(lines)
-
-
+    from scripts.diagnostics.ops_diagnostic_markdown_projection import _build_markdown as owner
+    return owner(summary, facade=_migration_sys.modules[__name__])
 def generate_ops_diagnostic_report(events_path: Path, out_dir: Path, day: str | None = None) -> Tuple[Path, Path]:
     out_dir.mkdir(parents=True, exist_ok=True)
 
