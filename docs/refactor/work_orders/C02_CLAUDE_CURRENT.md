@@ -1,245 +1,405 @@
-# C02 — Claude A | A-20261031-14 | FAST-3 VERIFIED EIGHT BODY MOVES
+# C02 — Claude A | A-20261031-15 | FAST-3 eight new verified SOURCE BODY MOVEs
 
-**PIN AT START:** CANONICAL_HEAD_AT_ISSUANCE=`967fce1a8288c851f1d835cb495b14e95c7e6750`; fetch live ORDER_FILE_BLOB_SHA from `integration/p1.5`; ACTOR_REMOTE_SHA_AT_DESIGN=`4efeab48c58fc08d25d6618325933625265fa2a6`; OLD_ORDER_BLOB=`d5e0099495b7faeea1b23f9425fb6becf0062af8`. Latest #11 6538883509 and C04/C05 #36 6539112357 / 6539183890 prove previous A1–A8 8/8 actual SOURCE BODY MOVEs REMOTE_DONE at actor SHA. **Do not repeat any old body, same-SHA PASS, KEEP, or previous test.** Current order is new 8 items, each independently executable. Exact actor and integration source blobs were inspected; every listed target path was 404 on actor branch and absent from integration directory listing. The six previous reserves have been promoted to executable items only in this new document; two additional source functions were inspected and verified. Current six *future* reserves are NOT VERIFIED (see bottom).
+**PRE-FLIGHT:** CANONICAL_HEAD_AT_ISSUANCE=`94f46342c92e41d3521d087ee0c23acc25148cb5`; OLD_C02_BLOB=`821e6374678388025d659d711b250e9af688cfce`; A_ACTOR_HEAD_AT_DESIGN=`cffab3934a7973bca82507bc89e622cd93b09405`; RF-035 is CLAUDE_A exclusive `libs/reporting/` reporting Owner (C03 checked physical RF-035 05_DONE). Prior A-20261031-14 eight functions are **REMOTE_DONE** at A `cffab3934a7973bca82507bc89e622cd93b09405`, Issue #11 6539460831 normal 24/24 exit0, C04 exact integration 5ddfe6fa and C05 14:45 acceptance. Do not repeat them, prior PASS or KEEP. This new order has eight different actual SOURCE bodies; each target was checked 404 on actor and integration. New code/test NOT_RUN by C03.
 
-## SINGLE FILE EXECUTION CONTRACT (NO EXTERNAL DOCUMENTS)
+## EXECUTION / SAFETY — C02 IS THE ONLY TASK DOCUMENT
 
-Read only this C02 file; do NOT read D00, RF, queue, C03, handoffs, or choose work. At start pin CANONICAL_HEAD, ORDER_FILE_BLOB_SHA, ACTOR_REMOTE_SHA, and each SOURCE_BLOB. Actor owns RF-035 libs/reporting read-only controlled mock report projection; other actor code is forbidden. Do all eight A/B items, not only first success. If one item is blocked or source changes, record its exact reason and continue the other seven. Move **exact computation BODY** to TARGET, retaining SOURCE same-name, same-signature, defaults, annotations, public import and only a thin delegation wrapper. Never leave a second copy of BODY in SOURCE, never import SOURCE from TARGET. Use lazy import inside SOURCE wrapper if needed to preserve caller import timing. For module-global references in the original body, Owner takes keyword-only `facade` and resolves `facade.NAME` at call time, SOURCE passes `sys.modules[__name__]` or existing `_migration_sys.modules[__name__]`; preserve monkeypatch after import and recursion semantics. For pure functions, no facade needed. Preserve exceptions, stdout, key ordering, generator laziness and all callers. If a function is already moved on fresh actor HEAD, mark REMOTE_DONE and do NOT reimplement; notify C03 of depleted supply.
+Read this C02 only; do not read D00, RF, queue, C03 or handoffs, do not choose your own work. At start pin CANONICAL_HEAD, C02 blob, actor remote HEAD, each SOURCE blob and ORDER_ID. Do **all eight** A1–A8 independently. If already moved at a fresher actor HEAD mark REMOTE_DONE and skip; if blocked report precise evidence and continue other safe items. Only edit RF-035 source files below, their specified new projection Owner modules and new targeted tests on A branch `work/p15-a-reporter-pure-20261021`. No B code, C/RF/STATUS/queue/policy/CI documents, protected trading, Broker, Guard, Step5C, UEF, RunLab, real orders/accounts, operating State/logs, live network, deploy, frozen oracle or force push.
 
-**Safety:** Only fake/in-memory/TemporaryDirectory tests. Absolutely no live broker/account, real orders, operating State, Guard, Step5C, UEF, RunLab, network, deployment, CI workflow, frozen oracle, force push or protected policy edits. Do not run `main` or touch live paths. Only own source, new Owner module and new targeted test paths. No RF/STATUS/queue/D00/C03/C04/C05/doc edits. Normal targeted unittest or pytest exit0 is sufficient G2; no full-peer/-O/full-CI blanket requirements. Commit own code/tests, approved non-force remote delivery, then independently re-fetch actor HEAD and exact SOURCE/TARGET/test blobs; local-only is NOT G1, failed terminal HTTPS is PUSH_BLOCKED and must not stop other safe items. C04 owns integration, C05 owns G1/G2/G3 and RF/STATUS/DONE.
+Move exact original computation BODY below to TARGET (not copy); leave SOURCE same-name/same-signature/defaults/annotations/public API as **thin wrapper**, no duplicate calculation. TARGET never imports SOURCE. For module-global lookup, TARGET accepts keyword-only `facade` and resolves names at invocation; SOURCE passes `sys.modules[__name__]` (post_exit existing `_r3_sys.modules[__name__]`). Preserve caller imports, monkeypatch after import, exceptions, identity, stdout, bytes, and recursion. Lazy-import target in SOURCE if circular import risk. Use fake/in-memory/TemporaryDirectory and compare original golden behavior with wrapper and Owner, including negative/exception and thin AST checks. Normal targeted unittest/pytest exit0 once for changed scope is G2; -O/full peer/whole CI are not blanket gates. Commit/push only actor code/tests with non-force expected-head lease or approved exact-tree fallback; re-fetch remote actor HEAD and SOURCE/TARGET/test blobs. LOCAL_ONLY != G1. Record actual START/END only if measured. C04 integrates; C05 decides G1/G2/G3 and RF/STATUS/DONE.
 
-## A1 | RF-035 | SOURCE `libs/reporting/controlled_mock_lane_report.py::_deep_first` @ L31 | SOURCE_BLOB=`362d3ce13c7d5b48eb02b40274115345a2d7dddd`
+## A1 | RF-035 | SOURCE `libs/reporting/controlled_mock_lane_report.py::_text` @ L27 | SOURCE_BLOB=`cfce1a0c5708f27fd369a22eca7a638227d28ed8`
 
-**TARGET:** `libs/reporting/controlled_lane_lookup_projection.py::_deep_first` — NEW exclusive A Owner, verified ABSENT (404) at actor HEAD. **EXACT ORIGINAL BODY TO MOVE:**
+**TARGET:** `libs/reporting/controlled_lane_text_projection.py::_text` — NEW exclusive A Owner; actor/integration path ABSENT 404. **Exact original computation BODY:**
 
 ```python
-def _deep_first(value: Any, *keys: str) -> str:
-    if isinstance(value, Mapping):
-        for key in keys:
-            if _text(value.get(key)):
-                return _text(value.get(key))
-        for child in value.values():
-            found = _deep_first(child, *keys)
-            if found:
-                return found
-    elif isinstance(value, list):
-        for child in value:
-            found = _deep_first(child, *keys)
-            if found:
-                return found
-    return ""
+def _text(value: Any) -> str:
+    return str(value or "").strip()
 ```
 
-**Wrapper/callers/monkeypatch:** SOURCE retains original signature and only delegates; `Mapping`, `_text`, recursive `_deep_first` (resolve through facade at use-time); recursion must stay in new owner, patch seam tested. Keep original imports and caller entrypoints; test wrapper, Owner, and pre-move baseline equality for normal, negative, exceptions, ordering and post-import monkeypatch. Do not alter unrelated callers or tests. **Isolation:** nested in-memory dict only.
+**Preserve/wrapper/monkeypatch:** pure string normalization; no facade. Keep exact original SOURCE signature with thin delegation; Owner holds actual body and imports only stdlib/other non-SOURCE dependencies. Compare original/wrapper/Owner including patched globals, errors and output. Isolation: fake/temp only, never real state/order/network.
 
-**Targeted normal test (new, not yet run):** `tests/test_p15_rf035_14h_a1_deep_first_owner.py`. Input → expected: `{'outer':[{'order_id':'007'}]}`, keys=`('order_id',)` → `'007'`; missing key → `''`. Run `python -m py_compile libs/reporting/controlled_mock_lane_report.py libs/reporting/controlled_lane_lookup_projection.py` then `python -m unittest tests/test_p15_rf035_14h_a1_deep_first_owner.py -v` (or equivalent exact-scope pytest); require actual normal exit0, never fabricate PASS. Commit/push only actor code+test, refetch SHA/blob. If blocked, report precise blocker and **continue A2**.
+**New normal targeted test:** `tests/test_p15_rf035_15h_a1__text_owner.py`. Input → expected: `None`→`''`, `'  A  '`→`'A'`, `0`→`''`; verify pure return parity. Also compare original pre-move golden output and wrapper/Owner; verify no original BODY remains in SOURCE. Run `python -m py_compile libs/reporting/controlled_mock_lane_report.py libs/reporting/controlled_lane_text_projection.py` and `python -m unittest tests.test_p15_rf035_15h_a1__text_owner -v` (or equivalent exact-scope pytest); report actual exit0 and PASS count, never fabricate. Commit/push A-only code+test, refetch actor HEAD and exact blobs. On block report reason and continue A2.
 
-## A2 | RF-035 | SOURCE `libs/reporting/controlled_mock_lane_report.py::_position_strategy` @ L48 | SOURCE_BLOB=`362d3ce13c7d5b48eb02b40274115345a2d7dddd`
+## A2 | RF-035 | SOURCE `libs/reporting/controlled_mock_lane_report.py::_fixed_lane_strategy` @ L43 | SOURCE_BLOB=`cfce1a0c5708f27fd369a22eca7a638227d28ed8`
 
-**TARGET:** `libs/reporting/controlled_lane_lookup_projection.py::_position_strategy` — NEW exclusive A Owner, verified ABSENT (404) at actor HEAD. **EXACT ORIGINAL BODY TO MOVE:**
-
-```python
-def _position_strategy(state: Mapping[str, Any], symbol: str) -> dict[str, Any]:
-    persisted = _mapping(state.get("persisted_state"))
-    contexts = _mapping(persisted.get("position_strategy_context"))
-    row = _mapping(contexts.get(symbol))
-    return _mapping(row.get("output"))
-```
-
-**Wrapper/callers/monkeypatch:** SOURCE retains original signature and only delegates; `_mapping` via facade. Keep original imports and caller entrypoints; test wrapper, Owner, and pre-move baseline equality for normal, negative, exceptions, ordering and post-import monkeypatch. Do not alter unrelated callers or tests. **Isolation:** read-only fake state.
-
-**Targeted normal test (new, not yet run):** `tests/test_p15_rf035_14h_a2_position_strategy_owner.py`. Input → expected: state `{'persisted_state':{'position_strategy_context':{'A':{'output':{'controlled_mock_lane':True}}}}}` and symbol `A` → `{'controlled_mock_lane':True}`; missing symbol → `{}`. Run `python -m py_compile libs/reporting/controlled_mock_lane_report.py libs/reporting/controlled_lane_lookup_projection.py` then `python -m unittest tests/test_p15_rf035_14h_a2_position_strategy_owner.py -v` (or equivalent exact-scope pytest); require actual normal exit0, never fabricate PASS. Commit/push only actor code+test, refetch SHA/blob. If blocked, report precise blocker and **continue A3**.
-
-## A3 | RF-035 | SOURCE `libs/reporting/controlled_mock_lane_report.py::_ledger_row` @ L65 | SOURCE_BLOB=`362d3ce13c7d5b48eb02b40274115345a2d7dddd`
-
-**TARGET:** `libs/reporting/controlled_lane_ledger_projection.py::_ledger_row` — NEW exclusive A Owner, verified ABSENT (404) at actor HEAD. **EXACT ORIGINAL BODY TO MOVE:**
+**TARGET:** `libs/reporting/controlled_lane_strategy_projection.py::_fixed_lane_strategy` — NEW exclusive A Owner; actor/integration path ABSENT 404. **Exact original computation BODY:**
 
 ```python
-def _ledger_row(
-    *, root: Path, day: str, symbol: str, order_id: str = "", run_id: str = ""
-) -> dict[str, Any]:
-    path = root / "data" / "logs" / "controlled_mock_lanes" / day / "lane_submissions.json"
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, UnicodeError, json.JSONDecodeError):
-        return {}
-    rows = payload.get("submissions") if isinstance(payload, Mapping) else []
-    symbol_matches = [
-        dict(row) for row in list(rows or [])
-        if isinstance(row, Mapping) and _text(row.get("symbol")) == symbol
-    ]
-    if order_id:
-        exact = [row for row in symbol_matches if _text(row.get("order_id")).lstrip("0") == order_id.lstrip("0")]
-        if exact:
-            return exact[-1]
-    if run_id:
-        exact = [row for row in symbol_matches if _text(row.get("run_id")) == run_id]
-        if exact:
-            return exact[-1]
-    return {}
-```
-
-**Wrapper/callers/monkeypatch:** SOURCE retains original signature and only delegates; `Path`, `json`, `Mapping`, `_text` via facade; preserve last-match and exception catches. Keep original imports and caller entrypoints; test wrapper, Owner, and pre-move baseline equality for normal, negative, exceptions, ordering and post-import monkeypatch. Do not alter unrelated callers or tests. **Isolation:** only TemporaryDirectory root; never production paths.
-
-**Targeted normal test (new, not yet run):** `tests/test_p15_rf035_14h_a3_ledger_row_owner.py`. Input → expected: tmp root `/data/logs/controlled_mock_lanes/2026-10-31/lane_submissions.json` with `{'submissions':[{'symbol':'A','order_id':'0012'}]}`; `order_id='12'` → matching row; invalid JSON → `{}`. Run `python -m py_compile libs/reporting/controlled_mock_lane_report.py libs/reporting/controlled_lane_ledger_projection.py` then `python -m unittest tests/test_p15_rf035_14h_a3_ledger_row_owner.py -v` (or equivalent exact-scope pytest); require actual normal exit0, never fabricate PASS. Commit/push only actor code+test, refetch SHA/blob. If blocked, report precise blocker and **continue A4**.
-
-## A4 | RF-035 | SOURCE `libs/reporting/controlled_mock_lane_report.py::build_controlled_lane_report_surface` @ L89 | SOURCE_BLOB=`362d3ce13c7d5b48eb02b40274115345a2d7dddd`
-
-**TARGET:** `libs/reporting/controlled_lane_surface_build_projection.py::build_controlled_lane_report_surface` — NEW exclusive A Owner, verified ABSENT (404) at actor HEAD. **EXACT ORIGINAL BODY TO MOVE:**
-
-```python
-def build_controlled_lane_report_surface(
-    state: Mapping[str, Any], *, day: str = "", root: Path | str | None = None,
-    prior_entry: Mapping[str, Any] | None = None,
-) -> dict[str, Any]:
-    """Recover controlled-lane entry evidence without same-symbol guessing."""
-    execution = _mapping(state.get("execution"))
-    order = _mapping(execution.get("order"))
-    meta = _mapping(order.get("meta"))
-    prior = _mapping(prior_entry)
-    lane = _first_mapping(meta.get("controlled_mock_lane"), prior.get("controlled_mock_lane"))
-    symbol = _text(order.get("symbol") or execution.get("symbol") or prior.get("symbol") or state.get("symbol"))
-    strategy = _first_mapping(meta.get("position_strategy_snapshot"), prior.get("position_strategy_snapshot"))
-    if not strategy and symbol:
-        strategy = _position_strategy(state, symbol)
-    if not lane and day and root is not None and symbol:
-        order_id = _deep_first(prior, "order_id", "ord_no")
-        entry_run_id = _text(prior.get("run_id"))
-        lane = _ledger_row(root=Path(root), day=day, symbol=symbol, order_id=order_id, run_id=entry_run_id)
-        if lane and not strategy:
-            strategy = _fixed_lane_strategy()
-    if not lane or not strategy.get("controlled_mock_lane"):
-        return {}
-    lane_id = _text(lane.get("lane_id"))
+def _fixed_lane_strategy() -> dict[str, Any]:
     return {
-        "schema_version": "controlled_mock_lane_report.v2",
-        "lane_id": lane_id,
-        "lane_label": LANE_LABELS.get(lane_id, lane_id),
-        "symbol": _text(lane.get("symbol") or symbol),
-        "signal_id": _text(lane.get("signal_id")),
-        "signal_epoch": lane.get("signal_epoch"),
-        "entry_run_id": _text(lane.get("run_id") or prior.get("run_id")),
-        "entry_order_id": _text(lane.get("order_id") or _deep_first(prior, "order_id", "ord_no")),
-        "score": lane.get("score"),
-        "evidence": _mapping(lane.get("evidence")),
-        "daily_limit": lane.get("daily_limit"),
-        "reservation": _mapping(lane.get("reservation")),
-        "strategy_horizon": _text(strategy.get("strategy_horizon")),
-        "expected_hold_window": _mapping(strategy.get("expected_hold_window")),
-        "llm_used": bool(strategy.get("llm_used")),
-        "stage3_horizon_review_allowed": bool(strategy.get("horizon_revision_allowed", True)),
-        "selection_authority": "deterministic_independent_lane",
-        "scanner_rank_applicable": False,
-        "execution_scope": "kiwoom_mock_only",
+        "controlled_mock_lane": True,
+        "strategy_horizon": "intraday",
+        "expected_hold_window": {"min_sec": 300, "target_sec": 1800, "max_sec": 14400},
+        "llm_used": False,
+        "horizon_revision_allowed": False,
     }
 ```
 
-**Wrapper/callers/monkeypatch:** SOURCE retains original signature and only delegates; `_mapping`, `_text`, `_first_mapping`, `_position_strategy`, `_deep_first`, `_ledger_row`, `_fixed_lane_strategy`, `Path`, `LANE_LABELS` through call-time facade; retain public export. Keep original imports and caller entrypoints; test wrapper, Owner, and pre-move baseline equality for normal, negative, exceptions, ordering and post-import monkeypatch. Do not alter unrelated callers or tests. **Isolation:** read-only fake state, root=None or temp fixture; no broker or live.
+**Preserve/wrapper/monkeypatch:** constant mock report metadata only; never change Guard or real policy. Keep exact original SOURCE signature with thin delegation; Owner holds actual body and imports only stdlib/other non-SOURCE dependencies. Compare original/wrapper/Owner including patched globals, errors and output. Isolation: fake/temp only, never real state/order/network.
 
-**Targeted normal test (new, not yet run):** `tests/test_p15_rf035_14h_a4_build_controlled_lane_report_surface_owner.py`. Input → expected: fake state `execution.order.meta.controlled_mock_lane={'lane_id':'L','symbol':'A'}` and `position_strategy_snapshot={'controlled_mock_lane':True}` → `schema_version='controlled_mock_lane_report.v2'`, `execution_scope='kiwoom_mock_only'`; no lane → `{}`. Run `python -m py_compile libs/reporting/controlled_mock_lane_report.py libs/reporting/controlled_lane_surface_build_projection.py` then `python -m unittest tests/test_p15_rf035_14h_a4_build_controlled_lane_report_surface_owner.py -v` (or equivalent exact-scope pytest); require actual normal exit0, never fabricate PASS. Commit/push only actor code+test, refetch SHA/blob. If blocked, report precise blocker and **continue A5**.
+**New normal targeted test:** `tests/test_p15_rf035_15h_a2__fixed_lane_strategy_owner.py`. Input → expected: `()`→`controlled_mock_lane=True`, `expected_hold_window.min_sec=300,target_sec=1800,max_sec=14400`, `llm_used=False`, `horizon_revision_allowed=False`; distinct dict on repeated calls. Also compare original pre-move golden output and wrapper/Owner; verify no original BODY remains in SOURCE. Run `python -m py_compile libs/reporting/controlled_mock_lane_report.py libs/reporting/controlled_lane_strategy_projection.py` and `python -m unittest tests.test_p15_rf035_15h_a2__fixed_lane_strategy_owner -v` (or equivalent exact-scope pytest); report actual exit0 and PASS count, never fabricate. Commit/push A-only code+test, refetch actor HEAD and exact blobs. On block report reason and continue A3.
 
-## A5 | RF-035 | SOURCE `libs/reporting/controlled_mock_lane_report.py::controlled_lane_surface_from_report` @ L135 | SOURCE_BLOB=`362d3ce13c7d5b48eb02b40274115345a2d7dddd`
+## A3 | RF-035 | SOURCE `libs/reporting/controlled_mock_lane_report.py::attach_controlled_lane_report_surface` @ L71 | SOURCE_BLOB=`cfce1a0c5708f27fd369a22eca7a638227d28ed8`
 
-**TARGET:** `libs/reporting/controlled_lane_surface_read_projection.py::controlled_lane_surface_from_report` — NEW exclusive A Owner, verified ABSENT (404) at actor HEAD. **EXACT ORIGINAL BODY TO MOVE:**
+**TARGET:** `libs/reporting/controlled_lane_attach_projection.py::attach_controlled_lane_report_surface` — NEW exclusive A Owner; actor/integration path ABSENT 404. **Exact original computation BODY:**
 
 ```python
-def controlled_lane_surface_from_report(report: Mapping[str, Any]) -> dict[str, Any]:
-    fact_payload = _mapping(report.get("fact_payload"))
-    trade = _mapping(fact_payload.get("trade"))
-    lifecycle = _first_mapping(report.get("trade_lifecycle"), report.get("lifecycle"), trade.get("trade_lifecycle"), trade.get("lifecycle"))
-    entry = _mapping(lifecycle.get("entry"))
-    lifecycle_bundle = _first_mapping(report.get("lifecycle_bundle"), trade.get("lifecycle_bundle"))
-    bundle_entry = _mapping(_mapping(lifecycle_bundle.get("lifecycle")).get("entry"))
-    return _first_mapping(
-        report.get("controlled_mock_lane"), trade.get("controlled_mock_lane"),
-        lifecycle_bundle.get("controlled_mock_lane"), entry.get("controlled_mock_lane"),
-        bundle_entry.get("controlled_mock_lane"),
+def attach_controlled_lane_report_surface(report: dict[str, Any], story_input: Mapping[str, Any]) -> dict[str, Any]:
+    surface = _first_mapping(
+        story_input.get("controlled_mock_lane"),
+        _mapping(story_input.get("trade_lifecycle")).get("controlled_mock_lane"),
+        _mapping(_mapping(story_input.get("trade_lifecycle")).get("entry")).get("controlled_mock_lane"),
+        _mapping(story_input.get("lifecycle_bundle")).get("controlled_mock_lane"),
     )
+    if surface:
+        report["controlled_mock_lane"] = surface
+        fact_payload = _mapping(report.get("fact_payload"))
+        trade = _mapping(fact_payload.get("trade"))
+        if trade:
+            trade.setdefault("controlled_mock_lane", surface)
+            fact_payload["trade"] = trade
+            report["fact_payload"] = fact_payload
+    return report
 ```
 
-**Wrapper/callers/monkeypatch:** SOURCE retains original signature and only delegates; `_mapping`, `_first_mapping` through facade; retain lookup precedence. Keep original imports and caller entrypoints; test wrapper, Owner, and pre-move baseline equality for normal, negative, exceptions, ordering and post-import monkeypatch. Do not alter unrelated callers or tests. **Isolation:** in-memory report only.
+**Preserve/wrapper/monkeypatch:** in-memory report mutation; facade `_first_mapping,_mapping`; preserve identity and setdefault. Keep exact original SOURCE signature with thin delegation; Owner holds actual body and imports only stdlib/other non-SOURCE dependencies. Compare original/wrapper/Owner including patched globals, errors and output. Isolation: fake/temp only, never real state/order/network.
 
-**Targeted normal test (new, not yet run):** `tests/test_p15_rf035_14h_a5_controlled_lane_surface_from_report_owner.py`. Input → expected: `{'fact_payload':{'trade':{'controlled_mock_lane':{'lane_id':'L'}}}}` → `{'lane_id':'L'}`; missing → `{}`. Run `python -m py_compile libs/reporting/controlled_mock_lane_report.py libs/reporting/controlled_lane_surface_read_projection.py` then `python -m unittest tests/test_p15_rf035_14h_a5_controlled_lane_surface_from_report_owner.py -v` (or equivalent exact-scope pytest); require actual normal exit0, never fabricate PASS. Commit/push only actor code+test, refetch SHA/blob. If blocked, report precise blocker and **continue A6**.
+**New normal targeted test:** `tests/test_p15_rf035_15h_a3_attach_controlled_lane_repor_owner.py`. Input → expected: `report={'fact_payload':{'trade':{'symbol':'A'}}}`, `story_input={'controlled_mock_lane':{'lane_id':'L'}}`→same report identity and both report/trade controlled lane id `L`; empty lane unchanged. Also compare original pre-move golden output and wrapper/Owner; verify no original BODY remains in SOURCE. Run `python -m py_compile libs/reporting/controlled_mock_lane_report.py libs/reporting/controlled_lane_attach_projection.py` and `python -m unittest tests.test_p15_rf035_15h_a3_attach_controlled_lane_repor_owner -v` (or equivalent exact-scope pytest); report actual exit0 and PASS count, never fabricate. Commit/push A-only code+test, refetch actor HEAD and exact blobs. On block report reason and continue A4.
 
-## A6 | RF-035 | SOURCE `libs/reporting/controlled_mock_lane_report.py::render_controlled_lane_report_lines` @ L238 | SOURCE_BLOB=`362d3ce13c7d5b48eb02b40274115345a2d7dddd`
+## A4 | RF-035 | SOURCE `libs/reporting/controlled_mock_lane_report.py::apply_controlled_lane_story_surface` @ L89 | SOURCE_BLOB=`cfce1a0c5708f27fd369a22eca7a638227d28ed8`
 
-**TARGET:** `libs/reporting/controlled_lane_markdown_projection.py::render_controlled_lane_report_lines` — NEW exclusive A Owner, verified ABSENT (404) at actor HEAD. **EXACT ORIGINAL BODY TO MOVE:**
+**TARGET:** `libs/reporting/controlled_lane_story_projection.py::apply_controlled_lane_story_surface` — NEW exclusive A Owner; actor/integration path ABSENT 404. **Exact original computation BODY:**
 
 ```python
-def render_controlled_lane_report_lines(report: Mapping[str, Any]) -> list[str]:
-    surface = controlled_lane_surface_from_report(report)
-    if not surface:
-        return []
-    evidence = _mapping(surface.get("evidence"))
-    window = _mapping(surface.get("expected_hold_window"))
-    lines = [
-        f"* 실행 레인: **{_text(surface.get('lane_label')) or _text(surface.get('lane_id'))}**",
-        f"* 신호 ID: `{_text(surface.get('signal_id')) or '-'}`",
-        f"* 선택 권한: {_text(surface.get('selection_authority')) or 'deterministic_independent_lane'}",
-        f"* Scanner 순위: {'해당 없음' if surface.get('scanner_rank_applicable') is False else '적용'}",
-        f"* LLM 사용: {'예' if surface.get('llm_used') else '아니오'}",
+def apply_controlled_lane_story_surface(
+    story_input: Mapping[str, Any], surface: Mapping[str, Any]
+) -> dict[str, Any]:
+    out = dict(story_input)
+    lane = _mapping(surface)
+    if not lane:
+        return out
+    symbol = _text(lane.get("symbol"))
+    reason = (
+        f"{lane.get('lane_label') or lane.get('lane_id')} 독립 결정 레인이 {symbol}을 선택했습니다. "
+        "메인 Scanner 순위는 이 거래에 적용되지 않습니다."
+    )
+    scanner_surface = {
+        "summary": reason,
+        "comparison": "This trade did not use the main Scanner ranking authority.",
+        "bullets": [
+            f"Independent lane: {lane.get('lane_id')}",
+            "Scanner rank: not applicable",
+            f"Signal ID: {lane.get('signal_id') or 'not_captured'}",
+        ],
+        "selected_symbol": symbol,
+        "selected_rank": None,
+        "universe_size": None,
+        "selection_authority": "deterministic_independent_lane",
+    }
+    out["controlled_mock_lane"] = lane
+    out["scanner_reason_human"] = scanner_surface
+    out["scanner_selection_trace"] = dict(scanner_surface)
+    entry_summary = _mapping(out.get("entry_summary"))
+    if entry_summary:
+        entry_summary["reason_human"] = reason
+        entry_summary["controlled_mock_lane"] = lane
+        out["entry_summary"] = entry_summary
+    lifecycle_summary = _mapping(out.get("lifecycle_summary"))
+    if lifecycle_summary:
+        lifecycle_summary["entry_reason_human"] = reason
+        out["lifecycle_summary"] = lifecycle_summary
+    scanner_evidence = _mapping(out.get("scanner_evidence"))
+    if scanner_evidence:
+        scanner_evidence["selection_authority"] = "deterministic_independent_lane"
+        scanner_evidence["selected_rank"] = None
+        scanner_evidence["independent_lane"] = lane
+        out["scanner_evidence"] = scanner_evidence
+    for lifecycle_key in ("trade_lifecycle", "lifecycle"):
+        lifecycle = _mapping(out.get(lifecycle_key))
+        if lifecycle:
+            lifecycle["controlled_mock_lane"] = lane
+            entry = _mapping(lifecycle.get("entry"))
+            if entry:
+                entry["reason_human"] = reason
+                entry["controlled_mock_lane"] = lane
+                lifecycle["entry"] = entry
+            out[lifecycle_key] = lifecycle
+    bundle = _mapping(out.get("lifecycle_bundle"))
+    if bundle:
+        bundle["controlled_mock_lane"] = lane
+        bundle["scanner_reason_human"] = scanner_surface
+        bundle["scanner_selection_trace"] = scanner_surface
+        lifecycle = _mapping(bundle.get("lifecycle"))
+        if lifecycle:
+            lifecycle["controlled_mock_lane"] = lane
+            entry = _mapping(lifecycle.get("entry"))
+            if entry:
+                entry["reason_human"] = reason
+                entry["controlled_mock_lane"] = lane
+                lifecycle["entry"] = entry
+            bundle["lifecycle"] = lifecycle
+        out["lifecycle_bundle"] = bundle
+    return out
+```
+
+**Preserve/wrapper/monkeypatch:** in-memory projection only, preserve exact Korean narrative, nested copy/alias semantics; facade `_mapping,_text`. Keep exact original SOURCE signature with thin delegation; Owner holds actual body and imports only stdlib/other non-SOURCE dependencies. Compare original/wrapper/Owner including patched globals, errors and output. Isolation: fake/temp only, never real state/order/network.
+
+**New normal targeted test:** `tests/test_p15_rf035_15h_a4_apply_controlled_lane_story__owner.py`. Input → expected: fake `story_input={'entry_summary':{'x':1}}`, `surface={'lane_id':'L','symbol':'A'}`→new dict, `scanner_selection_trace.selection_authority='deterministic_independent_lane'`, `selected_rank=None`, `entry_summary.controlled_mock_lane.lane_id='L'`; input unchanged. Also compare original pre-move golden output and wrapper/Owner; verify no original BODY remains in SOURCE. Run `python -m py_compile libs/reporting/controlled_mock_lane_report.py libs/reporting/controlled_lane_story_projection.py` and `python -m unittest tests.test_p15_rf035_15h_a4_apply_controlled_lane_story__owner -v` (or equivalent exact-scope pytest); report actual exit0 and PASS count, never fabricate. Commit/push A-only code+test, refetch actor HEAD and exact blobs. On block report reason and continue A5.
+
+## A5 | RF-035 | SOURCE `libs/reporting/q8_shadow_blocker_review.py::build_q8_shadow_blocker_review` @ L78 | SOURCE_BLOB=`c28e1738c0c1fa90a98e2798901db114770fe966`
+
+**TARGET:** `libs/reporting/q8_shadow_blocker_review_build_projection.py::build_q8_shadow_blocker_review` — NEW exclusive A Owner; actor/integration path ABSENT 404. **Exact original computation BODY:**
+
+```python
+def build_q8_shadow_blocker_review(
+    payloads: Iterable[Mapping[str, Any]],
+    *,
+    minute_rows_by_symbol: Mapping[str, list[Mapping[str, Any]]] | None = None,
+    review_reasons: Sequence[str] = DEFAULT_REVIEW_REASONS,
+    market_regime_rail: Mapping[str, Any] | None = None,
+    quant_shadow_evaluation: Mapping[str, Any] | None = None,
+) -> Dict[str, Any]:
+    raw_rows = attach_forward_outcomes(_candidate_rows(payloads), minute_rows_by_symbol=minute_rows_by_symbol)
+    rows = _dedupe_rows(raw_rows)
+    trusted_forward_count = 0
+    for row in rows:
+        outcome = row.get("shadow_forward_outcome") if isinstance(row.get("shadow_forward_outcome"), Mapping) else {}
+        if _bool(_checkpoint_values(outcome).get("available")):
+            trusted_forward_count += 1
+    trusted_forward_coverage = round(float(trusted_forward_count) / float(len(rows)), 4) if rows else 0.0
+    evaluation_gate = (
+        quant_shadow_evaluation.get("evaluation_trust_gate")
+        if isinstance(quant_shadow_evaluation, Mapping)
+        and isinstance(quant_shadow_evaluation.get("evaluation_trust_gate"), Mapping)
+        else {}
+    )
+    trust_gate = (
+        dict(evaluation_gate)
+        if evaluation_gate
+        else build_q8_trust_gate(
+            raw_candidate_count=len(raw_rows),
+            deduped_candidate_count=len(rows),
+            trusted_forward_count=trusted_forward_count,
+            trusted_forward_coverage=trusted_forward_coverage,
+            candidate_watchlist=[],
+        )
+    )
+    promotion_allowed = bool(trust_gate.get("promotion_allowed"))
+    review_reason_set = {str(reason) for reason in review_reasons}
+    grouped: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
+    for row in rows:
+        reason = _text(row.get("reason"))
+        if reason in review_reason_set:
+            grouped[reason].append(row)
+    groups = [
+        _summarize_group(reason, grouped.get(reason, []), promotion_allowed=promotion_allowed)
+        for reason in review_reasons
     ]
-    if surface.get("score") not in (None, ""):
-        lines.append(f"* 신호 점수: {surface.get('score')}")
-    if evidence:
-        evidence_text = " / ".join(f"{key}={value}" for key, value in evidence.items() if value not in (None, "", [], {}))
-        if evidence_text:
-            lines.append(f"* 고정 가설 근거: {evidence_text}")
-    if window:
-        lines.append("* 고정 보유 구간: " f"최소 {window.get('min_sec', '-')}초 / 목표 {window.get('target_sec', '-')}초 / 최대 {window.get('max_sec', '-')}초")
-    if surface.get("stage3_horizon_review_allowed"):
-        lines.append("* R3 연결: 허용. 3차 전략가의 보유기간 재검토를 적용할 수 있습니다.")
-    else:
-        lines.append("* R3 연결: 차단. 독립 레인과 고정 horizon 비교를 위해 3차 전략가가 보유기간을 변경하지 않습니다.")
-    lines.append("* 주문 범위: 키움 모의투자 검증 전용")
-    return lines
+    observed_total = sum(int(group.get("observed_count") or 0) for group in groups)
+    return {
+        "schema_version": "q8_shadow_blocker_review.v1",
+        "behavior_effect": "evaluation_only",
+        "market_regime_rail": dict(market_regime_rail or {}),
+        "raw_candidate_count": len(raw_rows),
+        "deduped_candidate_count": len(rows),
+        "duplicate_count": max(0, len(raw_rows) - len(rows)),
+        "dedupe_key": list(CANONICAL_DEDUPE_KEY_FIELDS),
+        "evaluation_trust_gate": trust_gate,
+        "promotion_allowed": promotion_allowed,
+        "candidate_count": len(rows),
+        "review_reason_count": len(groups),
+        "observed_review_candidate_count": observed_total,
+        "groups": groups,
+    }
 ```
 
-**Wrapper/callers/monkeypatch:** SOURCE retains original signature and only delegates; `controlled_lane_surface_from_report`, `_mapping`, `_text` via facade; exact Korean text and ordering. Keep original imports and caller entrypoints; test wrapper, Owner, and pre-move baseline equality for normal, negative, exceptions, ordering and post-import monkeypatch. Do not alter unrelated callers or tests. **Isolation:** in-memory markdown only.
+**Preserve/wrapper/monkeypatch:** read-only evaluation; SOURCE keeps DEFAULT_REVIEW_REASONS default; TARGET takes explicit review_reasons, no import SOURCE; facade for `_candidate_rows,attach_forward_outcomes,_dedupe_rows,_bool,_checkpoint_values,build_q8_trust_gate,_text,_summarize_group,Mapping,defaultdict,CANONICAL_DEDUPE_KEY_FIELDS`; no trust policy change. Keep exact original SOURCE signature with thin delegation; Owner holds actual body and imports only stdlib/other non-SOURCE dependencies. Compare original/wrapper/Owner including patched globals, errors and output. Isolation: fake/temp only, never real state/order/network.
 
-**Targeted normal test (new, not yet run):** `tests/test_p15_rf035_14h_a6_render_controlled_lane_report_lines_owner.py`. Input → expected: `{'controlled_mock_lane':{'lane_id':'L','expected_hold_window':{'min_sec':300,'target_sec':1800,'max_sec':14400}}}` → lines include `키움 모의투자 검증 전용` and `L`; absent surface → `[]`. Run `python -m py_compile libs/reporting/controlled_mock_lane_report.py libs/reporting/controlled_lane_markdown_projection.py` then `python -m unittest tests/test_p15_rf035_14h_a6_render_controlled_lane_report_lines_owner.py -v` (or equivalent exact-scope pytest); require actual normal exit0, never fabricate PASS. Commit/push only actor code+test, refetch SHA/blob. If blocked, report precise blocker and **continue A7**.
+**New normal targeted test:** `tests/test_p15_rf035_15h_a5_build_q8_shadow_blocker_revi_owner.py`. Input → expected: `payloads=[]`, `review_reasons=('breakout_not_ready',)`, `quant_shadow_evaluation={'evaluation_trust_gate':{'status':'blocked','promotion_allowed':False}}`→`candidate_count=0`, `review_reason_count=1`, `behavior_effect='evaluation_only'`, `promotion_allowed=False`; fake nonempty patch parity. Also compare original pre-move golden output and wrapper/Owner; verify no original BODY remains in SOURCE. Run `python -m py_compile libs/reporting/q8_shadow_blocker_review.py libs/reporting/q8_shadow_blocker_review_build_projection.py` and `python -m unittest tests.test_p15_rf035_15h_a5_build_q8_shadow_blocker_revi_owner -v` (or equivalent exact-scope pytest); report actual exit0 and PASS count, never fabricate. Commit/push A-only code+test, refetch actor HEAD and exact blobs. On block report reason and continue A6.
 
-## A7 | RF-035 | SOURCE `libs/reporting/controlled_mock_lane_report.py::_mapping` @ L15 | SOURCE_BLOB=`362d3ce13c7d5b48eb02b40274115345a2d7dddd`
+## A6 | RF-035 | SOURCE `libs/reporting/q8_shadow_blocker_review.py::render_q8_shadow_blocker_review_markdown` @ L140 | SOURCE_BLOB=`c28e1738c0c1fa90a98e2798901db114770fe966`
 
-**TARGET:** `libs/reporting/controlled_lane_scalar_projection.py::_mapping` — NEW exclusive A Owner, verified ABSENT (404) at actor HEAD. **EXACT ORIGINAL BODY TO MOVE:**
+**TARGET:** `libs/reporting/q8_shadow_blocker_markdown_projection.py::render_q8_shadow_blocker_review_markdown` — NEW exclusive A Owner; actor/integration path ABSENT 404. **Exact original computation BODY:**
 
 ```python
-def _mapping(value: Any) -> dict[str, Any]:
-    return dict(value) if isinstance(value, Mapping) else {}
+def render_q8_shadow_blocker_review_markdown(review: Mapping[str, Any], *, day: str) -> str:
+    lines = [
+        f"# Q8 Shadow Blocker Review ({day})",
+        "",
+        "This report is read-only evaluation output. It does not change trading behavior.",
+        "",
+        "## Summary",
+        "",
+        f"- candidate_count: **{int(review.get('candidate_count') or 0)}**",
+        f"- raw_candidate_count: **{int(review.get('raw_candidate_count') or review.get('candidate_count') or 0)}**",
+        f"- duplicate_count: **{int(review.get('duplicate_count') or 0)}**",
+        f"- dedupe_key: `{', '.join(list(review.get('dedupe_key') or []))}`",
+        f"- review_reason_count: **{int(review.get('review_reason_count') or 0)}**",
+        f"- observed_review_candidate_count: **{int(review.get('observed_review_candidate_count') or 0)}**",
+    ]
+    gate = review.get("evaluation_trust_gate") if isinstance(review.get("evaluation_trust_gate"), Mapping) else {}
+    if gate:
+        lines.extend(
+            [
+                f"- trust_gate: `{gate.get('status') or '-'}`",
+                f"- promotion_allowed: `{bool(gate.get('promotion_allowed'))}`",
+                f"- trust_block_reasons: `{', '.join(list(gate.get('block_reasons') or gate.get('reasons') or [])) or '-'}`",
+            ]
+        )
+    rail = review.get("market_regime_rail") if isinstance(review.get("market_regime_rail"), Mapping) else {}
+    if rail:
+        lines.append(
+            f"- market_regime_rail: `{rail.get('rail_id') or 'not_available'}` "
+            f"({rail.get('rail_confidence') or 'none'})"
+        )
+        lines.append(f"- market_regime_rationale: {rail.get('rationale') or '-'}")
+        focus = [str(x) for x in list(rail.get("q8_review_focus") or []) if str(x or "").strip()]
+        if focus:
+            lines.append(f"- market_regime_q8_focus: `{', '.join(focus)}`")
+    lines += [
+        "",
+        "## Blocker Outcomes",
+        "",
+        "| Reason | Candidates | Observed | Avg Latest | Avg MFE | Avg MAE | Missed Opp | Adverse | Decision |",
+        "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |",
+    ]
+    groups = review.get("groups") if isinstance(review.get("groups"), list) else []
+    for group in groups:
+        if not isinstance(group, Mapping):
+            continue
+        lines.append(
+            f"| `{group.get('reason') or '-'}` "
+            f"| {int(group.get('candidate_count') or 0)} "
+            f"| {int(group.get('observed_count') or 0)} "
+            f"| {float(group.get('avg_latest_return_pct') or 0.0):.4f}% "
+            f"| {float(group.get('avg_max_favorable_pct') or 0.0):.4f}% "
+            f"| {float(group.get('avg_max_adverse_pct') or 0.0):.4f}% "
+            f"| {int(group.get('missed_opportunity_count') or 0)} "
+            f"| {int(group.get('adverse_count') or 0)} "
+            f"| `{group.get('decision') or 'retain_under_observation'}` |"
+        )
+    for group in groups:
+        if not isinstance(group, Mapping) or not group.get("examples"):
+            continue
+        lines += ["", f"## Examples: {group.get('reason')}", ""]
+        for example in list(group.get("examples") or [])[:5]:
+            if not isinstance(example, Mapping):
+                continue
+            lines.append(
+                f"- `{example.get('symbol') or '-'}` role `{example.get('role') or '-'}` "
+                f"rank `{example.get('rank') if example.get('rank') is not None else '-'}` "
+                f"latest {float(example.get('latest_return_pct') or 0.0):.4f}% "
+                f"MFE {float(example.get('max_favorable_pct') or 0.0):.4f}% "
+                f"MAE {float(example.get('max_adverse_pct') or 0.0):.4f}%"
+            )
+    return "\n".join(lines).rstrip() + "\n"
 ```
 
-**Wrapper/callers/monkeypatch:** SOURCE retains original signature and only delegates; `Mapping` resolved from facade at call-time; preserve copy semantics. Keep original imports and caller entrypoints; test wrapper, Owner, and pre-move baseline equality for normal, negative, exceptions, ordering and post-import monkeypatch. Do not alter unrelated callers or tests. **Isolation:** pure fake mapping.
+**Preserve/wrapper/monkeypatch:** read-only formatter; facade Mapping; preserve bytes/newlines/order and exception behavior. Keep exact original SOURCE signature with thin delegation; Owner holds actual body and imports only stdlib/other non-SOURCE dependencies. Compare original/wrapper/Owner including patched globals, errors and output. Isolation: fake/temp only, never real state/order/network.
 
-**Targeted normal test (new, not yet run):** `tests/test_p15_rf035_14h_a7_mapping_owner.py`. Input → expected: `{'a':1}` → equal new dict; `None` → `{}`; returned dict is distinct object. Run `python -m py_compile libs/reporting/controlled_mock_lane_report.py libs/reporting/controlled_lane_scalar_projection.py` then `python -m unittest tests/test_p15_rf035_14h_a7_mapping_owner.py -v` (or equivalent exact-scope pytest); require actual normal exit0, never fabricate PASS. Commit/push only actor code+test, refetch SHA/blob. If blocked, report precise blocker and **continue A8**.
+**New normal targeted test:** `tests/test_p15_rf035_15h_a6_render_q8_shadow_blocker_rev_owner.py`. Input → expected: `review={'candidate_count':0,'groups':[],'evaluation_trust_gate':{'status':'blocked','promotion_allowed':False}}`, day `2026-10-31`→starts `# Q8 Shadow Blocker Review (2026-10-31)`, includes `candidate_count: **0**`, ends exactly one newline; nonempty group golden byte parity. Also compare original pre-move golden output and wrapper/Owner; verify no original BODY remains in SOURCE. Run `python -m py_compile libs/reporting/q8_shadow_blocker_review.py libs/reporting/q8_shadow_blocker_markdown_projection.py` and `python -m unittest tests.test_p15_rf035_15h_a6_render_q8_shadow_blocker_rev_owner -v` (or equivalent exact-scope pytest); report actual exit0 and PASS count, never fabricate. Commit/push A-only code+test, refetch actor HEAD and exact blobs. On block report reason and continue A7.
 
-## A8 | RF-035 | SOURCE `libs/reporting/controlled_mock_lane_report.py::_first_mapping` @ L23 | SOURCE_BLOB=`362d3ce13c7d5b48eb02b40274115345a2d7dddd`
+## A7 | RF-035 | SOURCE `libs/reporting/post_exit_shadow_recap.py::resolve_post_exit_state_path` @ L65 | SOURCE_BLOB=`29a7692fd5ea05de245338ab340e069d3149be1d`
 
-**TARGET:** `libs/reporting/controlled_lane_scalar_projection.py::_first_mapping` — NEW exclusive A Owner, verified ABSENT (404) at actor HEAD. **EXACT ORIGINAL BODY TO MOVE:**
+**TARGET:** `libs/reporting/post_exit_shadow_state_path_projection.py::resolve_post_exit_state_path` — NEW exclusive A Owner; actor/integration path ABSENT 404. **Exact original computation BODY:**
 
 ```python
-def _first_mapping(*values: Any) -> dict[str, Any]:
-    for value in values:
-        row = _mapping(value)
-        if row:
-            return row
-    return {}
+def resolve_post_exit_state_path(reports_root: Path, state_path: Path | None = None) -> Path | None:
+    candidates: List[Path] = []
+    if state_path is not None and str(state_path).strip():
+        candidates.append(Path(state_path))
+    for key in ("STATE_STORE_PATH", "MOCK_EXAM_STATE_PATH"):
+        raw = str(os.getenv(key) or "").strip()
+        if raw:
+            candidates.append(Path(raw))
+
+    reports_root_path = Path(reports_root)
+    candidates.append(reports_root_path.parent / "data" / "state.json")
+    candidates.append(Path("data/state.json"))
+
+    for candidate in candidates:
+        path = candidate
+        if not path.is_absolute():
+            path = (Path.cwd() / path).resolve()
+        if path.exists():
+            return path
+    return None
 ```
 
-**Wrapper/callers/monkeypatch:** SOURCE retains original signature and only delegates; `_mapping` via facade; preserve first nonempty and copy semantics. Keep original imports and caller entrypoints; test wrapper, Owner, and pre-move baseline equality for normal, negative, exceptions, ordering and post-import monkeypatch. Do not alter unrelated callers or tests. **Isolation:** pure fake mappings.
+**Preserve/wrapper/monkeypatch:** read-only path selection/exists; facade Path/os, patched env/cwd; NEVER read/write operating State. Keep exact original SOURCE signature with thin delegation; Owner holds actual body and imports only stdlib/other non-SOURCE dependencies. Compare original/wrapper/Owner including patched globals, errors and output. Isolation: fake/temp only, never real state/order/network.
 
-**Targeted normal test (new, not yet run):** `tests/test_p15_rf035_14h_a8_first_mapping_owner.py`. Input → expected: `({}, {'a':1}, {'b':2})` → `{'a':1}`; `(None, [])` → `{}`. Run `python -m py_compile libs/reporting/controlled_mock_lane_report.py libs/reporting/controlled_lane_scalar_projection.py` then `python -m unittest tests/test_p15_rf035_14h_a8_first_mapping_owner.py -v` (or equivalent exact-scope pytest); require actual normal exit0, never fabricate PASS. Commit/push only actor code+test, refetch SHA/blob. If blocked, report precise blocker and **continue report and handoff**.
+**New normal targeted test:** `tests/test_p15_rf035_15h_a7_resolve_post_exit_state_path_owner.py`. Input → expected: TemporaryDirectory fake `<tmp>/reports` and `<tmp>/data/state.json`, patched env empty and cwd `<tmp>`→existing fake state path; explicit fake state_path takes priority; no candidates→None; no real State touched. Also compare original pre-move golden output and wrapper/Owner; verify no original BODY remains in SOURCE. Run `python -m py_compile libs/reporting/post_exit_shadow_recap.py libs/reporting/post_exit_shadow_state_path_projection.py` and `python -m unittest tests.test_p15_rf035_15h_a7_resolve_post_exit_state_path_owner -v` (or equivalent exact-scope pytest); report actual exit0 and PASS count, never fabricate. Commit/push A-only code+test, refetch actor HEAD and exact blobs. On block report reason and continue A8.
 
-## FUTURE RESERVE QUEUE — 0/6 VERIFIED, RESERVE_NOT_VERIFIED
+## A8 | RF-035 | SOURCE `libs/reporting/post_exit_shadow_recap.py::opening_rank1_eod_fallback_row` @ L149 | SOURCE_BLOB=`29a7692fd5ea05de245338ab340e069d3149be1d`
 
-All six earlier VERIFIED reserve items were promoted to current A1–A6. **No additional future item is VERIFIED**: do not execute these suggestions, do not count as safe backlog, and do not assign target paths without C03 direct source/target/owner/test verification. C03 next cycle must validate six new functions or record SUPPLY_GAP; the following are investigation leads, not assignments:
+**TARGET:** `libs/reporting/post_exit_shadow_eod_fallback_projection.py::opening_rank1_eod_fallback_row` — NEW exclusive A Owner; actor/integration path ABSENT 404. **Exact original computation BODY:**
 
-- R1 RESERVE_NOT_VERIFIED: controlled_mock_lane_report.py::_text — tiny helper, target/consumer not rechecked
-- R2 RESERVE_NOT_VERIFIED: controlled_mock_lane_report.py::_fixed_lane_strategy — mock strategy data, policy scope needs review
-- R3 RESERVE_NOT_VERIFIED: controlled_mock_lane_report.py::attach_controlled_lane_report_surface — report mutation seam needs review
-- R4 RESERVE_NOT_VERIFIED: controlled_mock_lane_report.py::apply_controlled_lane_story_surface — output mutation and downstream effects need review
-- R5 RESERVE_NOT_VERIFIED: q8_shadow_blocker_review.py::_dedupe_rows — target/caller not checked
-- R6 RESERVE_NOT_VERIFIED: q8_shadow_blocker_review.py::render_q8_shadow_blocker_review_markdown — markdown parity and target not checked
+```python
+def opening_rank1_eod_fallback_row(
+    *, reports_root: Path, day: str, symbol: str
+) -> tuple[Dict[str, Any] | None, Dict[str, Any]]:
+    path = (
+        Path(reports_root)
+        / "evaluation"
+        / "opening_rank1_shadow"
+        / str(day)
+        / "opening_rank1_shadow_daily.json"
+    )
+    payload = _read_json(path)
+    normalized = normalize_symbol(symbol or "", allow_test_symbols=True)
+    for raw in payload.get("episodes") or []:
+        episode = _as_dict(raw)
+        if normalize_symbol(episode.get("symbol") or "", allow_test_symbols=True) != normalized:
+            continue
+        eod = _as_dict(_as_dict(episode.get("checkpoints")).get("EOD"))
+        if str(eod.get("status") or "").strip().lower() != "observed":
+            continue
+        price = eod.get("price") if eod.get("price") not in (None, "") else eod.get("observed_price")
+        try:
+            close = float(price)
+        except Exception:
+            continue
+        observed_epoch = _epoch_seconds(eod.get("observed_epoch") or eod.get("observed_ts"))
+        if observed_epoch is None:
+            try:
+                observed_epoch = datetime.fromisoformat(str(day)).replace(
+                    hour=15, minute=30, tzinfo=KST
+                ).timestamp()
+            except Exception:
+                continue
+        observed_kst = datetime.fromtimestamp(observed_epoch, tz=timezone.utc).astimezone(KST)
+        row = {
+            "ts": int(observed_epoch),
+            "raw_ts": observed_kst.strftime("%Y%m%d%H%M%S"),
+            "open": close,
+            "high": close,
+            "low": close,
+            "close": close,
+            "volume": eod.get("volume"),
+            "source": "opening_rank1_shadow.EOD",
+            "eod_fallback": True,
+        }
+        return row, {
+            "applied": True,
+            "source": "opening_rank1_shadow.EOD",
+            "source_path": str(path),
+        }
+    return None, {
+        "applied": False,
+        "reason": "matching_observed_opening_rank1_eod_not_found",
+        "source_path": str(path),
+    }
+```
 
-## REPORT / PUSH / CONTINUITY
+**Preserve/wrapper/monkeypatch:** read-only temp historical JSON; facade `_read_json,normalize_symbol,_as_dict,_epoch_seconds,datetime,timezone,KST,Path`; no market/network. Keep exact original SOURCE signature with thin delegation; Owner holds actual body and imports only stdlib/other non-SOURCE dependencies. Compare original/wrapper/Owner including patched globals, errors and output. Isolation: fake/temp only, never real state/order/network.
 
-Report to #11: `ORDER_ID=A-20261031-14 | CANONICAL_HEAD | ORDER_BLOB_SHA | ACTOR_REMOTE_BEFORE/AFTER | A1..A8 ITEM_STATUS | SOURCE/TARGET/TEST_BLOBS | NORMAL_COMMAND/EXIT/PASS | MOVED_FUNCTIONS | SOURCE_LOC_BEFORE_AFTER | FIRST_BLOCKER | NEXT_SAFE_ITEM | PUSH_REMOTE_SHA/PUSH_BLOCKED | START_KST/END_KST/ELAPSED_MIN`. Times only when measured. If any of eight blocked, continue all remaining safe tasks; no NO_DELTA if current safe work remains. G1/G2 actor source evidence is distinct from C04 G3 and C05 RF_DONE. RUN_SOURCE_SHA UNKNOWN/RunLab exit255 remains separate SAFETY_HOLD; no runtime changes.
+**New normal targeted test:** `tests/test_p15_rf035_15h_a8_opening_rank1_eod_fallback_r_owner.py`. Input → expected: temp JSON `evaluation/opening_rank1_shadow/2026-10-31/opening_rank1_shadow_daily.json` with `episodes:[{symbol:'005930',checkpoints:{EOD:{status:'observed',price:100,observed_epoch:1700000000}}}]`→row close=100.0, source `opening_rank1_shadow.EOD`, meta applied=True; missing symbol→applied=False. Also compare original pre-move golden output and wrapper/Owner; verify no original BODY remains in SOURCE. Run `python -m py_compile libs/reporting/post_exit_shadow_recap.py libs/reporting/post_exit_shadow_eod_fallback_projection.py` and `python -m unittest tests.test_p15_rf035_15h_a8_opening_rank1_eod_fallback_r_owner -v` (or equivalent exact-scope pytest); report actual exit0 and PASS count, never fabricate. Commit/push A-only code+test, refetch actor HEAD and exact blobs. On block report reason and continue handoff.
+
+## FUTURE RESERVE — RESERVE_NOT_VERIFIED 0/6
+
+Eight current A15 items are executable **not** reserves. C03 has not verified six additional safe future moves at the current actor SHA. The following are investigation leads **NOT ASSIGNMENTS**, do not execute: `q8_shadow_blocker_review.py::_dedupe_rows` (single-line delegation, likely KEEP), `::generate_q8_shadow_blocker_review` (file writes), `post_exit_shadow_recap.py::render_post_exit_shadow_trade_recap_md` and `::render_post_exit_shadow_daily_recap_md` (duplicate definitions, need conflict review), `::_refresh_trade_summary_from_recap` (in-memory mutation review), `q8_historical_review.py::write_q8_historical_review` (file writes). C03 must separately validate Owner/body/target/callers/effect/tests before any future assignment. VERIFIED reserve = 0, never claim 6.
+
+## REPORT / CONTINUITY
+
+Report #11: `ORDER_ID=A-20261031-15 | CANONICAL_HEAD | C02_BLOB | A_REMOTE_BEFORE→AFTER | A1..A8 STATUS | REAL_BODY_MOVES | SOURCE_BLOBS_BEFORE→AFTER | TARGET/TEST_BLOBS | NORMAL_COMMAND/EXIT/PASS | PUSH_REMOTE_SHA | FIRST_BLOCKER | NEXT`. Complete every safe item, even after first PASS or partial push failure; no time-filling if all completed. C03 document supply is not code G1/G2/G3 or RF DONE. RunLab Exited(255), RUN_SOURCE_SHA UNKNOWN: operational SAFETY_HOLD; no runtime manipulation.
