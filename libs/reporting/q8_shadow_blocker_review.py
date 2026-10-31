@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import sys
 from collections import defaultdict
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, Sequence
@@ -17,6 +18,11 @@ from libs.reporting.quant_shadow_candidate_evaluation import (
 )
 from libs.reporting.quant_shadow_forward_outcomes import attach_forward_outcomes
 from libs.reporting.market_regime_rail_review import classify_market_regime_rail, load_latest_macro_snapshot
+from libs.reporting import q8_shadow_blocker_scalar_projection as _scalar_owner
+from libs.reporting import q8_shadow_blocker_candidate_projection as _candidate_owner
+from libs.reporting import q8_shadow_blocker_checkpoint_projection as _checkpoint_owner
+from libs.reporting import q8_shadow_blocker_decision_projection as _decision_owner
+from libs.reporting import q8_shadow_blocker_group_projection as _group_owner
 
 
 DEFAULT_REVIEW_REASONS = (
@@ -29,38 +35,19 @@ DEFAULT_REVIEW_REASONS = (
 
 
 def _text(value: Any) -> str:
-    return str(value or "").strip()
+    return _scalar_owner._text(value)
 
 
 def _to_float(value: Any) -> float | None:
-    try:
-        if value in (None, ""):
-            return None
-        return float(value)
-    except Exception:
-        return None
+    return _scalar_owner._to_float(value)
 
 
 def _bool(value: Any) -> bool:
-    if isinstance(value, bool):
-        return value
-    if isinstance(value, (int, float)):
-        return bool(value)
-    return str(value or "").strip().lower() in {"1", "true", "yes", "y", "on"}
+    return _scalar_owner._bool(value)
 
 
 def _candidate_rows(payloads: Iterable[Mapping[str, Any]]) -> List[Dict[str, Any]]:
-    rows: List[Dict[str, Any]] = []
-    for payload in payloads:
-        if not isinstance(payload, Mapping):
-            continue
-        for raw in list(payload.get("candidates") or []):
-            if not isinstance(raw, Mapping):
-                continue
-            row = dict(raw)
-            row.setdefault("_payload_generated_at", payload.get("generated_at"))
-            rows.append(row)
-    return rows
+    return _candidate_owner._candidate_rows(payloads, facade=sys.modules[__name__])
 
 
 def _dedupe_rows(rows: Sequence[Mapping[str, Any]]) -> List[Dict[str, Any]]:
@@ -68,42 +55,15 @@ def _dedupe_rows(rows: Sequence[Mapping[str, Any]]) -> List[Dict[str, Any]]:
 
 
 def _checkpoint_values(outcome: Mapping[str, Any]) -> Dict[str, Any]:
-    checkpoints = outcome.get("checkpoints") if isinstance(outcome.get("checkpoints"), Mapping) else {}
-    observed: List[Mapping[str, Any]] = [
-        checkpoint
-        for checkpoint in checkpoints.values()
-        if isinstance(checkpoint, Mapping) and str(checkpoint.get("status") or "") == "observed"
-    ]
-    if not observed:
-        return {"available": False}
-    returns = [_to_float(row.get("return_pct")) for row in observed]
-    mfes = [_to_float(row.get("mfe_pct")) for row in observed]
-    maes = [_to_float(row.get("mae_pct")) for row in observed]
-    returns = [value for value in returns if value is not None]
-    mfes = [value for value in mfes if value is not None]
-    maes = [value for value in maes if value is not None]
-    latest = returns[-1] if returns else None
-    return {
-        "available": True,
-        "latest_return_pct": latest,
-        "max_favorable_pct": max(mfes) if mfes else None,
-        "max_adverse_pct": min(maes) if maes else None,
-    }
+    return _checkpoint_owner._checkpoint_values(outcome, facade=sys.modules[__name__])
 
 
 def _avg(values: Sequence[float]) -> float:
-    return round(sum(values) / len(values), 4) if values else 0.0
+    return _scalar_owner._avg(values)
 
 
 def _decision_for_row(row: Mapping[str, Any]) -> str:
-    reason = _text(row.get("reason"))
-    if reason == "volume_confirmation_missing":
-        return "retain_under_observation"
-    if reason in {"breakout_not_ready", "pullback_not_mature"}:
-        return "adjust_and_retest"
-    if reason == "human_chart_sanity_guard_blocked":
-        return "promotion_review_target"
-    return "retain_under_observation"
+    return _decision_owner._decision_for_row(row, facade=sys.modules[__name__])
 
 
 def _summarize_group(
@@ -112,67 +72,7 @@ def _summarize_group(
     *,
     promotion_allowed: bool,
 ) -> Dict[str, Any]:
-    observed_rows: List[Dict[str, Any]] = []
-    for row in rows:
-        outcome = row.get("shadow_forward_outcome") if isinstance(row.get("shadow_forward_outcome"), Mapping) else {}
-        values = _checkpoint_values(outcome)
-        if values.get("available"):
-            observed_rows.append({**dict(row), "_q8_forward": values})
-    latest_returns = [
-        float(row["_q8_forward"]["latest_return_pct"])
-        for row in observed_rows
-        if row["_q8_forward"].get("latest_return_pct") is not None
-    ]
-    mfes = [
-        float(row["_q8_forward"]["max_favorable_pct"])
-        for row in observed_rows
-        if row["_q8_forward"].get("max_favorable_pct") is not None
-    ]
-    maes = [
-        float(row["_q8_forward"]["max_adverse_pct"])
-        for row in observed_rows
-        if row["_q8_forward"].get("max_adverse_pct") is not None
-    ]
-    positive_count = sum(1 for value in latest_returns if value > 0)
-    missed_opportunity_count = sum(1 for value in mfes if value >= 1.0)
-    adverse_count = sum(1 for value in maes if value <= -0.5)
-    examples = sorted(
-        observed_rows,
-        key=lambda row: float(row["_q8_forward"].get("max_favorable_pct") or 0.0),
-        reverse=True,
-    )[:5]
-    raw_decision = _decision_for_row(rows[0]) if rows else "retain_under_observation"
-    decision = raw_decision if promotion_allowed else "retain_under_observation"
-    return {
-        "reason": reason,
-        "candidate_count": len(rows),
-        "observed_count": len(observed_rows),
-        "coverage": round(float(len(observed_rows)) / float(len(rows)), 4) if rows else 0.0,
-        "avg_latest_return_pct": _avg(latest_returns),
-        "avg_max_favorable_pct": _avg(mfes),
-        "avg_max_adverse_pct": _avg(maes),
-        "positive_latest_count": positive_count,
-        "positive_latest_rate": round(float(positive_count) / float(len(latest_returns)), 4) if latest_returns else 0.0,
-        "missed_opportunity_count": missed_opportunity_count,
-        "missed_opportunity_rate": round(float(missed_opportunity_count) / float(len(mfes)), 4) if mfes else 0.0,
-        "adverse_count": adverse_count,
-        "adverse_rate": round(float(adverse_count) / float(len(maes)), 4) if maes else 0.0,
-        "raw_decision": raw_decision,
-        "decision": decision,
-        "decision_blocked_by_trust_gate": bool(raw_decision != decision),
-        "examples": [
-            {
-                "symbol": _text(row.get("symbol")),
-                "role": _text(row.get("shadow_role")),
-                "rank": row.get("rank"),
-                "tactic_id": _text(row.get("quant_tactic_id")),
-                "latest_return_pct": row["_q8_forward"].get("latest_return_pct"),
-                "max_favorable_pct": row["_q8_forward"].get("max_favorable_pct"),
-                "max_adverse_pct": row["_q8_forward"].get("max_adverse_pct"),
-            }
-            for row in examples
-        ],
-    }
+    return _group_owner._summarize_group(reason, rows, promotion_allowed=promotion_allowed, facade=sys.modules[__name__])
 
 
 def build_q8_shadow_blocker_review(

@@ -29,5 +29,5 @@ def _iter_quant_shadow_candidate_rows(reports_root: Path, *, start: str, end: st
                 continue
             payload = facade._read_json(path)
             for row in list(payload.get("candidates") or []):
-                if isinstance(row, Mapping):
+                if isinstance(row, facade.Mapping):
                     yield dict(row)

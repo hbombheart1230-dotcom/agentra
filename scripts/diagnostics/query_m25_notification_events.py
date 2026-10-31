@@ -19,38 +19,18 @@ from libs.reporting.event_log_reader import iter_jsonl_events
 
 
 def _env_str(name: str, default: str) -> str:
-    raw = str(os.getenv(name, "") or "").strip()
-    return raw if raw else str(default)
+    from scripts.diagnostics.notification_query_env_projection import _env_str as owner
+    return owner(name,default,facade=sys.modules[__name__])
 
 
 def _to_epoch(ts: Any) -> Optional[int]:
-    if ts is None:
-        return None
-    if isinstance(ts, (int, float)):
-        return int(ts)
-    s = str(ts).strip()
-    if not s:
-        return None
-    try:
-        return int(float(s))
-    except Exception:
-        pass
-    if s.endswith("Z"):
-        s = s[:-1] + "+00:00"
-    try:
-        dt = datetime.fromisoformat(s)
-        if dt.tzinfo is None:
-            dt = dt.replace(tzinfo=timezone.utc)
-        return int(dt.timestamp())
-    except Exception:
-        return None
+    from scripts.diagnostics.notification_query_time_projection import _to_epoch as owner
+    return owner(ts,facade=sys.modules[__name__])
 
 
 def _utc_day(ts: Any) -> str:
-    epoch = _to_epoch(ts)
-    if epoch is None:
-        return datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    return datetime.fromtimestamp(epoch, tz=timezone.utc).strftime("%Y-%m-%d")
+    from scripts.diagnostics.notification_query_time_projection import _utc_day as owner
+    return owner(ts,facade=sys.modules[__name__])
 
 
 def _iter_rows(path: Path) -> List[Dict[str, Any]]:
@@ -58,24 +38,8 @@ def _iter_rows(path: Path) -> List[Dict[str, Any]]:
 
 
 def _build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(description="Query M25 notification event log summary.")
-    p.add_argument(
-        "--event-log-path",
-        default=_env_str("M25_NOTIFY_EVENT_LOG_PATH", "data/logs/milestones/m25/notify_events.jsonl"),
-    )
-    p.add_argument("--day", default=None)
-    p.add_argument("--provider", default="", help="Filter by provider (webhook/slack_webhook/none).")
-    p.add_argument("--only-escalated", action="store_true", help="Only include escalated route events.")
-    p.add_argument(
-        "--min-portfolio-guard-alert-total",
-        type=int,
-        default=0,
-        help="Only include events with portfolio_guard_alert_total >= N.",
-    )
-    p.add_argument("--json", action="store_true")
-    return p
-
-
+    from scripts.diagnostics.notification_query_cli_projection import _build_parser as owner
+    return owner(facade=sys.modules[__name__])
 def main(argv: Optional[List[str]] = None) -> int:
     load_env_file(".env")
     args = _build_parser().parse_args(argv)

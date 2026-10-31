@@ -1,0 +1,3 @@
+from typing import Any
+def _build_parser(*,facade:Any)->Any:
+ p=facade.argparse.ArgumentParser(description='Query M25 notification event log summary.');p.add_argument('--event-log-path',default=facade._env_str('M25_NOTIFY_EVENT_LOG_PATH','data/logs/milestones/m25/notify_events.jsonl'));p.add_argument('--day',default=None);p.add_argument('--provider',default='',help='Filter by provider (webhook/slack_webhook/none).');p.add_argument('--only-escalated',action='store_true',help='Only include escalated route events.');p.add_argument('--min-portfolio-guard-alert-total',type=int,default=0,help='Only include events with portfolio_guard_alert_total >= N.');p.add_argument('--json',action='store_true');return p

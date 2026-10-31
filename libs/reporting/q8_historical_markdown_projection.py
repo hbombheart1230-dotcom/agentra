@@ -8,7 +8,7 @@ from typing import Any, List, Mapping
 
 
 def render_q8_historical_review_markdown(payload: Mapping[str, Any], *, facade: Any) -> str:
-    trade = payload.get("trade_summary") if isinstance(payload.get("trade_summary"), Mapping) else {}
+    trade = payload.get("trade_summary") if isinstance(payload.get("trade_summary"), facade.Mapping) else {}
     lines: List[str] = [
         f"# Q8 Historical Review: {payload.get('start')} to {payload.get('end')}",
         "",
@@ -57,7 +57,7 @@ def render_q8_historical_review_markdown(payload: Mapping[str, Any], *, facade: 
             )
         )
         lines.append("")
-    eligibility = payload.get("q8_promotion_eligibility") if isinstance(payload.get("q8_promotion_eligibility"), Mapping) else {}
+    eligibility = payload.get("q8_promotion_eligibility") if isinstance(payload.get("q8_promotion_eligibility"), facade.Mapping) else {}
     lines.extend(
         [
             "## Q8 Promotion Eligibility",
