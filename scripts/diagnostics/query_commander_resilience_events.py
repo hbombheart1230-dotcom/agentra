@@ -38,89 +38,13 @@ def _filtered_events(
 
 
 def _summary(rows: List[Dict[str, Any]], *, total_matched: int) -> Dict[str, Any]:
-    event_total: Dict[str, int] = {}
-    cooldown_transitions = 0
-    intervention_total = 0
-    error_total = 0
-    latest_status = ""
-    latest_run_id = ""
-
-    for rec in rows:
-        event = str(rec.get("event") or "")
-        payload = rec.get("payload") if isinstance(rec.get("payload"), dict) else {}
-        event_total[event] = int(event_total.get(event, 0)) + 1
-
-        is_cooldown_transition = (
-            event == "transition"
-            and (
-                str(payload.get("transition") or "") == "cooldown"
-                or str(payload.get("reason") or "") == "cooldown_active"
-            )
-        )
-        is_cooldown_resilience = (
-            event == "resilience"
-            and str(payload.get("reason") or "") == "incident_threshold_cooldown"
-        )
-        if is_cooldown_transition or is_cooldown_resilience:
-            cooldown_transitions += 1
-        if event == "intervention":
-            intervention_total += 1
-        if event == "error":
-            error_total += 1
-
-        status = str(payload.get("status") or "")
-        if status:
-            latest_status = status
-        latest_run_id = str(rec.get("run_id") or latest_run_id)
-
-    return {
-        "total_matched": int(total_matched),
-        "shown": int(len(rows)),
-        "event_total": event_total,
-        "cooldown_transition_total": int(cooldown_transitions),
-        "intervention_total": int(intervention_total),
-        "error_total": int(error_total),
-        "latest_status": latest_status,
-        "latest_run_id": latest_run_id,
-    }
+    from scripts.diagnostics.commander_resilience_summary_projection import _summary as owner
+    return owner(rows, total_matched=total_matched)
 
 
 def _print_human(path: Path, rows: List[Dict[str, Any]], summary: Dict[str, Any]) -> None:
-    print("=== Commander Resilience Events ===")
-    print(f"path={path}")
-    print(f"total_matched={summary.get('total_matched')} shown={summary.get('shown')}")
-    print(
-        f"cooldown_transition_total={summary.get('cooldown_transition_total')} "
-        f"intervention_total={summary.get('intervention_total')} "
-        f"error_total={summary.get('error_total')}"
-    )
-    print(f"latest_run_id={summary.get('latest_run_id')} latest_status={summary.get('latest_status')}")
-    for rec in rows:
-        ts = str(rec.get("ts") or "")
-        run_id = str(rec.get("run_id") or "")
-        event = str(rec.get("event") or "")
-        payload = rec.get("payload") if isinstance(rec.get("payload"), dict) else {}
-        key = ""
-        if event == "transition":
-            key = (
-                f"transition={payload.get('transition')} status={payload.get('status')} "
-                f"reason={payload.get('reason')} cooldown_until_epoch={payload.get('cooldown_until_epoch')}"
-            )
-        elif event == "resilience":
-            key = (
-                f"reason={payload.get('reason')} incident_count={payload.get('incident_count')} "
-                f"incident_threshold={payload.get('incident_threshold')} "
-                f"cooldown_until_epoch={payload.get('cooldown_until_epoch')}"
-            )
-        elif event == "intervention":
-            key = f"type={payload.get('type')} at_epoch={payload.get('at_epoch')}"
-        elif event == "error":
-            key = f"error_type={payload.get('error_type')} error={payload.get('error')}"
-        elif event == "end":
-            key = f"status={payload.get('status')} path={payload.get('path')}"
-        elif event == "route":
-            key = f"mode={payload.get('mode')}"
-        print(f"{ts} run_id={run_id} event={event} {key}".strip())
+    from scripts.diagnostics.commander_resilience_render_projection import _print_human as owner
+    return owner(path, rows, summary, facade=_migration_sys.modules[__name__])
 
 
 def main(argv: Optional[list[str]] = None) -> int:
