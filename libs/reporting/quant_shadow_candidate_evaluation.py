@@ -39,6 +39,14 @@ from libs.reporting import quant_shadow_forward_base_projection as _forward_base
 from libs.reporting import quant_shadow_forward_outcome_projection as _forward_outcome_owner
 from libs.reporting import quant_shadow_entry_shape_projection as _entry_shape_owner
 from libs.reporting import quant_shadow_checkpoint_projection as _checkpoint_owner
+from libs.reporting import quant_shadow_opening_probe_projection as _opening_probe_owner
+from libs.reporting import quant_shadow_opening_probe_enter_projection as _opening_enter_owner
+from libs.reporting import quant_shadow_largecap_probe_projection as _largecap_probe_owner
+from libs.reporting import quant_shadow_largecap_enter_projection as _largecap_enter_owner
+from libs.reporting import quant_shadow_entry_shape_payload_projection as _shape_payload_owner
+from libs.reporting import quant_shadow_vwap_observation_payload_projection as _vwap_payload_owner
+from libs.reporting import quant_shadow_forward_summary_projection as _forward_summary_owner
+from libs.reporting import quant_shadow_top_forward_groups_projection as _top_groups_owner
 
 
 def _text(value: Any) -> str:
@@ -311,25 +319,19 @@ def _dedupe_candidates(rows: Sequence[Mapping[str, Any]]) -> List[Dict[str, Any]
 
 
 def _opening_probe(row: Mapping[str, Any]) -> Dict[str, Any]:
-    probe = row.get("opening_momentum_probe_shadow")
-    return dict(probe) if isinstance(probe, Mapping) else {}
+    return _opening_probe_owner._opening_probe(row, facade=sys.modules[__name__])
 
 
 def _opening_probe_would_enter(row: Mapping[str, Any]) -> bool:
-    if row.get("opening_momentum_probe_would_enter") not in (None, ""):
-        return _bool(row.get("opening_momentum_probe_would_enter"))
-    return _bool(_opening_probe(row).get("would_probe"))
+    return _opening_enter_owner._opening_probe_would_enter(row, facade=sys.modules[__name__])
 
 
 def _largecap_surge_probe(row: Mapping[str, Any]) -> Dict[str, Any]:
-    probe = row.get("opening_largecap_surge_shadow")
-    return dict(probe) if isinstance(probe, Mapping) else {}
+    return _largecap_probe_owner._largecap_surge_probe(row, facade=sys.modules[__name__])
 
 
 def _largecap_surge_would_enter(row: Mapping[str, Any]) -> bool:
-    if row.get("opening_largecap_surge_would_enter") not in (None, ""):
-        return _bool(row.get("opening_largecap_surge_would_enter"))
-    return _bool(_largecap_surge_probe(row).get("would_probe"))
+    return _largecap_enter_owner._largecap_surge_would_enter(row, facade=sys.modules[__name__])
 
 
 def _actionable_entry_guard_block(row: Mapping[str, Any]) -> bool:
@@ -357,38 +359,7 @@ def _entry_shape(row: Mapping[str, Any]) -> str:
 
 
 def _entry_shape_payload(candidates: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
-    shapes = Counter(_entry_shape(row) for row in candidates)
-    pullback_blocked = sum(
-        1
-        for row in candidates
-        if _entry_shape(row) in {"pullback", "vwap_reclaim"}
-        and not _bool(row.get("would_enter"))
-    )
-    breakout_ready = sum(
-        1
-        for row in candidates
-        if _entry_shape(row) == "breakout"
-        and (
-            _bool(row.get("would_enter"))
-            or _text(row.get("reason"))
-            in {
-                "breakout_above_recent_high_with_vwap_hold_and_volume_confirmation",
-                "breakout_above_recent_high_with_vwap_structure_confirmation",
-            }
-        )
-    )
-    breakout_not_ready = sum(
-        1
-        for row in candidates
-        if _entry_shape(row) == "breakout" and not _bool(row.get("would_enter"))
-    )
-    return {
-        "behavior_effect": "diagnostic_only",
-        "by_shape": _top_counter(shapes),
-        "pullback_or_vwap_blocked_count": pullback_blocked,
-        "breakout_ready_like_count": breakout_ready,
-        "breakout_not_ready_count": breakout_not_ready,
-    }
+    return _shape_payload_owner._entry_shape_payload(candidates, facade=sys.modules[__name__])
 
 
 def _below_vwap_reclaim_observation(row: Mapping[str, Any]) -> Dict[str, Any]:
@@ -399,22 +370,7 @@ def _below_vwap_reclaim_observation(row: Mapping[str, Any]) -> Dict[str, Any]:
 
 
 def _below_vwap_reclaim_observation_payload(candidates: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
-    subtype_counter: Counter[str] = Counter()
-    subtype_v2_counter: Counter[str] = Counter()
-    total = 0
-    for row in candidates:
-        observation = _below_vwap_reclaim_observation(row)
-        if not _bool(observation.get("applies")):
-            continue
-        total += 1
-        subtype_counter[_text(observation.get("subtype"))] += 1
-        subtype_v2_counter[_text(observation.get("subtype_v2"))] += 1
-    return {
-        "behavior_effect": "observation_only",
-        "candidate_count": int(total),
-        "by_subtype": _top_counter(subtype_counter, limit=8),
-        "by_subtype_v2": _top_counter(subtype_v2_counter, limit=10),
-    }
+    return _vwap_payload_owner._below_vwap_reclaim_observation_payload(candidates, facade=sys.modules[__name__])
 
 
 def _entry_lane_observation(row: Mapping[str, Any]) -> Dict[str, Any]:
@@ -474,69 +430,11 @@ def _checkpoint_value(row: Mapping[str, Any], checkpoint: str, metric: str) -> f
 
 
 def _forward_outcome_summary(rows: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
-    observed_rows = [row for row in rows if _bool(_forward_outcome(row).get("available"))]
-    observed_days = Counter(_candidate_day(row) for row in observed_rows if _candidate_day(row))
-    largest_day_count = observed_days.most_common(1)[0][1] if observed_days else 0
-    horizon_counts: Dict[str, int] = {}
-    horizon_day_counts: Dict[str, int] = {}
-    for horizon in ("+3m", "+5m", "+15m", "+30m", "+60m", "EOD"):
-        horizon_rows = [
-            row
-            for row in rows
-            if _checkpoint_value(row, horizon, "return_pct") is not None
-        ]
-        horizon_counts[horizon] = len(horizon_rows)
-        horizon_day_counts[horizon] = len(
-            {_candidate_day(row) for row in horizon_rows if _candidate_day(row)}
-        )
-    return {
-        "measurement_contract_version": "forward_horizon_coverage.v2",
-        "candidate_count": len(rows),
-        "observed_count": len(observed_rows),
-        "observed_day_count": len(observed_days),
-        "sample_concentration": (
-            round(float(largest_day_count) / float(len(observed_rows)), 4)
-            if observed_rows
-            else 0.0
-        ),
-        "observed_days": [name for name, _count in observed_days.most_common(5)],
-        "observed_count_by_horizon": horizon_counts,
-        "observed_day_count_by_horizon": horizon_day_counts,
-        **{
-            f"observed_count_{horizon[1:-1]}m" if horizon.startswith("+") else "observed_count_eod": count
-            for horizon, count in horizon_counts.items()
-        },
-        **{
-            f"observed_day_count_{horizon[1:-1]}m" if horizon.startswith("+") else "observed_day_count_eod": count
-            for horizon, count in horizon_day_counts.items()
-        },
-        "avg_return_3m_pct": _mean([_checkpoint_value(row, "+3m", "return_pct") for row in rows]),
-        "avg_return_5m_pct": _mean([_checkpoint_value(row, "+5m", "return_pct") for row in rows]),
-        "avg_return_15m_pct": _mean([_checkpoint_value(row, "+15m", "return_pct") for row in rows]),
-        "avg_return_30m_pct": _mean([_checkpoint_value(row, "+30m", "return_pct") for row in rows]),
-        "avg_return_60m_pct": _mean([_checkpoint_value(row, "+60m", "return_pct") for row in rows]),
-        "avg_mfe_5m_pct": _mean([_checkpoint_value(row, "+5m", "mfe_pct") for row in rows]),
-        "avg_mae_5m_pct": _mean([_checkpoint_value(row, "+5m", "mae_pct") for row in rows]),
-        "coverage": (float(len(observed_rows)) / float(len(rows))) if rows else 0.0,
-    }
+    return _forward_summary_owner._forward_outcome_summary(rows, facade=sys.modules[__name__])
 
 
 def _top_forward_groups(groups: Mapping[str, List[Mapping[str, Any]]], *, limit: int = 10) -> List[Dict[str, Any]]:
-    summaries: List[Dict[str, Any]] = []
-    for name, rows in groups.items():
-        summary = _forward_outcome_summary(rows)
-        if int(summary.get("observed_count") or 0) <= 0:
-            continue
-        summary["name"] = name
-        summaries.append(summary)
-    summaries.sort(
-        key=lambda item: (
-            float(item.get("avg_return_5m_pct") or item.get("avg_return_3m_pct") or -999.0),
-            int(item.get("observed_count") or 0),
-        ),
-        reverse=True,
-    )
-    return summaries[:limit]
+    return _top_groups_owner._top_forward_groups(groups, limit=limit, facade=sys.modules[__name__])
 
 
 def _entry_lane_forward_outcomes(candidates: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
