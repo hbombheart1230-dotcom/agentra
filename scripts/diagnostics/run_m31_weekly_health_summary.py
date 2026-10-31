@@ -17,35 +17,13 @@ from libs.reporting.event_log_reader import iter_jsonl_events
 
 
 def _to_epoch(ts: Any) -> Optional[int]:
-    if ts is None:
-        return None
-    if isinstance(ts, (int, float)):
-        return int(ts)
-
-    s = str(ts).strip()
-    if not s:
-        return None
-    try:
-        return int(float(s))
-    except Exception:
-        pass
-
-    if s.endswith("Z"):
-        s = s[:-1] + "+00:00"
-    try:
-        dt = datetime.fromisoformat(s)
-        if dt.tzinfo is None:
-            dt = dt.replace(tzinfo=timezone.utc)
-        return int(dt.timestamp())
-    except Exception:
-        return None
+    from scripts.diagnostics.m31_weekly_time_projection import _to_epoch as owner
+    return owner(ts, facade=_migration_sys.modules[__name__])
 
 
 def _utc_day(ts: Any) -> Optional[str]:
-    e = _to_epoch(ts)
-    if e is None:
-        return None
-    return datetime.fromtimestamp(e, tz=timezone.utc).strftime("%Y-%m-%d")
+    from scripts.diagnostics.m31_weekly_time_projection import _utc_day as owner
+    return owner(ts, facade=_migration_sys.modules[__name__])
 
 
 def _iter_jsonl(path: Path) -> Iterable[Dict[str, Any]]:
@@ -53,29 +31,18 @@ def _iter_jsonl(path: Path) -> Iterable[Dict[str, Any]]:
 
 
 def _read_json(path: Path) -> Dict[str, Any]:
-    if not path.exists():
-        return {}
-    try:
-        obj = json.loads(path.read_text(encoding="utf-8"))
-    except Exception:
-        return {}
-    return obj if isinstance(obj, dict) else {}
+    from scripts.diagnostics.m31_weekly_read_projection import _read_json as owner
+    return owner(path, facade=_migration_sys.modules[__name__])
 
 
 def _parse_day(value: str) -> datetime:
-    return datetime.strptime(value, "%Y-%m-%d").replace(tzinfo=timezone.utc)
+    from scripts.diagnostics.m31_weekly_time_projection import _parse_day as owner
+    return owner(value, facade=_migration_sys.modules[__name__])
 
 
 def _window_days(*, week_end: str, days: int) -> List[str]:
-    end_dt = _parse_day(week_end)
-    n = max(1, int(days))
-    start_dt = end_dt - timedelta(days=n - 1)
-    out: List[str] = []
-    cur = start_dt
-    while cur <= end_dt:
-        out.append(cur.strftime("%Y-%m-%d"))
-        cur += timedelta(days=1)
-    return out
+    from scripts.diagnostics.m31_weekly_time_projection import _window_days as owner
+    return owner(week_end=week_end, days=days, facade=_migration_sys.modules[__name__])
 
 
 def _item(
@@ -86,79 +53,18 @@ def _item(
     evidence: str,
     required: bool = True,
 ) -> Dict[str, Any]:
-    return {
-        "id": item_id,
-        "title": title,
-        "required": bool(required),
-        "passed": bool(passed),
-        "evidence": str(evidence),
-    }
+    from scripts.diagnostics.m31_weekly_summary_projection import _item as owner
+    return owner(item_id=item_id,title=title,passed=passed,evidence=evidence,required=required)
 
 
 def _build_markdown(out: Dict[str, Any]) -> str:
-    events = out.get("events") if isinstance(out.get("events"), dict) else {}
-    policy = out.get("policy") if isinstance(out.get("policy"), dict) else {}
-    signoff = out.get("signoff") if isinstance(out.get("signoff"), dict) else {}
-    checklist = out.get("checklist") if isinstance(out.get("checklist"), list) else []
-
-    lines = [
-        f"# M31 Weekly Health Summary ({out.get('week_start')} ~ {out.get('week_end')})",
-        "",
-        f"- ok: **{bool(out.get('ok'))}**",
-        f"- required_pass_total: **{int(out.get('required_pass_total') or 0)}**",
-        f"- required_fail_total: **{int(out.get('required_fail_total') or 0)}**",
-        "",
-        "## Event Summary",
-        "",
-        f"- total: **{int(events.get('total') or 0)}**",
-        f"- error_total: **{int(events.get('error_total') or 0)}**",
-        f"- error_rate: **{float(events.get('error_rate') or 0.0):.2%}**",
-        f"- run_total: **{int(events.get('run_total') or 0)}**",
-        "",
-        "## Post-GoLive Policy Summary",
-        "",
-        f"- policy_artifact_total: **{int(policy.get('found_total') or 0)}**",
-        f"- normal_day_total: **{int(policy.get('normal_day_total') or 0)}**",
-        f"- watch_day_total: **{int(policy.get('watch_day_total') or 0)}**",
-        f"- incident_day_total: **{int(policy.get('incident_day_total') or 0)}**",
-        "",
-        "## Final Signoff Summary",
-        "",
-        f"- signoff_artifact_total: **{int(signoff.get('found_total') or 0)}**",
-        f"- approved_day_total: **{int(signoff.get('approved_day_total') or 0)}**",
-        f"- hold_day_total: **{int(signoff.get('hold_day_total') or 0)}**",
-        "",
-        "## Checklist",
-        "",
-    ]
-    for item in checklist:
-        mark = "x" if bool(item.get("passed")) else " "
-        lines.append(f"- [{mark}] {item.get('title')} | evidence={item.get('evidence')}")
-
-    failures = out.get("failures") if isinstance(out.get("failures"), list) else []
-    lines += ["", "## Failures", ""]
-    if failures:
-        for msg in failures:
-            lines.append(f"- {msg}")
-    else:
-        lines.append("- (none)")
-    lines.append("")
-    return "\n".join(lines)
+    from scripts.diagnostics.m31_weekly_markdown_projection import _build_markdown as owner
+    return owner(out)
 
 
 def _build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(description="M31-3 weekly post-go-live health summary generator.")
-    p.add_argument("--event-log-path", default="data/logs/events.jsonl")
-    p.add_argument("--policy-report-dir", default="reports/milestones/m30_post_golive")
-    p.add_argument("--signoff-report-dir", default="reports/milestones/m30_golive")
-    p.add_argument("--report-dir", default="reports/milestones/m31_weekly_health")
-    p.add_argument("--week-end", default="2026-02-21")
-    p.add_argument("--days", type=int, default=7)
-    p.add_argument("--max-error-rate", type=float, default=0.20)
-    p.add_argument("--max-incident-days", type=int, default=1)
-    p.add_argument("--inject-fail", action="store_true")
-    p.add_argument("--json", action="store_true")
-    return p
+    from scripts.diagnostics.m31_weekly_cli_projection import _build_parser as owner
+    return owner(facade=_migration_sys.modules[__name__])
 
 
 def main(argv: Optional[List[str]] = None) -> int:
