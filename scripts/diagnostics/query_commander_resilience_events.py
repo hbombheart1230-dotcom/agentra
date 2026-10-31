@@ -22,17 +22,8 @@ def _load_jsonl(path: Path) -> List[Dict[str, Any]]:
 
 
 def _is_incident_event(rec: Dict[str, Any]) -> bool:
-    event = str(rec.get("event") or "")
-    payload = rec.get("payload") if isinstance(rec.get("payload"), dict) else {}
-    if event == "error":
-        return True
-    if event == "transition" and str(payload.get("transition") or "") == "cooldown":
-        return True
-    if event == "resilience":
-        reason = str(payload.get("reason") or "")
-        if reason in ("cooldown_active", "incident_threshold_cooldown"):
-            return True
-    return False
+    from scripts.diagnostics.commander_resilience_query_projection import _is_incident_event as owner
+    return owner(rec,facade=_migration_sys.modules[__name__])
 
 
 def _filtered_events(
@@ -42,19 +33,8 @@ def _filtered_events(
     only_incidents: bool = False,
     include_route: bool = False,
 ) -> List[Dict[str, Any]]:
-    out: List[Dict[str, Any]] = []
-    for rec in rows:
-        if rec.get("stage") != "commander_router":
-            continue
-        event = str(rec.get("event") or "")
-        if event == "route" and not include_route:
-            continue
-        if run_id and str(rec.get("run_id") or "") != run_id:
-            continue
-        if only_incidents and not _is_incident_event(rec):
-            continue
-        out.append(rec)
-    return out
+    from scripts.diagnostics.commander_resilience_query_projection import _filtered_events as owner
+    return owner(rows,run_id=run_id,only_incidents=only_incidents,include_route=include_route,facade=_migration_sys.modules[__name__])
 
 
 def _summary(rows: List[Dict[str, Any]], *, total_matched: int) -> Dict[str, Any]:
