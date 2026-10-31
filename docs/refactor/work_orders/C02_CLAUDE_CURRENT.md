@@ -1,212 +1,22 @@
-# C02 — Claude A | A-20261031-21 | FAST-3 8 NEW actual SOURCE BODY MOVEs
+# C02 — Claude A | A-20261031-22 | FAST-3 8 NEW actual SOURCE BODY MOVEs
 
-**CANONICAL_HEAD_AT_DESIGN:** `2c9453195ea619bfefbecf24ed711c9de161939d` | **OLD_ORDER_BLOB:** `c311d09dc8cbc25f183fdab7805406821041e1f3` | **A_REMOTE_HEAD:** `aca6396a75fddf2ced1a96025719cb4257b193ae` | **SOURCE_BLOB:** `7050e36800db8521d2fdf6a3fb0aaa37b7942fcb`.
+**CANONICAL_HEAD_AT_DESIGN:** `246b0a35e5b961762157859d34c492d7a06d17ff` | **OLD_ORDER_BLOB:** `6c8d49bdadd86d09ccaa0b23455908f63ad6e66e` | **A_REMOTE_HEAD:** `a7aaf71128922f1ac6db5e54e2c1683a7e7e3854` | **SOURCE_BLOB:** `c014b371593ced1c668f97f1372449cf1863ce3f`.
 
-**C03 NEW DELTA:** #11 comment 6542696699: A-20 A1–A8 REMOTE_DONE, normal unittest 8/8 exit0, actor SHA `aca6396a75fddf2ced1a96025719cb4257b193ae`; C04 integrated A20 and C05 scoped accepted, RF-035 already DONE, RF_DONE_DELTA=0. #12 comment 6542649748: B18 B1–B3 additional REMOTE_DONE, B4–B6 pending; B handled separately in C01. #32 no newer delta since 6520075820; RunLab exit255/RUN_SOURCE_SHA UNKNOWN, operational HOLD. Emergency branch unchanged at 069dadd5. A20 old functions/identical SHA tests MUST NOT be repeated.
+**C03 NEW DELTA:** #11 6543303217 confirms A-21 A1–A8 actual REMOTE_DONE, actor remote `a7aaf71128922f1ac6db5e54e2c1683a7e7e3854`, targeted normal unittest 8/8 exit0. C04 #36 6543477218 integrated exact 10/10 code/test blobs `f3aa21c1927d053d76f6055b3d1eb562fee825b6`; C05 #36 6543513407 accepted scoped G1/G2/G3, RF-035 existing DONE, RF_DONE_DELTA=0. C02 A-21 old items must NOT be rerun. #12 6543204864 B21 NO_MUTATION, remote `68f3f0797951cb35219752956a10a609b8363500`; C01 B21 8 pending remains valid. #32 no new since 6520075820; RunLab exit255/RUN_SOURCE_SHA UNKNOWN operational SAFETY_HOLD. Emergency `069dadd5` unchanged.
 
-**One-file complete contract:** Read only this C02 and specified SOURCE/Owner/test code; do NOT read D00, RF details, queue, C03, HANDOFF, or choose own work. Pin canonical HEAD, this ORDER_BLOB, A remote SHA, ORDER_ID. All A1–A8 mandatory independently; individual blocker does not stop remaining safe items. New issuance never retroactively cancels an already-started prior order. Edit/push ONLY A code+test branch, not B, D00, RF, STATUS, C04/C05 or other documents.
+**One-file complete execution contract:** Read only THIS C02 and code/test paths named here, not D00/RF/queue/C03/CURRENT/HANDOFF; no self-selection. Pin `CANONICAL_HEAD`, this `ORDER_FILE_BLOB_SHA`, `OWNER_REMOTE_SHA`, `ORDER_ID` at start. Execute all A1–A8 independently, blocked item → next safe item, do not stop at first PASS/commit. An already-started prior order remains valid. Only A-owned code/test branch; no B, D00, RF, STATUS, C04/C05, other documents, CI workflow or schedules.
 
-**Verified ownership/safety:** RF-035 exclusively CLAUDE_A, current A SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py` blob `7050e36800db8521d2fdf6a3fb0aaa37b7942fcb` matched integration. All eight new TARGETs and tests/test_p15_rf035_21h_quant_shadow_owners.py 404 on both A and integration; six future-reserve targets 404 too. Each SOURCE function still contains actual calculation BODY, not a previous wrapper. Read-only reporting/evaluation calculations, not live strategy enforcement. Do not execute live entry/order, Broker/Guard/Step5C/UEF, RunLab, operational State/DB, network, deploy, frozen oracle or real pipeline. Only in-memory/fake/temp fixtures. Existing import of runtime observation classifiers may be patched with pure fake functions; no operational calls.
+**Owner/safety:** All A1–A8 are RF-035, exclusive CLAUDE_A, SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py` current exact Git blob `c014b371593ced1c668f97f1372449cf1863ce3f` identical on A actor and integration. Every listed SOURCE still contains a real calculation body (not wrapper); eight TARGET paths and `tests/test_p15_rf035_22h_quant_shadow_owners.py` verified absent on both refs; six design-only reserve targets also absent. This is read-only shadow evaluation/reporting, NOT live entry/strategy/Guard/Step5C/UEF/RunLab. No real accounts/orders, Broker, operational State/DB, network, deploy, frozen oracle, live classifier call. Patch any fallback classifiers with pure fake functions and use in-memory/TemporaryDirectory fixtures only.
 
-**Implementation/test/push:** Move exact bodies below into new exclusive Owner modules; original SOURCE signatures remain thin wrappers, no duplicate body; Owner never imports SOURCE. For dynamic globals use `facade=sys.modules[__name__]` at call time; preserve post-import monkeypatch, ordering, copy identity, exceptions and byte output. Use `from __future__ import annotations` in Owners. Capture original-preimage golden first. Create `tests/test_p15_rf035_21h_quant_shadow_owners.py` with eight named tests, negative/error + patch seam + thin-wrapper/Owner-body checks. Run `python -m py_compile libs/reporting/quant_shadow_candidate_evaluation.py libs/reporting/quant_shadow_*_projection.py` then `python -m unittest tests/test_p15_rf035_21h_quant_shadow_owners.py -v` normal exit0 (scoped pytest alternative). No blanket -O/full peer/CI. Report SOURCE LOC before/after, owner/test blobs, actual normal exit, START/END if measured. Commit/push ONLY libs/reporting/quant_shadow_candidate_evaluation.py, the eight exact A targets and tests/test_p15_rf035_21h_quant_shadow_owners.py to `work/p15-a-reporter-pure-20261021`, non-force; re-fetch remote HEAD and blobs. HTTPS auth failure is PUSH_BLOCKED, continue other safe work; use approved exact-tree expected-head lease only when available. C04 integration and C05 G1/G2/G3 closeout separate.
+**Implementation:** For each item copy the exact SOURCE calculation BODY below to the named NEW single-Owner module and remove it from SOURCE; preserve the SOURCE function's exact signature as a thin wrapper delegating to Owner with `facade=sys.modules[__name__]` (or equivalent call-time resolution). Owner must never import SOURCE. Bind all indicated original globals/helpers from `facade` at invocation time, including `Mapping`, `Counter`, helper functions and constants, so post-import monkeypatch works. Preserve exception types, dict copy/identity, order, generator semantics and public caller compatibility. `from __future__ import annotations` in Owner. Record original-preimage golden before moving and compare original vs wrapper vs Owner, including negative/error and monkeypatch. AST/source check confirms calculation BODY removed, not duplicated.
 
-**Allowed paths:** libs/reporting/quant_shadow_candidate_evaluation.py; libs/reporting/quant_shadow_opening_probe_projection.py; libs/reporting/quant_shadow_opening_probe_enter_projection.py; libs/reporting/quant_shadow_largecap_probe_projection.py; libs/reporting/quant_shadow_largecap_enter_projection.py; libs/reporting/quant_shadow_entry_shape_payload_projection.py; libs/reporting/quant_shadow_vwap_observation_payload_projection.py; libs/reporting/quant_shadow_forward_summary_projection.py; libs/reporting/quant_shadow_top_forward_groups_projection.py; tests/test_p15_rf035_21h_quant_shadow_owners.py. Future reserves R1–R6 are NOT executable.
+**Normal G2 + push:** Write NEW `tests/test_p15_rf035_22h_quant_shadow_owners.py` with eight named tests `test_a1`…`test_a8` (exact input→expected below, original golden parity and patch seam); do not overwrite old A19/A20/A21 tests. `python -m py_compile libs/reporting/quant_shadow_candidate_evaluation.py libs/reporting/quant_shadow_*_projection.py` (expand globs to exact files when needed); `python -m unittest tests/test_p15_rf035_22h_quant_shadow_owners.py -v` normal exit0 (scoped pytest alternative). No blanket -O/full peer/hosted CI. Report source before/after LOC, owner/test blobs, normal exit and exact remote SHA. Commit/push ONLY `libs/reporting/quant_shadow_candidate_evaluation.py`, eight NEW targets, `tests/test_p15_rf035_22h_quant_shadow_owners.py` to `work/p15-a-reporter-pure-20261021`, non-force; independently re-fetch remote HEAD and all changed blobs. Git auth failure → PUSH_BLOCKED only; continue safe items and report exact unblock point. C04 G3 and C05 final RF acceptance separate.
 
-## A1 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_opening_probe` @ L313 | SOURCE_BLOB=`7050e36800db8521d2fdf6a3fb0aaa37b7942fcb`
-**TARGET:** `libs/reporting/quant_shadow_opening_probe_projection.py::_opening_probe` — NEW, verified absent on actor and integration HEAD, single Owner.
-**Exact calculation BODY to MOVE (remove from SOURCE; not duplicate, not KEEP):**
-```python
-def _opening_probe(row: Mapping[str, Any]) -> Dict[str, Any]:
-    probe = row.get("opening_momentum_probe_shadow")
-    return dict(probe) if isinstance(probe, Mapping) else {}
-```
-**SOURCE thin wrapper / caller / monkeypatch:** Preserve exact SOURCE function signature and return/exception semantics. Import the new Owner via package path at call time or stable alias; pass `facade=sys.modules[__name__]` keyword-only for all SOURCE globals; resolve the following through facade at invocation: Mapping lookup and copy; facade.Mapping. Owner must never import SOURCE; do not change external callers, CLI behavior or policy. Check original-preimage golden, wrapper, Owner and post-import monkeypatch parity, including negative/error path and AST proof of BODY removal.
-**Normal targeted test:** `test_a1_opening_probe` in `tests/test_p15_rf035_21h_quant_shadow_owners.py`. Fixture input→expected: {'opening_momentum_probe_shadow':{'would_probe':1}} → {'would_probe':1}, distinct dict identity; {} → {}. Only fake mappings/TemporaryDirectory; no real runtime. If BLOCKED record exact first blocker and **continue A2**.
+**Allowed write paths:** `libs/reporting/quant_shadow_candidate_evaluation.py`; `libs/reporting/quant_shadow_vwap_observation_projection.py`; `libs/reporting/quant_shadow_entry_lane_observation_projection.py`; `libs/reporting/quant_shadow_entry_lane_payload_projection.py`; `libs/reporting/quant_shadow_entry_lane_forward_projection.py`; `libs/reporting/quant_shadow_scorecard_rows_projection.py`; `libs/reporting/quant_shadow_named_forward_rows_projection.py`; `libs/reporting/quant_shadow_format_rows_projection.py`; `libs/reporting/quant_shadow_format_forward_projection.py`; `tests/test_p15_rf035_22h_quant_shadow_owners.py`. Future reserve R1–R6 is DESIGN ONLY, NOT executable in A-22.
 
-## A2 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_opening_probe_would_enter` @ L318 | SOURCE_BLOB=`7050e36800db8521d2fdf6a3fb0aaa37b7942fcb`
-**TARGET:** `libs/reporting/quant_shadow_opening_probe_enter_projection.py::_opening_probe_would_enter` — NEW, verified absent on actor and integration HEAD, single Owner.
-**Exact calculation BODY to MOVE (remove from SOURCE; not duplicate, not KEEP):**
-```python
-def _opening_probe_would_enter(row: Mapping[str, Any]) -> bool:
-    if row.get("opening_momentum_probe_would_enter") not in (None, ""):
-        return _bool(row.get("opening_momentum_probe_would_enter"))
-    return _bool(_opening_probe(row).get("would_probe"))
-```
-**SOURCE thin wrapper / caller / monkeypatch:** Preserve exact SOURCE function signature and return/exception semantics. Import the new Owner via package path at call time or stable alias; pass `facade=sys.modules[__name__]` keyword-only for all SOURCE globals; resolve the following through facade at invocation: direct field precedence; facade._bool and facade._opening_probe. Owner must never import SOURCE; do not change external callers, CLI behavior or policy. Check original-preimage golden, wrapper, Owner and post-import monkeypatch parity, including negative/error path and AST proof of BODY removal.
-**Normal targeted test:** `test_a2_opening_probe_would_enter` in `tests/test_p15_rf035_21h_quant_shadow_owners.py`. Fixture input→expected: {'opening_momentum_probe_would_enter':'yes'} → True; {'opening_momentum_probe_shadow':{'would_probe':1}} → True; {} → False. Only fake mappings/TemporaryDirectory; no real runtime. If BLOCKED record exact first blocker and **continue A3**.
-
-## A3 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_largecap_surge_probe` @ L324 | SOURCE_BLOB=`7050e36800db8521d2fdf6a3fb0aaa37b7942fcb`
-**TARGET:** `libs/reporting/quant_shadow_largecap_probe_projection.py::_largecap_surge_probe` — NEW, verified absent on actor and integration HEAD, single Owner.
-**Exact calculation BODY to MOVE (remove from SOURCE; not duplicate, not KEEP):**
-```python
-def _largecap_surge_probe(row: Mapping[str, Any]) -> Dict[str, Any]:
-    probe = row.get("opening_largecap_surge_shadow")
-    return dict(probe) if isinstance(probe, Mapping) else {}
-```
-**SOURCE thin wrapper / caller / monkeypatch:** Preserve exact SOURCE function signature and return/exception semantics. Import the new Owner via package path at call time or stable alias; pass `facade=sys.modules[__name__]` keyword-only for all SOURCE globals; resolve the following through facade at invocation: facade.Mapping and dict copy. Owner must never import SOURCE; do not change external callers, CLI behavior or policy. Check original-preimage golden, wrapper, Owner and post-import monkeypatch parity, including negative/error path and AST proof of BODY removal.
-**Normal targeted test:** `test_a3_largecap_surge_probe` in `tests/test_p15_rf035_21h_quant_shadow_owners.py`. Fixture input→expected: {'opening_largecap_surge_shadow':{'would_probe':1}} → {'would_probe':1}, distinct copy; {} → {}. Only fake mappings/TemporaryDirectory; no real runtime. If BLOCKED record exact first blocker and **continue A4**.
-
-## A4 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_largecap_surge_would_enter` @ L329 | SOURCE_BLOB=`7050e36800db8521d2fdf6a3fb0aaa37b7942fcb`
-**TARGET:** `libs/reporting/quant_shadow_largecap_enter_projection.py::_largecap_surge_would_enter` — NEW, verified absent on actor and integration HEAD, single Owner.
-**Exact calculation BODY to MOVE (remove from SOURCE; not duplicate, not KEEP):**
-```python
-def _largecap_surge_would_enter(row: Mapping[str, Any]) -> bool:
-    if row.get("opening_largecap_surge_would_enter") not in (None, ""):
-        return _bool(row.get("opening_largecap_surge_would_enter"))
-    return _bool(_largecap_surge_probe(row).get("would_probe"))
-```
-**SOURCE thin wrapper / caller / monkeypatch:** Preserve exact SOURCE function signature and return/exception semantics. Import the new Owner via package path at call time or stable alias; pass `facade=sys.modules[__name__]` keyword-only for all SOURCE globals; resolve the following through facade at invocation: facade._bool and facade._largecap_surge_probe, direct precedence. Owner must never import SOURCE; do not change external callers, CLI behavior or policy. Check original-preimage golden, wrapper, Owner and post-import monkeypatch parity, including negative/error path and AST proof of BODY removal.
-**Normal targeted test:** `test_a4_largecap_surge_would_enter` in `tests/test_p15_rf035_21h_quant_shadow_owners.py`. Fixture input→expected: {'opening_largecap_surge_would_enter':'yes'} → True; {'opening_largecap_surge_shadow':{'would_probe':1}} → True; {} → False. Only fake mappings/TemporaryDirectory; no real runtime. If BLOCKED record exact first blocker and **continue A5**.
-
-## A5 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_entry_shape_payload` @ L359 | SOURCE_BLOB=`7050e36800db8521d2fdf6a3fb0aaa37b7942fcb`
-**TARGET:** `libs/reporting/quant_shadow_entry_shape_payload_projection.py::_entry_shape_payload` — NEW, verified absent on actor and integration HEAD, single Owner.
-**Exact calculation BODY to MOVE (remove from SOURCE; not duplicate, not KEEP):**
-```python
-def _entry_shape_payload(candidates: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
-    shapes = Counter(_entry_shape(row) for row in candidates)
-    pullback_blocked = sum(
-        1
-        for row in candidates
-        if _entry_shape(row) in {"pullback", "vwap_reclaim"}
-        and not _bool(row.get("would_enter"))
-    )
-    breakout_ready = sum(
-        1
-        for row in candidates
-        if _entry_shape(row) == "breakout"
-        and (
-            _bool(row.get("would_enter"))
-            or _text(row.get("reason"))
-            in {
-                "breakout_above_recent_high_with_vwap_hold_and_volume_confirmation",
-                "breakout_above_recent_high_with_vwap_structure_confirmation",
-            }
-        )
-    )
-    breakout_not_ready = sum(
-        1
-        for row in candidates
-        if _entry_shape(row) == "breakout" and not _bool(row.get("would_enter"))
-    )
-    return {
-        "behavior_effect": "diagnostic_only",
-        "by_shape": _top_counter(shapes),
-        "pullback_or_vwap_blocked_count": pullback_blocked,
-        "breakout_ready_like_count": breakout_ready,
-        "breakout_not_ready_count": breakout_not_ready,
-    }
-```
-**SOURCE thin wrapper / caller / monkeypatch:** Preserve exact SOURCE function signature and return/exception semantics. Import the new Owner via package path at call time or stable alias; pass `facade=sys.modules[__name__]` keyword-only for all SOURCE globals; resolve the following through facade at invocation: facade.Counter/_entry_shape/_bool/_text/_top_counter, preserve diagnostic_only and order. Owner must never import SOURCE; do not change external callers, CLI behavior or policy. Check original-preimage golden, wrapper, Owner and post-import monkeypatch parity, including negative/error path and AST proof of BODY removal.
-**Normal targeted test:** `test_a5_entry_shape_payload` in `tests/test_p15_rf035_21h_quant_shadow_owners.py`. Fixture input→expected: [] → by_shape=[], pullback_or_vwap_blocked_count=0, breakout_ready_like_count=0, breakout_not_ready_count=0; one {'reason':'breakout_not_ready','would_enter':False} → breakout_not_ready_count=1. Only fake mappings/TemporaryDirectory; no real runtime. If BLOCKED record exact first blocker and **continue A6**.
-
-## A6 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_below_vwap_reclaim_observation_payload` @ L401 | SOURCE_BLOB=`7050e36800db8521d2fdf6a3fb0aaa37b7942fcb`
-**TARGET:** `libs/reporting/quant_shadow_vwap_observation_payload_projection.py::_below_vwap_reclaim_observation_payload` — NEW, verified absent on actor and integration HEAD, single Owner.
-**Exact calculation BODY to MOVE (remove from SOURCE; not duplicate, not KEEP):**
-```python
-def _below_vwap_reclaim_observation_payload(candidates: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
-    subtype_counter: Counter[str] = Counter()
-    subtype_v2_counter: Counter[str] = Counter()
-    total = 0
-    for row in candidates:
-        observation = _below_vwap_reclaim_observation(row)
-        if not _bool(observation.get("applies")):
-            continue
-        total += 1
-        subtype_counter[_text(observation.get("subtype"))] += 1
-        subtype_v2_counter[_text(observation.get("subtype_v2"))] += 1
-    return {
-        "behavior_effect": "observation_only",
-        "candidate_count": int(total),
-        "by_subtype": _top_counter(subtype_counter, limit=8),
-        "by_subtype_v2": _top_counter(subtype_v2_counter, limit=10),
-    }
-```
-**SOURCE thin wrapper / caller / monkeypatch:** Preserve exact SOURCE function signature and return/exception semantics. Import the new Owner via package path at call time or stable alias; pass `facade=sys.modules[__name__]` keyword-only for all SOURCE globals; resolve the following through facade at invocation: facade.Counter/_below_vwap_reclaim_observation/_bool/_text/_top_counter, observation_only. Owner must never import SOURCE; do not change external callers, CLI behavior or policy. Check original-preimage golden, wrapper, Owner and post-import monkeypatch parity, including negative/error path and AST proof of BODY removal.
-**Normal targeted test:** `test_a6_below_vwap_reclaim_observation_payload` in `tests/test_p15_rf035_21h_quant_shadow_owners.py`. Fixture input→expected: [] → candidate_count=0, by_subtype=[], by_subtype_v2=[]; patched facade._below_vwap_reclaim_observation returns applies=True,subtype='x' → candidate_count=1. Only fake mappings/TemporaryDirectory; no real runtime. If BLOCKED record exact first blocker and **continue A7**.
-
-## A7 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_forward_outcome_summary` @ L476 | SOURCE_BLOB=`7050e36800db8521d2fdf6a3fb0aaa37b7942fcb`
-**TARGET:** `libs/reporting/quant_shadow_forward_summary_projection.py::_forward_outcome_summary` — NEW, verified absent on actor and integration HEAD, single Owner.
-**Exact calculation BODY to MOVE (remove from SOURCE; not duplicate, not KEEP):**
-```python
-def _forward_outcome_summary(rows: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
-    observed_rows = [row for row in rows if _bool(_forward_outcome(row).get("available"))]
-    observed_days = Counter(_candidate_day(row) for row in observed_rows if _candidate_day(row))
-    largest_day_count = observed_days.most_common(1)[0][1] if observed_days else 0
-    horizon_counts: Dict[str, int] = {}
-    horizon_day_counts: Dict[str, int] = {}
-    for horizon in ("+3m", "+5m", "+15m", "+30m", "+60m", "EOD"):
-        horizon_rows = [
-            row
-            for row in rows
-            if _checkpoint_value(row, horizon, "return_pct") is not None
-        ]
-        horizon_counts[horizon] = len(horizon_rows)
-        horizon_day_counts[horizon] = len(
-            {_candidate_day(row) for row in horizon_rows if _candidate_day(row)}
-        )
-    return {
-        "measurement_contract_version": "forward_horizon_coverage.v2",
-        "candidate_count": len(rows),
-        "observed_count": len(observed_rows),
-        "observed_day_count": len(observed_days),
-        "sample_concentration": (
-            round(float(largest_day_count) / float(len(observed_rows)), 4)
-            if observed_rows
-            else 0.0
-        ),
-        "observed_days": [name for name, _count in observed_days.most_common(5)],
-        "observed_count_by_horizon": horizon_counts,
-        "observed_day_count_by_horizon": horizon_day_counts,
-        **{
-            f"observed_count_{horizon[1:-1]}m" if horizon.startswith("+") else "observed_count_eod": count
-            for horizon, count in horizon_counts.items()
-        },
-        **{
-            f"observed_day_count_{horizon[1:-1]}m" if horizon.startswith("+") else "observed_day_count_eod": count
-            for horizon, count in horizon_day_counts.items()
-        },
-        "avg_return_3m_pct": _mean([_checkpoint_value(row, "+3m", "return_pct") for row in rows]),
-        "avg_return_5m_pct": _mean([_checkpoint_value(row, "+5m", "return_pct") for row in rows]),
-        "avg_return_15m_pct": _mean([_checkpoint_value(row, "+15m", "return_pct") for row in rows]),
-        "avg_return_30m_pct": _mean([_checkpoint_value(row, "+30m", "return_pct") for row in rows]),
-        "avg_return_60m_pct": _mean([_checkpoint_value(row, "+60m", "return_pct") for row in rows]),
-        "avg_mfe_5m_pct": _mean([_checkpoint_value(row, "+5m", "mfe_pct") for row in rows]),
-        "avg_mae_5m_pct": _mean([_checkpoint_value(row, "+5m", "mae_pct") for row in rows]),
-        "coverage": (float(len(observed_rows)) / float(len(rows))) if rows else 0.0,
-    }
-```
-**SOURCE thin wrapper / caller / monkeypatch:** Preserve exact SOURCE function signature and return/exception semantics. Import the new Owner via package path at call time or stable alias; pass `facade=sys.modules[__name__]` keyword-only for all SOURCE globals; resolve the following through facade at invocation: facade.Counter/_bool/_forward_outcome/_candidate_day/_checkpoint_value/_mean; preserve dict key spellings and exception parity. Owner must never import SOURCE; do not change external callers, CLI behavior or policy. Check original-preimage golden, wrapper, Owner and post-import monkeypatch parity, including negative/error path and AST proof of BODY removal.
-**Normal targeted test:** `test_a7_forward_outcome_summary` in `tests/test_p15_rf035_21h_quant_shadow_owners.py`. Fixture input→expected: [] → candidate_count=0,observed_count=0,coverage=0.0; fake observed row → preserve horizon order and original dict keys. Only fake mappings/TemporaryDirectory; no real runtime. If BLOCKED record exact first blocker and **continue A8**.
-
-## A8 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_top_forward_groups` @ L524 | SOURCE_BLOB=`7050e36800db8521d2fdf6a3fb0aaa37b7942fcb`
-**TARGET:** `libs/reporting/quant_shadow_top_forward_groups_projection.py::_top_forward_groups` — NEW, verified absent on actor and integration HEAD, single Owner.
-**Exact calculation BODY to MOVE (remove from SOURCE; not duplicate, not KEEP):**
-```python
-def _top_forward_groups(groups: Mapping[str, List[Mapping[str, Any]]], *, limit: int = 10) -> List[Dict[str, Any]]:
-    summaries: List[Dict[str, Any]] = []
-    for name, rows in groups.items():
-        summary = _forward_outcome_summary(rows)
-        if int(summary.get("observed_count") or 0) <= 0:
-            continue
-        summary["name"] = name
-        summaries.append(summary)
-    summaries.sort(
-        key=lambda item: (
-            float(item.get("avg_return_5m_pct") or item.get("avg_return_3m_pct") or -999.0),
-            int(item.get("observed_count") or 0),
-        ),
-        reverse=True,
-    )
-    return summaries[:limit]
-```
-**SOURCE thin wrapper / caller / monkeypatch:** Preserve exact SOURCE function signature and return/exception semantics. Import the new Owner via package path at call time or stable alias; pass `facade=sys.modules[__name__]` keyword-only for all SOURCE globals; resolve the following through facade at invocation: facade._forward_outcome_summary; sorting, tie-break, mutation, limit preserved. Owner must never import SOURCE; do not change external callers, CLI behavior or policy. Check original-preimage golden, wrapper, Owner and post-import monkeypatch parity, including negative/error path and AST proof of BODY removal.
-**Normal targeted test:** `test_a8_top_forward_groups` in `tests/test_p15_rf035_21h_quant_shadow_owners.py`. Fixture input→expected: {} → []; {'a':[]} with facade._forward_outcome_summary returning observed_count=0 → []; two fake group summaries → descending rank and limit. Only fake mappings/TemporaryDirectory; no real runtime. If BLOCKED record exact first blocker and **continue finish targeted test, commit/push, remote re-fetch**.
-
-## FUTURE RESERVE — VERIFIED 6/6, DESIGN ONLY (NOT EXECUTABLE)
-These are six additional distinct RF-035 A functions, verified actual SOURCE bodies at `7050e36800db8521d2fdf6a3fb0aaa37b7942fcb`, future target paths absent on A and integration. They are NOT work in A-21. New C03 issuance and latest actor/source/target recheck required before implementation.
-
-### R1 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_below_vwap_reclaim_observation` @ L394 | SOURCE_BLOB=`7050e36800db8521d2fdf6a3fb0aaa37b7942fcb`
-**TARGET:** `libs/reporting/quant_shadow_vwap_observation_projection.py::_below_vwap_reclaim_observation` (404 actor/integration, verified absent). **BODY (DESIGN ONLY, DO NOT EXECUTE):**
+## A1 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_below_vwap_reclaim_observation` @ L365 | SOURCE_BLOB=`c014b371593ced1c668f97f1372449cf1863ce3f`
+**TARGET:** `libs/reporting/quant_shadow_vwap_observation_projection.py::_below_vwap_reclaim_observation` — NEW, 404 A/integration, exclusive Owner.
+**Exact BODY to MOVE (remove from SOURCE; not duplicate, not KEEP):**
 ```python
 def _below_vwap_reclaim_observation(row: Mapping[str, Any]) -> Dict[str, Any]:
     payload = row.get("below_vwap_reclaim_observation")
@@ -214,10 +24,12 @@ def _below_vwap_reclaim_observation(row: Mapping[str, Any]) -> Dict[str, Any]:
         return dict(payload)
     return classify_below_vwap_reclaim_observation(row)
 ```
-**Future test input→expected:** {'below_vwap_reclaim_observation':{'applies':True}} → {'applies':True}; fallback classifier mocked. **Safety/call-time seams:** facade.Mapping/classify_below_vwap_reclaim_observation, read-only mock. Requires fresh source blob/target check and new C03 issuance before execution.
+**Thin wrapper/caller/monkeypatch:** SOURCE original signature delegates to new Owner at call time with `facade=sys.modules[__name__]`. Bind facade.Mapping and facade.classify_below_vwap_reclaim_observation at call time. No Owner→SOURCE import, no caller/output/exception changes. Compare original-preimage golden, wrapper and Owner, including negative/error/monkeypatch parity and AST actual BODY removal.
+**Normal targeted test:** `test_a1_below_vwap_reclaim_observation` in `tests/test_p15_rf035_22h_quant_shadow_owners.py`. Input→expected: row={'below_vwap_reclaim_observation':{'flag':1}} → {'flag':1} (fresh dict); row={} with facade.classify_below_vwap_reclaim_observation=lambda row:{'fallback':True} → {'fallback':True}. Fake in-memory/temp only; never execute real pipeline. On BLOCKED report first blocker and **continue A2**.
 
-### R2 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_entry_lane_observation` @ L420 | SOURCE_BLOB=`7050e36800db8521d2fdf6a3fb0aaa37b7942fcb`
-**TARGET:** `libs/reporting/quant_shadow_entry_lane_observation_projection.py::_entry_lane_observation` (404 actor/integration, verified absent). **BODY (DESIGN ONLY, DO NOT EXECUTE):**
+## A2 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_entry_lane_observation` @ L376 | SOURCE_BLOB=`c014b371593ced1c668f97f1372449cf1863ce3f`
+**TARGET:** `libs/reporting/quant_shadow_entry_lane_observation_projection.py::_entry_lane_observation` — NEW, 404 A/integration, exclusive Owner.
+**Exact BODY to MOVE (remove from SOURCE; not duplicate, not KEEP):**
 ```python
 def _entry_lane_observation(row: Mapping[str, Any]) -> Dict[str, Any]:
     payload = row.get("entry_lane_observation")
@@ -225,10 +37,12 @@ def _entry_lane_observation(row: Mapping[str, Any]) -> Dict[str, Any]:
         return dict(payload)
     return build_entry_lane_observation(row)
 ```
-**Future test input→expected:** {'entry_lane_observation':{'primary_lane':'x'}} → {'primary_lane':'x'}; fallback builder mocked. **Safety/call-time seams:** facade.Mapping/build_entry_lane_observation, read-only mock. Requires fresh source blob/target check and new C03 issuance before execution.
+**Thin wrapper/caller/monkeypatch:** SOURCE original signature delegates to new Owner at call time with `facade=sys.modules[__name__]`. Bind facade.Mapping and facade.build_entry_lane_observation at call time. No Owner→SOURCE import, no caller/output/exception changes. Compare original-preimage golden, wrapper and Owner, including negative/error/monkeypatch parity and AST actual BODY removal.
+**Normal targeted test:** `test_a2_entry_lane_observation` in `tests/test_p15_rf035_22h_quant_shadow_owners.py`. Input→expected: row={'entry_lane_observation':{'primary_lane':'trend'}} → {'primary_lane':'trend'} (fresh dict); row={} with patched facade.build_entry_lane_observation=lambda row:{'primary_lane':'fallback'} → {'primary_lane':'fallback'}. Fake in-memory/temp only; never execute real pipeline. On BLOCKED report first blocker and **continue A3**.
 
-### R3 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_entry_lane_observation_payload` @ L427 | SOURCE_BLOB=`7050e36800db8521d2fdf6a3fb0aaa37b7942fcb`
-**TARGET:** `libs/reporting/quant_shadow_entry_lane_payload_projection.py::_entry_lane_observation_payload` (404 actor/integration, verified absent). **BODY (DESIGN ONLY, DO NOT EXECUTE):**
+## A3 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_entry_lane_observation_payload` @ L383 | SOURCE_BLOB=`c014b371593ced1c668f97f1372449cf1863ce3f`
+**TARGET:** `libs/reporting/quant_shadow_entry_lane_payload_projection.py::_entry_lane_observation_payload` — NEW, 404 A/integration, exclusive Owner.
+**Exact BODY to MOVE (remove from SOURCE; not duplicate, not KEEP):**
 ```python
 def _entry_lane_observation_payload(candidates: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
     lane_counter: Counter[str] = Counter()
@@ -270,10 +84,12 @@ def _entry_lane_observation_payload(candidates: Sequence[Mapping[str, Any]]) -> 
         "by_market_regime_rail": _top_counter(market_rail_counter, limit=8),
     }
 ```
-**Future test input→expected:** [] → candidate_count=0 and all by_* lists=[]. **Safety/call-time seams:** facade.Counter/_entry_lane_observation/_text/_top_counter; fake rows. Requires fresh source blob/target check and new C03 issuance before execution.
+**Thin wrapper/caller/monkeypatch:** SOURCE original signature delegates to new Owner at call time with `facade=sys.modules[__name__]`. Bind facade.Counter, facade._entry_lane_observation, facade._text, facade._top_counter at call time. No Owner→SOURCE import, no caller/output/exception changes. Compare original-preimage golden, wrapper and Owner, including negative/error/monkeypatch parity and AST actual BODY removal.
+**Normal targeted test:** `test_a3_entry_lane_observation_payload` in `tests/test_p15_rf035_22h_quant_shadow_owners.py`. Input→expected: [] → behavior_effect='observation_only', candidate_count=0 and eight by_* groups empty; fake one row with patched observation {'primary_lane':'trend','subtype':'A'} → candidate_count=1 and by_primary_lane=[{'name':'trend','count':1}] subject to original _top_counter output. Fake in-memory/temp only; never execute real pipeline. On BLOCKED report first blocker and **continue A4**.
 
-### R4 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_entry_lane_forward_outcomes` @ L542 | SOURCE_BLOB=`7050e36800db8521d2fdf6a3fb0aaa37b7942fcb`
-**TARGET:** `libs/reporting/quant_shadow_entry_lane_forward_projection.py::_entry_lane_forward_outcomes` (404 actor/integration, verified absent). **BODY (DESIGN ONLY, DO NOT EXECUTE):**
+## A4 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_entry_lane_forward_outcomes` @ L440 | SOURCE_BLOB=`c014b371593ced1c668f97f1372449cf1863ce3f`
+**TARGET:** `libs/reporting/quant_shadow_entry_lane_forward_projection.py::_entry_lane_forward_outcomes` — NEW, 404 A/integration, exclusive Owner.
+**Exact BODY to MOVE (remove from SOURCE; not duplicate, not KEEP):**
 ```python
 def _entry_lane_forward_outcomes(candidates: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
     by_lane: Dict[str, List[Mapping[str, Any]]] = {}
@@ -308,10 +124,12 @@ def _entry_lane_forward_outcomes(candidates: Sequence[Mapping[str, Any]]) -> Dic
         "by_market_regime_rail": _top_forward_groups(by_market_rail, limit=8),
     }
 ```
-**Future test input→expected:** [] → baseline empty result exactly as golden; fake lane groups → same keys/order. **Safety/call-time seams:** facade._entry_lane_subtype/_forward_outcome_summary/_top_forward_groups; fake rows. Requires fresh source blob/target check and new C03 issuance before execution.
+**Thin wrapper/caller/monkeypatch:** SOURCE original signature delegates to new Owner at call time with `facade=sys.modules[__name__]`. Bind facade._entry_lane_observation, facade._text, facade._top_forward_groups at call time. No Owner→SOURCE import, no caller/output/exception changes. Compare original-preimage golden, wrapper and Owner, including negative/error/monkeypatch parity and AST actual BODY removal.
+**Normal targeted test:** `test_a4_entry_lane_forward_outcomes` in `tests/test_p15_rf035_22h_quant_shadow_owners.py`. Input→expected: [] → behavior_effect='evaluation_only' and seven by_* groups []; one fake row with patched observation lane='trend' → same group keys/order as original preimage. Fake in-memory/temp only; never execute real pipeline. On BLOCKED report first blocker and **continue A5**.
 
-### R5 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_scorecard_rows` @ L580 | SOURCE_BLOB=`7050e36800db8521d2fdf6a3fb0aaa37b7942fcb`
-**TARGET:** `libs/reporting/quant_shadow_scorecard_rows_projection.py::_scorecard_rows` (404 actor/integration, verified absent). **BODY (DESIGN ONLY, DO NOT EXECUTE):**
+## A5 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_scorecard_rows` @ L478 | SOURCE_BLOB=`c014b371593ced1c668f97f1372449cf1863ce3f`
+**TARGET:** `libs/reporting/quant_shadow_scorecard_rows_projection.py::_scorecard_rows` — NEW, 404 A/integration, exclusive Owner.
+**Exact BODY to MOVE (remove from SOURCE; not duplicate, not KEEP):**
 ```python
 def _scorecard_rows(rows: Sequence[Mapping[str, Any]], *, mode: str, limit: int = 5) -> List[Dict[str, Any]]:
     selected: List[Dict[str, Any]] = []
@@ -368,10 +186,12 @@ def _scorecard_rows(rows: Sequence[Mapping[str, Any]], *, mode: str, limit: int 
     )
     return selected[:limit]
 ```
-**Future test input→expected:** [] with mode='best' → []; fake rows → same score/ordering and limit. **Safety/call-time seams:** facade._scorecard_return_signal and other helpers, fake-only. Requires fresh source blob/target check and new C03 issuance before execution.
+**Thin wrapper/caller/monkeypatch:** SOURCE original signature delegates to new Owner at call time with `facade=sys.modules[__name__]`. Bind facade._scorecard_return_signal and facade._text at call time. No Owner→SOURCE import, no caller/output/exception changes. Compare original-preimage golden, wrapper and Owner, including negative/error/monkeypatch parity and AST actual BODY removal.
+**Normal targeted test:** `test_a5_scorecard_rows` in `tests/test_p15_rf035_22h_quant_shadow_owners.py`. Input→expected: [] mode='missed' → []; row observed_count=9 → []; row observed_count=10 with patched scorecard signal=0.5, mode='missed' → one item with scorecard_signal_pct=0.5; mode='unknown' → []. Fake in-memory/temp only; never execute real pipeline. On BLOCKED report first blocker and **continue A6**.
 
-### R6 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_named_forward_rows` @ L636 | SOURCE_BLOB=`7050e36800db8521d2fdf6a3fb0aaa37b7942fcb`
-**TARGET:** `libs/reporting/quant_shadow_named_forward_rows_projection.py::_named_forward_rows` (404 actor/integration, verified absent). **BODY (DESIGN ONLY, DO NOT EXECUTE):**
+## A6 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_named_forward_rows` @ L534 | SOURCE_BLOB=`c014b371593ced1c668f97f1372449cf1863ce3f`
+**TARGET:** `libs/reporting/quant_shadow_named_forward_rows_projection.py::_named_forward_rows` — NEW, 404 A/integration, exclusive Owner.
+**Exact BODY to MOVE (remove from SOURCE; not duplicate, not KEEP):**
 ```python
 def _named_forward_rows(rows: Sequence[Mapping[str, Any]], names: set[str]) -> List[Dict[str, Any]]:
     by_name = {str(row.get("name") or ""): row for row in rows}
@@ -419,6 +239,191 @@ def _named_forward_rows(rows: Sequence[Mapping[str, Any]], names: set[str]) -> L
         )
     return selected
 ```
-**Future test input→expected:** [],set() → []; fake rows with matching names → golden order. **Safety/call-time seams:** facade helpers resolved at call time, no operational IO. Requires fresh source blob/target check and new C03 issuance before execution.
+**Thin wrapper/caller/monkeypatch:** SOURCE original signature delegates to new Owner at call time with `facade=sys.modules[__name__]`. Bind facade.Mapping and facade.PROMOTION_CANDIDATE_MIN_OBSERVED at call time. No Owner→SOURCE import, no caller/output/exception changes. Compare original-preimage golden, wrapper and Owner, including negative/error/monkeypatch parity and AST actual BODY removal.
+**Normal targeted test:** `test_a6_named_forward_rows` in `tests/test_p15_rf035_22h_quant_shadow_owners.py`. Input→expected: ([],set()) → []; row name='x',observed_count=0, names={'x'} → one review_state='sample_insufficient'; unknown name ignored, output sorted by names. Fake in-memory/temp only; never execute real pipeline. On BLOCKED report first blocker and **continue A7**.
 
-**G1/G2/G3 separation:** This C02 issuance is a document-only supply, not code G1/G2/G3, not RF DONE. G1 actor remote code + G2 scoped normal exit0, C04 G3 integration and C05 final acceptance remain separate.
+## A7 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_format_rows` @ L952 | SOURCE_BLOB=`c014b371593ced1c668f97f1372449cf1863ce3f`
+**TARGET:** `libs/reporting/quant_shadow_format_rows_projection.py::_format_rows` — NEW, 404 A/integration, exclusive Owner.
+**Exact BODY to MOVE (remove from SOURCE; not duplicate, not KEEP):**
+```python
+def _format_rows(rows: Sequence[Mapping[str, Any]], *, limit: int = 4) -> str:
+    parts: List[str] = []
+    for row in list(rows)[:limit]:
+        name = _text(row.get("name"))
+        if not name:
+            continue
+        parts.append(f"{name} ({row.get('count') or 0})")
+    return ", ".join(parts) if parts else "none"
+```
+**Thin wrapper/caller/monkeypatch:** SOURCE original signature delegates to new Owner at call time with `facade=sys.modules[__name__]`. Bind facade._text at call time. No Owner→SOURCE import, no caller/output/exception changes. Compare original-preimage golden, wrapper and Owner, including negative/error/monkeypatch parity and AST actual BODY removal.
+**Normal targeted test:** `test_a7_format_rows` in `tests/test_p15_rf035_22h_quant_shadow_owners.py`. Input→expected: [{'name':'x','count':2}] → 'x (2)'; [] → 'none'; limit=0 → 'none'. Fake in-memory/temp only; never execute real pipeline. On BLOCKED report first blocker and **continue A8**.
+
+## A8 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_format_forward_rows` @ L962 | SOURCE_BLOB=`c014b371593ced1c668f97f1372449cf1863ce3f`
+**TARGET:** `libs/reporting/quant_shadow_format_forward_projection.py::_format_forward_rows` — NEW, 404 A/integration, exclusive Owner.
+**Exact BODY to MOVE (remove from SOURCE; not duplicate, not KEEP):**
+```python
+def _format_forward_rows(rows: Sequence[Mapping[str, Any]], *, limit: int = 4) -> str:
+    parts: List[str] = []
+    for row in list(rows)[:limit]:
+        name = _text(row.get("name"))
+        if not name:
+            continue
+        observed = int(row.get("observed_count") or 0)
+        count = int(row.get("candidate_count") or 0)
+        ret5 = row.get("avg_return_5m_pct")
+        ret15 = row.get("avg_return_15m_pct")
+        mfe5 = row.get("avg_mfe_5m_pct")
+        mae5 = row.get("avg_mae_5m_pct")
+        parts.append(
+            f"{name} ({observed}/{count}, "
+            f"+5m {float(ret5):.4f}%"
+            if ret5 is not None
+            else f"{name} ({observed}/{count}, +5m n/a"
+        )
+        if parts:
+            last = parts[-1]
+            if ret15 is not None:
+                last += f", +15m {float(ret15):.4f}%"
+            if mfe5 is not None:
+                last += f", mfe5 {float(mfe5):.4f}%"
+            if mae5 is not None:
+                last += f", mae5 {float(mae5):.4f}%"
+            parts[-1] = last + ")"
+    return "; ".join(parts) if parts else "none"
+```
+**Thin wrapper/caller/monkeypatch:** SOURCE original signature delegates to new Owner at call time with `facade=sys.modules[__name__]`. Bind facade._text at call time. No Owner→SOURCE import, no caller/output/exception changes. Compare original-preimage golden, wrapper and Owner, including negative/error/monkeypatch parity and AST actual BODY removal.
+**Normal targeted test:** `test_a8_format_forward_rows` in `tests/test_p15_rf035_22h_quant_shadow_owners.py`. Input→expected: [{'name':'x','observed_count':2,'candidate_count':3,'avg_return_5m_pct':1.25}] → 'x (2/3, +5m 1.2500%)'; [] → 'none'; malformed numeric must match original exception. Fake in-memory/temp only; never execute real pipeline. On BLOCKED report first blocker and **continue remaining safe verification/push**.
+
+## FUTURE RESERVE — VERIFIED 6/6, DESIGN ONLY, NOT EXECUTABLE
+These six distinct RF-035 CLAUDE_A SOURCE BODYs and exclusive TARGET paths were checked against `c014b371593ced1c668f97f1372449cf1863ce3f` on actor/integration; all six target filenames absent. They are not part of A-22. Latest source/target SHA recheck and a new C03 executable order required before any move.
+
+### R1 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_text` @ L52 | SOURCE_BLOB=`c014b371593ced1c668f97f1372449cf1863ce3f`
+**TARGET:** `libs/reporting/quant_shadow_text_projection.py::_text` (verified absent actor/integration; design-only).
+**Exact BODY (NOT EXECUTABLE in A-22):**
+```python
+def _text(value: Any) -> str:
+    text = str(value or "").strip()
+    return "" if text.lower() in {"", "-", "none", "null", "unknown", "not_captured"} else text
+```
+**Future targeted input→expected:** ' unknown ' → ''; ' x ' → 'x'. **Safety/compatibility:** pure scalar, facade-free; preserve string conversion; retain SOURCE signature/thin wrapper and original golden/monkeypatch semantics. Only fake/temp, no real effects. Recheck latest HEAD and target absence before issuance.
+
+### R2 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_read_json` @ L61 | SOURCE_BLOB=`c014b371593ced1c668f97f1372449cf1863ce3f`
+**TARGET:** `libs/reporting/quant_shadow_json_projection.py::_read_json` (verified absent actor/integration; design-only).
+**Exact BODY (NOT EXECUTABLE in A-22):**
+```python
+def _read_json(path: Path) -> Any:
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+```
+**Future targeted input→expected:** temp valid JSON {'x':1} → {'x':1}; missing path → None. **Safety/compatibility:** facade.json at call time; temp only; retain SOURCE signature/thin wrapper and original golden/monkeypatch semantics. Only fake/temp, no real effects. Recheck latest HEAD and target absence before issuance.
+
+### R3 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_json_paths_for_day` @ L76 | SOURCE_BLOB=`c014b371593ced1c668f97f1372449cf1863ce3f`
+**TARGET:** `libs/reporting/quant_shadow_day_paths_projection.py::_json_paths_for_day` (verified absent actor/integration; design-only).
+**Exact BODY (NOT EXECUTABLE in A-22):**
+```python
+def _json_paths_for_day(root: Path, day: str) -> List[Path]:
+    day_dir = root / str(day)[:10]
+    if not day_dir.exists():
+        return []
+    return sorted(path for path in day_dir.glob("*.json") if path.name != "latest.json")
+```
+**Future targeted input→expected:** temp day dir with a.json,latest.json → [a.json]. **Safety/compatibility:** facade.Path; temp only; preserve sorted paths; retain SOURCE signature/thin wrapper and original golden/monkeypatch semantics. Only fake/temp, no real effects. Recheck latest HEAD and target absence before issuance.
+
+### R4 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_drop_q9_row_keys` @ L176 | SOURCE_BLOB=`c014b371593ced1c668f97f1372449cf1863ce3f`
+**TARGET:** `libs/reporting/quant_shadow_drop_q9_projection.py::_drop_q9_row_keys` (verified absent actor/integration; design-only).
+**Exact BODY (NOT EXECUTABLE in A-22):**
+```python
+def _drop_q9_row_keys(payload: Dict[str, Any], drop: Optional[Sequence[str]]) -> Dict[str, Any]:
+    """Remove `drop` keys from every q9 decision-candidate row of `payload` (no-op when `drop` is empty)."""
+    if drop:
+        for row in payload.get("q9_decision_candidates") or []:
+            if isinstance(row, dict):
+                for key in drop:
+                    row.pop(key, None)
+    return payload
+```
+**Future targeted input→expected:** payload {'q9_decision_candidates':[{'x':1,'y':2}]} drop=['x'] → same payload identity with row {'y':2}. **Safety/compatibility:** in-place mutation of supplied fake dict only; preserve identity; retain SOURCE signature/thin wrapper and original golden/monkeypatch semantics. Only fake/temp, no real effects. Recheck latest HEAD and target absence before issuance.
+
+### R5 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_format_scorecard_rows` @ L992 | SOURCE_BLOB=`c014b371593ced1c668f97f1372449cf1863ce3f`
+**TARGET:** `libs/reporting/quant_shadow_format_scorecard_projection.py::_format_scorecard_rows` (verified absent actor/integration; design-only).
+**Exact BODY (NOT EXECUTABLE in A-22):**
+```python
+def _format_scorecard_rows(rows: Sequence[Mapping[str, Any]], *, limit: int = 4) -> str:
+    parts: List[str] = []
+    for row in list(rows)[:limit]:
+        name = _text(row.get("name"))
+        if not name:
+            continue
+        observed = int(row.get("observed_count") or 0)
+        count = int(row.get("candidate_count") or 0)
+        ret5 = row.get("avg_return_5m_pct")
+        ret15 = row.get("avg_return_15m_pct")
+        mfe5 = row.get("avg_mfe_5m_pct")
+        mae5 = row.get("avg_mae_5m_pct")
+        state = _text(row.get("review_state"))
+        text = (
+            f"{name} ({observed}/{count}, "
+            f"+5m {float(ret5):.4f}%"
+            if ret5 is not None
+            else f"{name} ({observed}/{count}, +5m n/a"
+        )
+        if ret15 is not None:
+            text += f", +15m {float(ret15):.4f}%"
+        if mfe5 is not None:
+            text += f", mfe5 {float(mfe5):.4f}%"
+        if mae5 is not None:
+            text += f", mae5 {float(mae5):.4f}%"
+        if state:
+            text += f", state {state}"
+        parts.append(text + ")")
+    return "; ".join(parts) if parts else "none"
+```
+**Future targeted input→expected:** [] → 'none'; fake name='x',observed_count=2,candidate_count=3,ret5=1.0 → contains '+5m 1.0000%'. **Safety/compatibility:** facade._text; fake-only; retain SOURCE signature/thin wrapper and original golden/monkeypatch semantics. Only fake/temp, no real effects. Recheck latest HEAD and target absence before issuance.
+
+### R6 | RF-035 | Owner=CLAUDE_A | SOURCE `libs/reporting/quant_shadow_candidate_evaluation.py::_shadow_readiness` @ L770 | SOURCE_BLOB=`c014b371593ced1c668f97f1372449cf1863ce3f`
+**TARGET:** `libs/reporting/quant_shadow_readiness_projection.py::_shadow_readiness` (verified absent actor/integration; design-only).
+**Exact BODY (NOT EXECUTABLE in A-22):**
+```python
+def _shadow_readiness(candidates: Sequence[Mapping[str, Any]], promotion: Mapping[str, Any]) -> Dict[str, Any]:
+    candidate_count = len(candidates)
+    evaluated_count = sum(1 for row in candidates if _bool(row.get("evaluated")))
+    evaluated_ratio = float(evaluated_count) / float(candidate_count) if candidate_count else 0.0
+    candidate = _text(promotion.get("candidate"))
+    confidence = _text(promotion.get("confidence"))
+    action = _text(promotion.get("recommended_action")) or "hold"
+    ready = bool(
+        candidate_count >= TRUSTED_FORWARD_MIN_COUNT
+        and evaluated_count >= PROMOTION_CANDIDATE_MIN_OBSERVED
+        and evaluated_ratio >= TRUSTED_FORWARD_MIN_COVERAGE
+        and candidate not in {"", "hold"}
+        and confidence in {"medium", "high"}
+    )
+    if not candidate_count:
+        status = "hold_no_shadow_candidates"
+    elif ready:
+        status = "ready"
+    elif evaluated_count < PROMOTION_CANDIDATE_MIN_OBSERVED:
+        status = "hold_shadow_sample_insufficient"
+    elif evaluated_ratio < TRUSTED_FORWARD_MIN_COVERAGE:
+        status = "hold_shadow_coverage_insufficient"
+    else:
+        status = "review_shadow_signal_weak"
+    return {
+        "status": status,
+        "action": action if ready else "hold",
+        "candidate_count": candidate_count,
+        "evaluated_count": evaluated_count,
+        "evaluated_ratio": evaluated_ratio,
+        "sample_floor": TRUSTED_FORWARD_MIN_COUNT,
+        "evaluated_floor": PROMOTION_CANDIDATE_MIN_OBSERVED,
+        "coverage_floor": TRUSTED_FORWARD_MIN_COVERAGE,
+        "candidate": candidate or "hold",
+        "confidence": confidence or "none",
+        "promotion_scope": _text(promotion.get("promotion_scope")) or "none",
+    }
+```
+**Future targeted input→expected:** ([], {}) → status='hold_no_shadow_candidates', action='hold', evaluated_ratio=0.0. **Safety/compatibility:** facade._bool/_text and constants; evaluation-only no real gate invocation; retain SOURCE signature/thin wrapper and original golden/monkeypatch semantics. Only fake/temp, no real effects. Recheck latest HEAD and target absence before issuance.
+
+**G1/G2/G3 separation:** C02 document supply is not code G1/G2/G3, no RF DONE delta. Actor remote code + scoped normal exit0 → C04 exact integration → C05 final acceptance. Never count previous A21 or reserve as new implementation.
