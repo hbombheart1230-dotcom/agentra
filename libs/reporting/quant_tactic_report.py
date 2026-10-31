@@ -15,6 +15,14 @@ from libs.reporting import quant_tactic_monitor_projection as _monitor_owner
 from libs.reporting import quant_tactic_nested_dicts_projection as _nested_dicts_owner
 from libs.reporting import quant_tactic_first_nested_mapping_projection as _first_nested_owner
 from libs.reporting import quant_tactic_symbol_projection as _symbol_owner
+from libs.reporting import quant_tactic_playbook_projection as _playbook_owner
+from libs.reporting import quant_tactic_entry_visibility_projection as _entry_vis_owner
+from libs.reporting import quant_tactic_entry_info_projection as _entry_info_owner
+from libs.reporting import quant_tactic_candidate_symbol_projection as _cand_symbol_owner
+from libs.reporting import quant_tactic_scanner_chart_fit_projection as _chart_fit_owner
+from libs.reporting import quant_tactic_value_projection as _tactic_value_owner
+from libs.reporting import quant_tactic_mismatches_projection as _mismatches_owner
+from libs.reporting import quant_tactic_exit_drifts_projection as _exit_drifts_owner
 
 
 def _mapping(value: Any) -> Dict[str, Any]:
@@ -58,52 +66,19 @@ def _symbol(report: Mapping[str, Any]) -> str:
 
 
 def _playbook(report: Mapping[str, Any], *, fallback: str = "") -> str:
-    for item in (
-        _mapping(report.get("strategist_summary")),
-        _mapping(report.get("market_context_at_entry")),
-        _mapping(report.get("market_context")),
-    ):
-        value = str(item.get("playbook") or item.get("selected_playbook") or "").strip()
-        if value:
-            return value
-    return str(fallback or "").strip()
+    return _playbook_owner._playbook(report, fallback=fallback, facade=sys.modules[__name__])
 
 
 def _entry_visibility(report: Mapping[str, Any]) -> Dict[str, Any]:
-    return _mapping(report.get("entry_execution_visibility"))
+    return _entry_vis_owner._entry_visibility(report, facade=sys.modules[__name__])
 
 
 def _entry_info_from_visibility(visibility: Mapping[str, Any], monitor: Mapping[str, Any]) -> Dict[str, Any]:
-    focus = _mapping(visibility.get("monitor_focus_context"))
-    grouped = _mapping(visibility.get("entry_grouped_logic_trace"))
-    cascade = _mapping(visibility.get("monitor_entry_candidate_cascade"))
-    out: Dict[str, Any] = {}
-    out.update(grouped)
-    if focus:
-        out.update(
-            {
-                "triggered": focus.get("entry_triggered"),
-                "legacy_entry_decision": focus.get("entry_decision"),
-                "guard_reason": focus.get("entry_guard_reason") or focus.get("entry_reason"),
-                "reason": focus.get("entry_reason"),
-                "primary_failure_axis": focus.get("entry_primary_failure_axis"),
-                "cost_adjusted_edge_ok": focus.get("entry_cost_adjusted_edge_ok"),
-                "cost_adjusted_edge_pct": focus.get("entry_cost_adjusted_edge_pct"),
-                "cost_drag_pct": focus.get("entry_cost_drag_pct"),
-                "entry_cost_filter": focus.get("entry_cost_filter"),
-            }
-        )
-    if cascade:
-        out.setdefault("reason", cascade.get("reason"))
-        out.setdefault("primary_failure_axis", cascade.get("primary_failure_axis"))
-    if monitor:
-        out.setdefault("triggered", monitor.get("entry_triggered"))
-        out.setdefault("legacy_entry_decision", monitor.get("entry_decision"))
-    return {key: value for key, value in out.items() if value not in (None, "")}
+    return _entry_info_owner._entry_info_from_visibility(visibility, monitor, facade=sys.modules[__name__])
 
 
 def _candidate_symbol(row: Mapping[str, Any]) -> str:
-    return str(row.get("symbol") or row.get("code") or row.get("stk_cd") or row.get("ticker") or "").strip()
+    return _cand_symbol_owner._candidate_symbol(row)
 
 
 def _selected_candidate_row(report: Mapping[str, Any], symbol: str) -> Dict[str, Any]:
@@ -142,21 +117,11 @@ def _selected_candidate_row(report: Mapping[str, Any], symbol: str) -> Dict[str,
 
 
 def _scanner_chart_fit_from_row(row: Mapping[str, Any]) -> Dict[str, Any]:
-    explicit = _mapping(row.get("scanner_chart_fit"))
-    if explicit:
-        return explicit
-    if row.get("scanner_chart_fit_score") in (None, "") and not _mapping(row.get("scanner_chart_fit_components")):
-        return {}
-    return {
-        "score": row.get("scanner_chart_fit_score"),
-        "authority": str(row.get("scanner_chart_fit_authority") or ""),
-        "components": _mapping(row.get("scanner_chart_fit_components")),
-        "penalty": row.get("scanner_chart_fit_penalty"),
-    }
+    return _chart_fit_owner._scanner_chart_fit_from_row(row, facade=sys.modules[__name__])
 
 
 def _tactic_value(value: Any) -> str:
-    return str(value or "").strip()
+    return _tactic_value_owner._tactic_value(value)
 
 
 def _tactic_sources(
@@ -180,19 +145,11 @@ def _tactic_sources(
 
 
 def _tactic_mismatches(sources: List[tuple[str, str]], tactic_id: str) -> List[Dict[str, str]]:
-    return [
-        {"source": source, "tactic_id": value}
-        for source, value in sources
-        if tactic_id and value != tactic_id and source != "exit_quant_decision"
-    ]
+    return _mismatches_owner._tactic_mismatches(sources, tactic_id)
 
 
 def _exit_tactic_drifts(sources: List[tuple[str, str]], tactic_id: str) -> List[Dict[str, str]]:
-    return [
-        {"source": source, "tactic_id": value}
-        for source, value in sources
-        if tactic_id and value != tactic_id and source == "exit_quant_decision"
-    ]
+    return _exit_drifts_owner._exit_tactic_drifts(sources, tactic_id)
 
 
 def quant_tactic_surface(report: Mapping[str, Any] | None) -> Dict[str, Any]:

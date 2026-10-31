@@ -1,0 +1,11 @@
+"""quant_tactic_report projections (moved verbatim from quant_tactic_report).
+
+Module globals and helpers are resolved on ``facade`` (the quant_tactic_report module) at call time; this module never imports it.
+"""
+from __future__ import annotations
+
+from typing import Any, Mapping
+
+
+def _candidate_symbol(row: Mapping[str, Any]) -> str:
+    return str(row.get("symbol") or row.get("code") or row.get("stk_cd") or row.get("ticker") or "").strip()
