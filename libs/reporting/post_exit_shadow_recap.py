@@ -16,6 +16,10 @@ from libs.reporting import post_exit_shadow_scalar_projection as _scalar_owner
 from libs.reporting import post_exit_shadow_format_projection as _format_owner
 from libs.reporting import post_exit_shadow_env_projection as _env_owner
 from libs.reporting import post_exit_shadow_freshness_projection as _freshness_owner
+from libs.reporting import post_exit_shadow_clock_projection as _clock_owner
+from libs.reporting import post_exit_shadow_read_projection as _read_owner
+from libs.reporting import post_exit_shadow_freshness_decision_projection as _decision_owner
+from libs.reporting import post_exit_shadow_path_projection as _path_owner
 from libs.agents.reporter.narrative.post_exit_recap_bodies_01 import (  # R-4 owner bodies (facade-injected)
     _symbol_candidates_r4_impl,
     _rows_from_record_r4_impl,
@@ -51,15 +55,11 @@ KST = timezone(timedelta(hours=9), name="KST")
 
 
 def _utc_now_iso() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return _clock_owner._utc_now_iso(facade=_r3_sys.modules[__name__])
 
 
 def _read_json(path: Path) -> Dict[str, Any]:
-    try:
-        raw = json.loads(path.read_text(encoding="utf-8"))
-    except Exception:
-        return {}
-    return raw if isinstance(raw, dict) else {}
+    return _read_owner._read_json(path, facade=_r3_sys.modules[__name__])
 
 
 def resolve_post_exit_state_path(reports_root: Path, state_path: Path | None = None) -> Path | None:
@@ -135,21 +135,7 @@ def _rows_reach_regular_close(rows: Iterable[Mapping[str, Any]]) -> bool:
 
 
 def _post_exit_shadow_needs_fresh_minutes(shadow: Mapping[str, Any], rows: List[Dict[str, Any]]) -> bool:
-    target_epoch = _shadow_latest_required_epoch(shadow)
-    now_epoch = datetime.now(timezone.utc).timestamp()
-    if target_epoch is not None:
-        if now_epoch + 30.0 < target_epoch:
-            return False
-        if not _rows_reach_epoch(rows, target_epoch):
-            return True
-
-    now_kst = datetime.now(timezone.utc).astimezone(KST)
-    checkpoints = _as_dict(shadow.get("checkpoints"))
-    eod = _as_dict(checkpoints.get("EOD"))
-    eod_pending = str(eod.get("status") or "").strip().lower() != "observed"
-    if eod_pending and now_kst.strftime("%H%M%S") >= "153500":
-        return not _rows_reach_regular_close(rows)
-    return False
+    return _decision_owner._post_exit_shadow_needs_fresh_minutes(shadow, rows, facade=_r3_sys.modules[__name__])
 
 
 def _minute_row_key(row: Mapping[str, Any]) -> str:
@@ -281,10 +267,7 @@ def _trade_label(path: Path, report: Mapping[str, Any], shadow: Mapping[str, Any
 
 
 def iter_trade_report_json_paths(reports_root: Path, day: str) -> List[Path]:
-    trade_root = reports_root / "trades" / day
-    if not trade_root.exists():
-        return []
-    return sorted(trade_root.rglob("reports/ai_trade_report.json"))
+    return _path_owner.iter_trade_report_json_paths(reports_root, day)
 
 
 def build_post_exit_shadow_recap(

@@ -42,69 +42,13 @@ def _filtered_events(
 
 
 def _print_human(path: Path, rows: List[Dict[str, Any]]) -> None:
-    print("=== Strategist LLM Events ===")
-    print(f"path={path}")
-    print(f"shown={len(rows)}")
-    for rec in rows:
-        p = rec.get("payload") if isinstance(rec.get("payload"), dict) else {}
-        ts = str(rec.get("ts") or "")
-        run_id = str(rec.get("run_id") or "")
-        call_kind = _infer_call_kind(p)
-        ok = p.get("ok")
-        action = str(p.get("intent_action") or "")
-        reason = str(p.get("intent_reason") or "")
-        latency = p.get("latency_ms")
-        attempts = p.get("attempts")
-        prompt_version = str(p.get("prompt_version") or "")
-        schema_version = str(p.get("schema_version") or "")
-        prompt_tokens = p.get("prompt_tokens")
-        completion_tokens = p.get("completion_tokens")
-        total_tokens = p.get("total_tokens")
-        estimated_cost_usd = p.get("estimated_cost_usd")
-        regime = str(p.get("context_regime") or "")
-        signal_score = p.get("context_signal_score")
-        sym_sent = p.get("context_symbol_sentiment_score")
-        global_sent = p.get("context_global_sentiment_score")
-        sym_sent_status = str(p.get("context_symbol_sentiment_status") or "")
-        global_sent_status = str(p.get("context_global_sentiment_status") or "")
-        composite = p.get("context_composite_score")
-        err = str(p.get("error_type") or "")
-        print(
-            f"{ts} run_id={run_id} call_kind={call_kind} ok={ok} action={action} reason={reason} "
-            f"latency_ms={latency} attempts={attempts} "
-            f"prompt_version={prompt_version} schema_version={schema_version} "
-            f"prompt_tokens={prompt_tokens} completion_tokens={completion_tokens} "
-            f"total_tokens={total_tokens} estimated_cost_usd={estimated_cost_usd} "
-            f"context_regime={regime} context_signal_score={signal_score} "
-            f"context_symbol_sentiment_score={sym_sent} context_global_sentiment_score={global_sent} "
-            f"context_symbol_sentiment_status={sym_sent_status} "
-            f"context_global_sentiment_status={global_sent_status} "
-            f"context_composite_score={composite} "
-            f"error_type={err}"
-        )
+    from scripts.diagnostics.strategist_query_render_projection import _print_human as owner
+    return owner(path, rows, facade=_migration_sys.modules[__name__])
 
 
 def _print_summary(rows: List[Dict[str, Any]]) -> None:
-    by_kind: Dict[str, Dict[str, int]] = {}
-    by_reason: Dict[str, int] = {}
-    by_action: Dict[str, int] = {}
-    for rec in rows:
-        p = rec.get("payload") if isinstance(rec.get("payload"), dict) else {}
-        call_kind = _infer_call_kind(p)
-        ok = "ok" if bool(p.get("ok")) else "non_ok"
-        by_kind.setdefault(call_kind, {})
-        by_kind[call_kind][ok] = int(by_kind[call_kind].get(ok) or 0) + 1
-        reason = str(p.get("intent_reason") or p.get("status") or "none")
-        by_reason[reason] = int(by_reason.get(reason) or 0) + 1
-        action = str(p.get("intent_action") or "none")
-        by_action[action] = int(by_action.get(action) or 0) + 1
-
-    print("summary.call_kind=", json.dumps(by_kind, ensure_ascii=False, sort_keys=True))
-    print("summary.intent_action=", json.dumps(by_action, ensure_ascii=False, sort_keys=True))
-    print(
-        "summary.intent_reason_top=",
-        json.dumps(sorted(by_reason.items(), key=lambda kv: kv[1], reverse=True)[:10], ensure_ascii=False),
-    )
+    from scripts.diagnostics.strategist_query_render_projection import _print_summary as owner
+    return owner(rows, facade=_migration_sys.modules[__name__])
 
 
 def main(argv: Optional[list[str]] = None) -> int:
