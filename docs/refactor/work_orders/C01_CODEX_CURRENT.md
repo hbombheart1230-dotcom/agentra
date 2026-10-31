@@ -1,13 +1,15 @@
-# C01 — Codex B | B-20261031-18 | FAST-3 eight NEW verified SOURCE BODY MOVEs
+# C01 — Codex B | B-20261031-18 continuation | FAST-3 six REMAINING verified SOURCE BODY MOVEs
 
-**CANONICAL_HEAD_AT_ISSUANCE:** `86bf6e034a8dbfaaca19cb744f74ad136e4b677a` · **OLD_ORDER_BLOB:** `b3e3860d0508133e30f9c462921ecd58a2c6850f` · **B_REMOTE_HEAD_AT_DESIGN:** `f5e41ab686a3ea97a99d5d2362b49ca228808513` · **SOURCE_BLOBS:** `68349976f3e988989cc3133f597297d6ca3bd887`, `da20247c7177389f4f020c99474a0734218461a7`.
-#12 `6540982789` and remote B HEAD confirm B-20261031-17 B1–B8 REMOTE_DONE, normal 4/4 exit0, remote test/source/Owner SHA. Do not reuse any of those eight. RF-063 exclusively owns both SOURCE files under scripts/diagnostics (RF-063 original Owner table checked). B1–B6 are previously verified reserve items **revalidated against current B SOURCE BODY**; B7–B8 are newly inspected pure scorecard calculations. All eight TARGET files verified 404 on B and integration before issuance.
+**CANONICAL_HEAD_AT_ISSUANCE:** `86bf6e034a8dbfaaca19cb744f74ad136e4b677a` · **OLD_ORDER_BLOB:** `b3e3860d0508133e30f9c462921ecd58a2c6850f` · **B_REMOTE_HEAD_AT_DESIGN:** `f5e41ab686a3ea97a99d5d2362b49ca228808513` · **SOURCE_BLOBS: ** `68349976f3e988989cc3133f597297d6ca3bd887`, `4d5bb75ee8a22ad506ceff962e69e53a15d88563` (B7/B8 wrapper-only source change).
+#12 `6542067869` and remote B HEAD `bc2bf16fafc2c27cc081b864f42b97f90671ecf9` confirm B-18 B7/B8 REMOTE_DONE 2/8 (normal unittest 2/2 exit0, C04 integrated `d7f5684207fabb307e8e00d4c8211351b1f7e8a0`); B1–B6 remain unimplemented and must all be completed. Earlier B-17 is also REMOTE_DONE; never repeat it. Do not reuse any of those eight. RF-063 exclusively owns both SOURCE files under scripts/diagnostics (RF-063 original Owner table checked). B1–B6 are previously verified reserve items **revalidated against current B SOURCE BODY**; B7–B8 were already completed remotely and are excluded from this executable order. B1–B6 TARGET paths rechecked 404 on B and integration after partial B7/B8 push. B7/B8 removed from executable queue; their existing code/tests are NOT new work.
 
-**Single-document contract:** Read only this C01; pin CANONICAL_HEAD/ORDER_BLOB/B_REMOTE_HEAD. No D00/RF/queue/C03/handoff lookup or self-selection. Move the exact BODY to the named new B Owner, preserve SOURCE public signature as thin wrapper, caller/monkeypatch/use-time global parity, outputs and exceptions. For global references use `facade` passed at invocation; no Owner→SOURCE import or duplicate calculation. Each of B1–B8 is mandatory; blocked item does not stop remaining safe items. A newer C01 does not retroactively cancel a started order.
+**2026-10-31 20h C03 delta:** B18 B7/B8 actual SOURCE BODY MOVE and normal test remotely verified, integrated by C04 and accepted scoped by C05; B1–B6 remain READY=6/6. All six current SOURCE functions unchanged at `68349976...`; all six TARGETs 404 on both B/integration. Future reserve R1–R6 bodies unchanged after B source `run_m26_scorecard.py` moved from `da20247c` to `4d5bb75e`, all six targets 404 on B/integration, DESIGN ONLY. New document does not cancel a B run that pinned previous C01.
+
+**Single-document contract:** Read only this C01; pin CANONICAL_HEAD/ORDER_BLOB/B_REMOTE_HEAD. No D00/RF/queue/C03/handoff lookup or self-selection. Move the exact BODY to the named new B Owner, preserve SOURCE public signature as thin wrapper, caller/monkeypatch/use-time global parity, outputs and exceptions. For global references use `facade` passed at invocation; no Owner→SOURCE import or duplicate calculation. Each of B1–B6 is mandatory; blocked item does not stop remaining safe items. A newer C01 does not retroactively cancel a started order.
 
 **Safety:** read-only diagnostic projection and offline scorecard math; mock/fake/TemporaryDirectory only. Never invoke actual `main()`, PowerShell/process inspection, runtime health probes, real reports, broker/order/Guard/Step5C/UEF, RunLab, live network, operational DB/state, CI/frozen oracle or deployment. B code/test branch only; no docs/RF/STATUS/C04/C05 or force push. One normal targeted unittest/pytest exit0 is G2; no blanket -O/full peer/hosted CI. Terminal HTTPS auth failure is PUSH_BLOCKED only; approved exact-tree expected-head lease is permitted, not force. After B commit/push, re-fetch remote HEAD/source/Owner/test blob. C04 G3 integration and C05 DONE separate.
 
-**Allowed code/test:** `scripts/diagnostics/check_q9_q12_readiness.py`, `scripts/diagnostics/run_m26_scorecard.py`, the eight exact new B TARGET paths below, and `tests/test_p15_rf063_18h_readiness_projection_owners.py` only.
+**Allowed code/test:** `scripts/diagnostics/check_q9_q12_readiness.py`, `scripts/diagnostics/run_m26_scorecard.py`, the six exact new B TARGET paths B1–B6 below, and `tests/test_p15_rf063_18h_readiness_projection_owners.py` only.
 
 ## B1 | RF-063 | SOURCE `scripts/diagnostics/check_q9_q12_readiness.py::_read_json` @ L31 | SOURCE_BLOB=`68349976f3e988989cc3133f597297d6ca3bd887`
 **TARGET:** `scripts/diagnostics/q9_readiness_json_projection.py::_read_json` (NEW, verified absent on B and integration; B-exclusive).
@@ -21,7 +23,7 @@ def _read_json(path: Path) -> dict[str, Any]:
         return {}
 ```
 **Wrapper/monkeypatch/callers:** Leave original function signature, defaults and exception semantics in SOURCE as thin delegation to TARGET. TARGET must not import SOURCE. json/Path via facade; UTF-8-SIG and exception fallback unchanged. If the function calls SOURCE globals, pass keyword-only `facade=sys.modules[__name__]` and resolve via facade at call time. Do not duplicate BODY; preserve callers, CLI behavior, output order/identity, patch seams and exceptions.
-**Normal targeted test:** `test_b1_read_json` in `tests/test_p15_rf063_18h_readiness_projection_owners.py`. Fixture input→expected: missing temp path → {}; BOM JSON object → dict. Compare original golden against facade wrapper and Owner, include negative/exception and monkeypatch seam parity, AST thin-wrapper check. Use temp paths/in-memory only. After all eight run `python -m py_compile scripts/diagnostics/check_q9_q12_readiness.py scripts/diagnostics/run_m26_scorecard.py scripts/diagnostics/*readiness*projection.py scripts/diagnostics/m26_scorecard_*_projection.py` and `python -m unittest tests/test_p15_rf063_18h_readiness_projection_owners.py -v` (equivalent scoped pytest allowed); record actual exit/PASS. Commit/push own B source/Owner/test and re-fetch HEAD/blob. If blocked record reason and **continue B2**.
+**Normal targeted test:** `test_b1_read_json` in `tests/test_p15_rf063_18h_readiness_projection_owners.py`. Fixture input→expected: missing temp path → {}; BOM JSON object → dict. Compare original golden against facade wrapper and Owner, include negative/exception and monkeypatch seam parity, AST thin-wrapper check. Use temp paths/in-memory only. After all six pending items run `python -m py_compile scripts/diagnostics/check_q9_q12_readiness.py scripts/diagnostics/run_m26_scorecard.py scripts/diagnostics/*readiness*projection.py scripts/diagnostics/m26_scorecard_*_projection.py` and `python -m unittest tests/test_p15_rf063_18h_readiness_projection_owners.py -v` (equivalent scoped pytest allowed); record actual exit/PASS. Commit/push own B source/Owner/test and re-fetch HEAD/blob. If blocked record reason and **continue B2**.
 
 ## B2 | RF-063 | SOURCE `scripts/diagnostics/check_q9_q12_readiness.py::_parse_dt` @ L39 | SOURCE_BLOB=`68349976f3e988989cc3133f597297d6ca3bd887`
 **TARGET:** `scripts/diagnostics/q9_readiness_time_projection.py::_parse_dt` (NEW, verified absent on B and integration; B-exclusive).
@@ -40,7 +42,7 @@ def _parse_dt(value: Any) -> datetime | None:
     return parsed.astimezone(KST)
 ```
 **Wrapper/monkeypatch/callers:** Leave original function signature, defaults and exception semantics in SOURCE as thin delegation to TARGET. TARGET must not import SOURCE. datetime/timezone/KST via facade; preserve naive UTC assumption. If the function calls SOURCE globals, pass keyword-only `facade=sys.modules[__name__]` and resolve via facade at call time. Do not duplicate BODY; preserve callers, CLI behavior, output order/identity, patch seams and exceptions.
-**Normal targeted test:** `test_b2_parse_dt` in `tests/test_p15_rf063_18h_readiness_projection_owners.py`. Fixture input→expected: 2026-10-31T00:00:00Z → 2026-10-31 09:00+09:00; invalid → None. Compare original golden against facade wrapper and Owner, include negative/exception and monkeypatch seam parity, AST thin-wrapper check. Use temp paths/in-memory only. After all eight run `python -m py_compile scripts/diagnostics/check_q9_q12_readiness.py scripts/diagnostics/run_m26_scorecard.py scripts/diagnostics/*readiness*projection.py scripts/diagnostics/m26_scorecard_*_projection.py` and `python -m unittest tests/test_p15_rf063_18h_readiness_projection_owners.py -v` (equivalent scoped pytest allowed); record actual exit/PASS. Commit/push own B source/Owner/test and re-fetch HEAD/blob. If blocked record reason and **continue B3**.
+**Normal targeted test:** `test_b2_parse_dt` in `tests/test_p15_rf063_18h_readiness_projection_owners.py`. Fixture input→expected: 2026-10-31T00:00:00Z → 2026-10-31 09:00+09:00; invalid → None. Compare original golden against facade wrapper and Owner, include negative/exception and monkeypatch seam parity, AST thin-wrapper check. Use temp paths/in-memory only. After all six pending items run `python -m py_compile scripts/diagnostics/check_q9_q12_readiness.py scripts/diagnostics/run_m26_scorecard.py scripts/diagnostics/*readiness*projection.py scripts/diagnostics/m26_scorecard_*_projection.py` and `python -m unittest tests/test_p15_rf063_18h_readiness_projection_owners.py -v` (equivalent scoped pytest allowed); record actual exit/PASS. Commit/push own B source/Owner/test and re-fetch HEAD/blob. If blocked record reason and **continue B3**.
 
 ## B3 | RF-063 | SOURCE `scripts/diagnostics/check_q9_q12_readiness.py::_artifact` @ L117 | SOURCE_BLOB=`68349976f3e988989cc3133f597297d6ca3bd887`
 **TARGET:** `scripts/diagnostics/q9_readiness_artifact_projection.py::_artifact` (NEW, verified absent on B and integration; B-exclusive).
@@ -58,7 +60,7 @@ def _artifact(path: Path) -> dict[str, Any]:
     }
 ```
 **Wrapper/monkeypatch/callers:** Leave original function signature, defaults and exception semantics in SOURCE as thin delegation to TARGET. TARGET must not import SOURCE. _read_json via facade; stat/existence and exception parity unchanged. If the function calls SOURCE globals, pass keyword-only `facade=sys.modules[__name__]` and resolve via facade at call time. Do not duplicate BODY; preserve callers, CLI behavior, output order/identity, patch seams and exceptions.
-**Normal targeted test:** `test_b3_artifact` in `tests/test_p15_rf063_18h_readiness_projection_owners.py`. Fixture input→expected: missing temp path → exists=False,size_bytes=0. Compare original golden against facade wrapper and Owner, include negative/exception and monkeypatch seam parity, AST thin-wrapper check. Use temp paths/in-memory only. After all eight run `python -m py_compile scripts/diagnostics/check_q9_q12_readiness.py scripts/diagnostics/run_m26_scorecard.py scripts/diagnostics/*readiness*projection.py scripts/diagnostics/m26_scorecard_*_projection.py` and `python -m unittest tests/test_p15_rf063_18h_readiness_projection_owners.py -v` (equivalent scoped pytest allowed); record actual exit/PASS. Commit/push own B source/Owner/test and re-fetch HEAD/blob. If blocked record reason and **continue B4**.
+**Normal targeted test:** `test_b3_artifact` in `tests/test_p15_rf063_18h_readiness_projection_owners.py`. Fixture input→expected: missing temp path → exists=False,size_bytes=0. Compare original golden against facade wrapper and Owner, include negative/exception and monkeypatch seam parity, AST thin-wrapper check. Use temp paths/in-memory only. After all six pending items run `python -m py_compile scripts/diagnostics/check_q9_q12_readiness.py scripts/diagnostics/run_m26_scorecard.py scripts/diagnostics/*readiness*projection.py scripts/diagnostics/m26_scorecard_*_projection.py` and `python -m unittest tests/test_p15_rf063_18h_readiness_projection_owners.py -v` (equivalent scoped pytest allowed); record actual exit/PASS. Commit/push own B source/Owner/test and re-fetch HEAD/blob. If blocked record reason and **continue B4**.
 
 ## B4 | RF-063 | SOURCE `scripts/diagnostics/check_q9_q12_readiness.py::_q9_checks` @ L129 | SOURCE_BLOB=`68349976f3e988989cc3133f597297d6ca3bd887`
 **TARGET:** `scripts/diagnostics/q9_readiness_window_projection.py::_q9_checks` (NEW, verified absent on B and integration; B-exclusive).
@@ -86,7 +88,7 @@ def _q9_checks(reports_root: Path, day: str) -> dict[str, Any]:
     }
 ```
 **Wrapper/monkeypatch/callers:** Leave original function signature, defaults and exception semantics in SOURCE as thin delegation to TARGET. TARGET must not import SOURCE. _read_json/_parse_dt/_artifact via facade at invocation; preserve list/filter/order. If the function calls SOURCE globals, pass keyword-only `facade=sys.modules[__name__]` and resolve via facade at call time. Do not duplicate BODY; preserve callers, CLI behavior, output order/identity, patch seams and exceptions.
-**Normal targeted test:** `test_b4_q9_checks` in `tests/test_p15_rf063_18h_readiness_projection_owners.py`. Fixture input→expected: empty temp root/day → window_count=0 and no timestamps. Compare original golden against facade wrapper and Owner, include negative/exception and monkeypatch seam parity, AST thin-wrapper check. Use temp paths/in-memory only. After all eight run `python -m py_compile scripts/diagnostics/check_q9_q12_readiness.py scripts/diagnostics/run_m26_scorecard.py scripts/diagnostics/*readiness*projection.py scripts/diagnostics/m26_scorecard_*_projection.py` and `python -m unittest tests/test_p15_rf063_18h_readiness_projection_owners.py -v` (equivalent scoped pytest allowed); record actual exit/PASS. Commit/push own B source/Owner/test and re-fetch HEAD/blob. If blocked record reason and **continue B5**.
+**Normal targeted test:** `test_b4_q9_checks` in `tests/test_p15_rf063_18h_readiness_projection_owners.py`. Fixture input→expected: empty temp root/day → window_count=0 and no timestamps. Compare original golden against facade wrapper and Owner, include negative/exception and monkeypatch seam parity, AST thin-wrapper check. Use temp paths/in-memory only. After all six pending items run `python -m py_compile scripts/diagnostics/check_q9_q12_readiness.py scripts/diagnostics/run_m26_scorecard.py scripts/diagnostics/*readiness*projection.py scripts/diagnostics/m26_scorecard_*_projection.py` and `python -m unittest tests/test_p15_rf063_18h_readiness_projection_owners.py -v` (equivalent scoped pytest allowed); record actual exit/PASS. Commit/push own B source/Owner/test and re-fetch HEAD/blob. If blocked record reason and **continue B5**.
 
 ## B5 | RF-063 | SOURCE `scripts/diagnostics/check_q9_q12_readiness.py::_baseline_artifacts` @ L151 | SOURCE_BLOB=`68349976f3e988989cc3133f597297d6ca3bd887`
 **TARGET:** `scripts/diagnostics/q9_readiness_baseline_projection.py::_baseline_artifacts` (NEW, verified absent on B and integration; B-exclusive).
@@ -126,7 +128,7 @@ def _baseline_artifacts(reports_root: Path, day: str) -> dict[str, Any]:
     return artifacts
 ```
 **Wrapper/monkeypatch/callers:** Leave original function signature, defaults and exception semantics in SOURCE as thin delegation to TARGET. TARGET must not import SOURCE. _artifact and Q10_LEAD_MARKET_ACTIVATION_DAY via facade; preserve q10/q11/q12 map. If the function calls SOURCE globals, pass keyword-only `facade=sys.modules[__name__]` and resolve via facade at call time. Do not duplicate BODY; preserve callers, CLI behavior, output order/identity, patch seams and exceptions.
-**Normal targeted test:** `test_b5_baseline_artifacts` in `tests/test_p15_rf063_18h_readiness_projection_owners.py`. Fixture input→expected: empty temp root/day → q10/q11/q12 groups with missing artifacts. Compare original golden against facade wrapper and Owner, include negative/exception and monkeypatch seam parity, AST thin-wrapper check. Use temp paths/in-memory only. After all eight run `python -m py_compile scripts/diagnostics/check_q9_q12_readiness.py scripts/diagnostics/run_m26_scorecard.py scripts/diagnostics/*readiness*projection.py scripts/diagnostics/m26_scorecard_*_projection.py` and `python -m unittest tests/test_p15_rf063_18h_readiness_projection_owners.py -v` (equivalent scoped pytest allowed); record actual exit/PASS. Commit/push own B source/Owner/test and re-fetch HEAD/blob. If blocked record reason and **continue B6**.
+**Normal targeted test:** `test_b5_baseline_artifacts` in `tests/test_p15_rf063_18h_readiness_projection_owners.py`. Fixture input→expected: empty temp root/day → q10/q11/q12 groups with missing artifacts. Compare original golden against facade wrapper and Owner, include negative/exception and monkeypatch seam parity, AST thin-wrapper check. Use temp paths/in-memory only. After all six pending items run `python -m py_compile scripts/diagnostics/check_q9_q12_readiness.py scripts/diagnostics/run_m26_scorecard.py scripts/diagnostics/*readiness*projection.py scripts/diagnostics/m26_scorecard_*_projection.py` and `python -m unittest tests/test_p15_rf063_18h_readiness_projection_owners.py -v` (equivalent scoped pytest allowed); record actual exit/PASS. Commit/push own B source/Owner/test and re-fetch HEAD/blob. If blocked record reason and **continue B6**.
 
 ## B6 | RF-063 | SOURCE `scripts/diagnostics/check_q9_q12_readiness.py::_evaluate` @ L185 | SOURCE_BLOB=`68349976f3e988989cc3133f597297d6ca3bd887`
 **TARGET:** `scripts/diagnostics/q9_readiness_evaluation_projection.py::_evaluate` (NEW, verified absent on B and integration; B-exclusive).
@@ -183,74 +185,13 @@ def _evaluate(
     return blockers, warnings
 ```
 **Wrapper/monkeypatch/callers:** Leave original function signature, defaults and exception semantics in SOURCE as thin delegation to TARGET. TARGET must not import SOURCE. datetime/KST/_parse_dt/to_int/Q10_LEAD_MARKET_ACTIVATION_DAY via facade; fake preopen only; do not query runtime. If the function calls SOURCE globals, pass keyword-only `facade=sys.modules[__name__]` and resolve via facade at call time. Do not duplicate BODY; preserve callers, CLI behavior, output order/identity, patch seams and exceptions.
-**Normal targeted test:** `test_b6_evaluate` in `tests/test_p15_rf063_18h_readiness_projection_owners.py`. Fixture input→expected: phase=preopen, live.running=False, processes={} → blocker live_session_not_running. Compare original golden against facade wrapper and Owner, include negative/exception and monkeypatch seam parity, AST thin-wrapper check. Use temp paths/in-memory only. After all eight run `python -m py_compile scripts/diagnostics/check_q9_q12_readiness.py scripts/diagnostics/run_m26_scorecard.py scripts/diagnostics/*readiness*projection.py scripts/diagnostics/m26_scorecard_*_projection.py` and `python -m unittest tests/test_p15_rf063_18h_readiness_projection_owners.py -v` (equivalent scoped pytest allowed); record actual exit/PASS. Commit/push own B source/Owner/test and re-fetch HEAD/blob. If blocked record reason and **continue B7**.
-
-## B7 | RF-063 | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_max_drawdown_ratio` @ L88 | SOURCE_BLOB=`da20247c7177389f4f020c99474a0734218461a7`
-**TARGET:** `scripts/diagnostics/m26_scorecard_drawdown_projection.py::_max_drawdown_ratio` (NEW, verified absent on B and integration; B-exclusive).
-**Exact computation BODY to MOVE (not a test-only/KEEP task):**
-```python
-def _max_drawdown_ratio(equity: List[float]) -> Tuple[float, float]:
-    if not equity:
-        return 0.0, 0.0
-    peak = float(equity[0])
-    max_dd = 0.0
-    max_dd_ratio = 0.0
-    for v in equity:
-        x = float(v)
-        if x > peak:
-            peak = x
-        dd = peak - x
-        if dd > max_dd:
-            max_dd = dd
-        denom = abs(peak) if abs(peak) > 1e-12 else 0.0
-        ratio = (dd / denom) if denom > 0.0 else 0.0
-        if ratio > max_dd_ratio:
-            max_dd_ratio = ratio
-    return float(max_dd), float(max_dd_ratio)
-```
-**Wrapper/monkeypatch/callers:** Leave original function signature, defaults and exception semantics in SOURCE as thin delegation to TARGET. TARGET must not import SOURCE. pure; preserve floating point exact arithmetic and empty branch. If the function calls SOURCE globals, pass keyword-only `facade=sys.modules[__name__]` and resolve via facade at call time. Do not duplicate BODY; preserve callers, CLI behavior, output order/identity, patch seams and exceptions.
-**Normal targeted test:** `test_b7_max_drawdown_ratio` in `tests/test_p15_rf063_18h_readiness_projection_owners.py`. Fixture input→expected: [] → (0.0,0.0); [100.0,80.0] → (20.0,0.2). Compare original golden against facade wrapper and Owner, include negative/exception and monkeypatch seam parity, AST thin-wrapper check. Use temp paths/in-memory only. After all eight run `python -m py_compile scripts/diagnostics/check_q9_q12_readiness.py scripts/diagnostics/run_m26_scorecard.py scripts/diagnostics/*readiness*projection.py scripts/diagnostics/m26_scorecard_*_projection.py` and `python -m unittest tests/test_p15_rf063_18h_readiness_projection_owners.py -v` (equivalent scoped pytest allowed); record actual exit/PASS. Commit/push own B source/Owner/test and re-fetch HEAD/blob. If blocked record reason and **continue B8**.
-
-## B8 | RF-063 | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_risk_adjusted` @ L108 | SOURCE_BLOB=`da20247c7177389f4f020c99474a0734218461a7`
-**TARGET:** `scripts/diagnostics/m26_scorecard_risk_projection.py::_risk_adjusted` (NEW, verified absent on B and integration; B-exclusive).
-**Exact computation BODY to MOVE (not a test-only/KEEP task):**
-```python
-def _risk_adjusted(samples: List[float]) -> Dict[str, float]:
-    if not samples:
-        return {
-            "sample_count": 0.0,
-            "pnl_mean": 0.0,
-            "pnl_std": 0.0,
-            "downside_std": 0.0,
-            "sharpe_proxy": 0.0,
-            "sortino_proxy": 0.0,
-        }
-
-    n = float(len(samples))
-    mean = float(statistics.fmean(samples))
-    std = float(statistics.pstdev(samples)) if len(samples) > 1 else 0.0
-    downside = [x for x in samples if x < 0.0]
-    downside_std = float(statistics.pstdev(downside)) if len(downside) > 1 else (float(abs(downside[0])) if len(downside) == 1 else 0.0)
-
-    sharpe = (mean / std) * math.sqrt(n) if std > 1e-12 else 0.0
-    sortino = (mean / downside_std) * math.sqrt(n) if downside_std > 1e-12 else 0.0
-    return {
-        "sample_count": n,
-        "pnl_mean": mean,
-        "pnl_std": std,
-        "downside_std": downside_std,
-        "sharpe_proxy": float(sharpe),
-        "sortino_proxy": float(sortino),
-    }
-```
-**Wrapper/monkeypatch/callers:** Leave original function signature, defaults and exception semantics in SOURCE as thin delegation to TARGET. TARGET must not import SOURCE. statistics/math via facade to preserve patch seams and floating point behavior. If the function calls SOURCE globals, pass keyword-only `facade=sys.modules[__name__]` and resolve via facade at call time. Do not duplicate BODY; preserve callers, CLI behavior, output order/identity, patch seams and exceptions.
-**Normal targeted test:** `test_b8_risk_adjusted` in `tests/test_p15_rf063_18h_readiness_projection_owners.py`. Fixture input→expected: [] → sample_count=0.0; [1.0,-1.0] → sample_count=2.0,pnl_mean=0.0. Compare original golden against facade wrapper and Owner, include negative/exception and monkeypatch seam parity, AST thin-wrapper check. Use temp paths/in-memory only. After all eight run `python -m py_compile scripts/diagnostics/check_q9_q12_readiness.py scripts/diagnostics/run_m26_scorecard.py scripts/diagnostics/*readiness*projection.py scripts/diagnostics/m26_scorecard_*_projection.py` and `python -m unittest tests/test_p15_rf063_18h_readiness_projection_owners.py -v` (equivalent scoped pytest allowed); record actual exit/PASS. Commit/push own B source/Owner/test and re-fetch HEAD/blob. If blocked record reason and **continue Bhandoff**.
+**Normal targeted test:** `test_b6_evaluate` in `tests/test_p15_rf063_18h_readiness_projection_owners.py`. Fixture input→expected: phase=preopen, live.running=False, processes={} → blocker live_session_not_running. Compare original golden against facade wrapper and Owner, include negative/exception and monkeypatch seam parity, AST thin-wrapper check. Use temp paths/in-memory only. After all six pending items run `python -m py_compile scripts/diagnostics/check_q9_q12_readiness.py scripts/diagnostics/run_m26_scorecard.py scripts/diagnostics/*readiness*projection.py scripts/diagnostics/m26_scorecard_*_projection.py` and `python -m unittest tests/test_p15_rf063_18h_readiness_projection_owners.py -v` (equivalent scoped pytest allowed); record actual exit/PASS. Commit/push own B source/Owner/test and re-fetch HEAD/blob. If blocked record reason and **continue B7**.
 
 ## FUTURE RESERVE — VERIFIED 6/6, DESIGN ONLY
 
 These six RF-063 SOURCE bodies were independently inspected at B/integration blob `da20247c7177389f4f020c99474a0734218461a7`, all six new TARGET paths returned 404 on B and integration. The current order B7/B8 changes the same SOURCE file, so C03 must recheck its fresh blob before promotion. No B self-selection.
 
-### R1 | RF-063 | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_to_epoch` @ L26 | BLOB=`da20247c7177389f4f020c99474a0734218461a7` → TARGET `scripts/diagnostics/m26_scorecard_epoch_projection.py::_to_epoch` (404 B/integration, B-exclusive)
+### R1 | RF-063 | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_to_epoch` @ L26 | BLOB=`4d5bb75ee8a22ad506ceff962e69e53a15d88563` → TARGET `scripts/diagnostics/m26_scorecard_epoch_projection.py::_to_epoch` (404 B/integration, B-exclusive)
 ```python
 def _to_epoch(ts: Any) -> Optional[int]:
     if ts is None:
@@ -276,7 +217,7 @@ def _to_epoch(ts: Any) -> Optional[int]:
 ```
 **Safety/patch:** datetime/timezone via facade; no clock if fixed fixture; pure/read-only, no operational invocation. Preserve SOURCE thin wrapper and call-time monkeypatch. **Future normal test input→expected:** None→None; '2026-10-31T00:00:00Z'→UTC epoch; golden/wrapper/Owner parity and negative/exception. **RESERVE_VERIFIED DESIGN ONLY**, not executable until next C03 fresh HEAD/body/target recheck.
 
-### R2 | RF-063 | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_utc_day` @ L49 | BLOB=`da20247c7177389f4f020c99474a0734218461a7` → TARGET `scripts/diagnostics/m26_scorecard_day_projection.py::_utc_day` (404 B/integration, B-exclusive)
+### R2 | RF-063 | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_utc_day` @ L49 | BLOB=`4d5bb75ee8a22ad506ceff962e69e53a15d88563` → TARGET `scripts/diagnostics/m26_scorecard_day_projection.py::_utc_day` (404 B/integration, B-exclusive)
 ```python
 def _utc_day(ts: Any) -> str:
     ep = _to_epoch(ts)
@@ -286,7 +227,7 @@ def _utc_day(ts: Any) -> str:
 ```
 **Safety/patch:** _to_epoch/datetime/timezone via facade; patched clock for None case; pure/read-only, no operational invocation. Preserve SOURCE thin wrapper and call-time monkeypatch. **Future normal test input→expected:** epoch 0→'1970-01-01'; missing timestamp→patched UTC date; golden/wrapper/Owner parity and negative/exception. **RESERVE_VERIFIED DESIGN ONLY**, not executable until next C03 fresh HEAD/body/target recheck.
 
-### R3 | RF-063 | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_iter_jsonl` @ L56 | BLOB=`da20247c7177389f4f020c99474a0734218461a7` → TARGET `scripts/diagnostics/m26_scorecard_jsonl_projection.py::_iter_jsonl` (404 B/integration, B-exclusive)
+### R3 | RF-063 | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_iter_jsonl` @ L56 | BLOB=`4d5bb75ee8a22ad506ceff962e69e53a15d88563` → TARGET `scripts/diagnostics/m26_scorecard_jsonl_projection.py::_iter_jsonl` (404 B/integration, B-exclusive)
 ```python
 def _iter_jsonl(path: Path) -> List[Dict[str, Any]]:
     if not path.exists():
@@ -307,7 +248,7 @@ def _iter_jsonl(path: Path) -> List[Dict[str, Any]]:
 ```
 **Safety/patch:** json/Path via facade, temp only; pure/read-only, no operational invocation. Preserve SOURCE thin wrapper and call-time monkeypatch. **Future normal test input→expected:** missing temp file→[]; temp JSONL with one dict+invalid line→[dict]; golden/wrapper/Owner parity and negative/exception. **RESERVE_VERIFIED DESIGN ONLY**, not executable until next C03 fresh HEAD/body/target recheck.
 
-### R4 | RF-063 | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_safe_int` @ L74 | BLOB=`da20247c7177389f4f020c99474a0734218461a7` → TARGET `scripts/diagnostics/m26_scorecard_int_projection.py::_safe_int` (404 B/integration, B-exclusive)
+### R4 | RF-063 | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_safe_int` @ L74 | BLOB=`4d5bb75ee8a22ad506ceff962e69e53a15d88563` → TARGET `scripts/diagnostics/m26_scorecard_int_projection.py::_safe_int` (404 B/integration, B-exclusive)
 ```python
 def _safe_int(v: Any, default: int = 0) -> int:
     try:
@@ -317,7 +258,7 @@ def _safe_int(v: Any, default: int = 0) -> int:
 ```
 **Safety/patch:** pure numeric exception parity; pure/read-only, no operational invocation. Preserve SOURCE thin wrapper and call-time monkeypatch. **Future normal test input→expected:** '3.9'→3; invalid with default=7→7; golden/wrapper/Owner parity and negative/exception. **RESERVE_VERIFIED DESIGN ONLY**, not executable until next C03 fresh HEAD/body/target recheck.
 
-### R5 | RF-063 | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_safe_float` @ L81 | BLOB=`da20247c7177389f4f020c99474a0734218461a7` → TARGET `scripts/diagnostics/m26_scorecard_float_projection.py::_safe_float` (404 B/integration, B-exclusive)
+### R5 | RF-063 | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_safe_float` @ L81 | BLOB=`4d5bb75ee8a22ad506ceff962e69e53a15d88563` → TARGET `scripts/diagnostics/m26_scorecard_float_projection.py::_safe_float` (404 B/integration, B-exclusive)
 ```python
 def _safe_float(v: Any, default: float = 0.0) -> float:
     try:
@@ -327,7 +268,7 @@ def _safe_float(v: Any, default: float = 0.0) -> float:
 ```
 **Safety/patch:** pure numeric exception parity; pure/read-only, no operational invocation. Preserve SOURCE thin wrapper and call-time monkeypatch. **Future normal test input→expected:** '2.5'→2.5; invalid with default=1.5→1.5; golden/wrapper/Owner parity and negative/exception. **RESERVE_VERIFIED DESIGN ONLY**, not executable until next C03 fresh HEAD/body/target recheck.
 
-### R6 | RF-063 | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_load_close_price_by_symbol` @ L137 | BLOB=`da20247c7177389f4f020c99474a0734218461a7` → TARGET `scripts/diagnostics/m26_scorecard_close_price_projection.py::_load_close_price_by_symbol` (404 B/integration, B-exclusive)
+### R6 | RF-063 | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_load_close_price_by_symbol` @ L98 | BLOB=`4d5bb75ee8a22ad506ceff962e69e53a15d88563` → TARGET `scripts/diagnostics/m26_scorecard_close_price_projection.py::_load_close_price_by_symbol` (404 B/integration, B-exclusive)
 ```python
 def _load_close_price_by_symbol(path: Path, *, day: str) -> Dict[str, float]:
     out: Dict[str, Tuple[str, float]] = {}
@@ -358,4 +299,4 @@ def _load_close_price_by_symbol(path: Path, *, day: str) -> Dict[str, float]:
 **Safety/patch:** csv/_utc_day/_safe_float via facade, temp CSV only; pure/read-only, no operational invocation. Preserve SOURCE thin wrapper and call-time monkeypatch. **Future normal test input→expected:** missing temp CSV→{}; temp CSV with valid symbol/close/day→symbol price; golden/wrapper/Owner parity and negative/exception. **RESERVE_VERIFIED DESIGN ONLY**, not executable until next C03 fresh HEAD/body/target recheck.
 
 ## REPORT / PUSH
-#12: `ORDER_ID=B-20261031-18 | CANONICAL_HEAD | ORDER_BLOB | B_REMOTE_BEFORE→AFTER | B1..B8 ITEM_STATUS | SOURCE/TARGET/TEST_BLOBS | NORMAL_COMMAND/EXIT/PASS | MOVED_FUNCTIONS | SOURCE_LOC_BEFORE_AFTER | FIRST_BLOCKER | NEXT_SAFE_ITEM | PUSH_REMOTE_SHA/PUSH_BLOCKED | START_KST/END_KST/ELAPSED_MIN`. Times measured only. C03 document push is not code G1/G2/G3 or RF_DONE. RunLab SOURCE_UNKNOWN/exit255 remains SAFETY_HOLD.
+#12: `ORDER_ID=B-20261031-18 | CANONICAL_HEAD | ORDER_BLOB | B_REMOTE_BEFORE→AFTER | B1..B6 ITEM_STATUS; B7/B8 REMOTE_DONE (do not re-run as new work) | SOURCE/TARGET/TEST_BLOBS | NORMAL_COMMAND/EXIT/PASS | MOVED_FUNCTIONS | SOURCE_LOC_BEFORE_AFTER | FIRST_BLOCKER | NEXT_SAFE_ITEM | PUSH_REMOTE_SHA/PUSH_BLOCKED | START_KST/END_KST/ELAPSED_MIN`. Times measured only. C03 document push is not code G1/G2/G3 or RF_DONE. RunLab SOURCE_UNKNOWN/exit255 remains SAFETY_HOLD.
