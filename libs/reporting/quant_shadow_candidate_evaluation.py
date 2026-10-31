@@ -47,6 +47,14 @@ from libs.reporting import quant_shadow_entry_shape_payload_projection as _shape
 from libs.reporting import quant_shadow_vwap_observation_payload_projection as _vwap_payload_owner
 from libs.reporting import quant_shadow_forward_summary_projection as _forward_summary_owner
 from libs.reporting import quant_shadow_top_forward_groups_projection as _top_groups_owner
+from libs.reporting import quant_shadow_vwap_observation_projection as _vwap_obs_owner
+from libs.reporting import quant_shadow_entry_lane_observation_projection as _lane_obs_owner
+from libs.reporting import quant_shadow_entry_lane_payload_projection as _lane_payload_owner
+from libs.reporting import quant_shadow_entry_lane_forward_projection as _lane_forward_owner
+from libs.reporting import quant_shadow_scorecard_rows_projection as _scorecard_rows_owner
+from libs.reporting import quant_shadow_named_forward_rows_projection as _named_rows_owner
+from libs.reporting import quant_shadow_format_rows_projection as _format_rows_owner
+from libs.reporting import quant_shadow_format_forward_projection as _format_forward_owner
 
 
 def _text(value: Any) -> str:
@@ -363,10 +371,7 @@ def _entry_shape_payload(candidates: Sequence[Mapping[str, Any]]) -> Dict[str, A
 
 
 def _below_vwap_reclaim_observation(row: Mapping[str, Any]) -> Dict[str, Any]:
-    payload = row.get("below_vwap_reclaim_observation")
-    if isinstance(payload, Mapping):
-        return dict(payload)
-    return classify_below_vwap_reclaim_observation(row)
+    return _vwap_obs_owner._below_vwap_reclaim_observation(row, facade=sys.modules[__name__])
 
 
 def _below_vwap_reclaim_observation_payload(candidates: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
@@ -374,51 +379,11 @@ def _below_vwap_reclaim_observation_payload(candidates: Sequence[Mapping[str, An
 
 
 def _entry_lane_observation(row: Mapping[str, Any]) -> Dict[str, Any]:
-    payload = row.get("entry_lane_observation")
-    if isinstance(payload, Mapping):
-        return dict(payload)
-    return build_entry_lane_observation(row)
+    return _lane_obs_owner._entry_lane_observation(row, facade=sys.modules[__name__])
 
 
 def _entry_lane_observation_payload(candidates: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
-    lane_counter: Counter[str] = Counter()
-    subtype_counter: Counter[str] = Counter()
-    subtype_v2_counter: Counter[str] = Counter()
-    lane_subtype_counter: Counter[str] = Counter()
-    lane_subtype_v2_counter: Counter[str] = Counter()
-    time_bucket_counter: Counter[str] = Counter()
-    market_regime_counter: Counter[str] = Counter()
-    market_rail_counter: Counter[str] = Counter()
-    total = 0
-    for row in candidates:
-        observation = _entry_lane_observation(row)
-        lane = _text(observation.get("primary_lane")) or "unknown"
-        subtype = _text(observation.get("subtype")) or "unknown"
-        subtype_v2 = _text(observation.get("subtype_v2")) or subtype
-        time_bucket = _text(observation.get("time_bucket")) or "unknown"
-        market_regime = _text(observation.get("market_regime")) or "unknown"
-        market_rail = _text(observation.get("market_regime_rail")) or "unknown"
-        total += 1
-        lane_counter[lane] += 1
-        subtype_counter[subtype] += 1
-        subtype_v2_counter[subtype_v2] += 1
-        lane_subtype_counter[f"{lane}:{subtype}"] += 1
-        lane_subtype_v2_counter[f"{lane}:{subtype_v2}"] += 1
-        time_bucket_counter[time_bucket] += 1
-        market_regime_counter[market_regime] += 1
-        market_rail_counter[market_rail] += 1
-    return {
-        "behavior_effect": "observation_only",
-        "candidate_count": int(total),
-        "by_primary_lane": _top_counter(lane_counter, limit=10),
-        "by_subtype": _top_counter(subtype_counter, limit=10),
-        "by_subtype_v2": _top_counter(subtype_v2_counter, limit=10),
-        "by_lane_subtype": _top_counter(lane_subtype_counter, limit=12),
-        "by_lane_subtype_v2": _top_counter(lane_subtype_v2_counter, limit=12),
-        "by_time_bucket": _top_counter(time_bucket_counter, limit=8),
-        "by_market_regime": _top_counter(market_regime_counter, limit=8),
-        "by_market_regime_rail": _top_counter(market_rail_counter, limit=8),
-    }
+    return _lane_payload_owner._entry_lane_observation_payload(candidates, facade=sys.modules[__name__])
 
 
 def _mean(values: Sequence[float]) -> float | None:
@@ -438,37 +403,7 @@ def _top_forward_groups(groups: Mapping[str, List[Mapping[str, Any]]], *, limit:
 
 
 def _entry_lane_forward_outcomes(candidates: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
-    by_lane: Dict[str, List[Mapping[str, Any]]] = {}
-    by_subtype: Dict[str, List[Mapping[str, Any]]] = {}
-    by_subtype_v2: Dict[str, List[Mapping[str, Any]]] = {}
-    by_lane_subtype: Dict[str, List[Mapping[str, Any]]] = {}
-    by_lane_subtype_v2: Dict[str, List[Mapping[str, Any]]] = {}
-    by_time_bucket: Dict[str, List[Mapping[str, Any]]] = {}
-    by_market_rail: Dict[str, List[Mapping[str, Any]]] = {}
-    for row in candidates:
-        observation = _entry_lane_observation(row)
-        lane = _text(observation.get("primary_lane")) or "unknown"
-        subtype = _text(observation.get("subtype")) or "unknown"
-        subtype_v2 = _text(observation.get("subtype_v2")) or subtype
-        time_bucket = _text(observation.get("time_bucket")) or "unknown"
-        market_rail = _text(observation.get("market_regime_rail")) or "unknown"
-        by_lane.setdefault(lane, []).append(row)
-        by_subtype.setdefault(subtype, []).append(row)
-        by_subtype_v2.setdefault(subtype_v2, []).append(row)
-        by_lane_subtype.setdefault(f"{lane}:{subtype}", []).append(row)
-        by_lane_subtype_v2.setdefault(f"{lane}:{subtype_v2}", []).append(row)
-        by_time_bucket.setdefault(time_bucket, []).append(row)
-        by_market_rail.setdefault(market_rail, []).append(row)
-    return {
-        "behavior_effect": "evaluation_only",
-        "by_primary_lane": _top_forward_groups(by_lane, limit=10),
-        "by_subtype": _top_forward_groups(by_subtype, limit=10),
-        "by_subtype_v2": _top_forward_groups(by_subtype_v2, limit=10),
-        "by_lane_subtype": _top_forward_groups(by_lane_subtype, limit=12),
-        "by_lane_subtype_v2": _top_forward_groups(by_lane_subtype_v2, limit=12),
-        "by_time_bucket": _top_forward_groups(by_time_bucket, limit=8),
-        "by_market_regime_rail": _top_forward_groups(by_market_rail, limit=8),
-    }
+    return _lane_forward_owner._entry_lane_forward_outcomes(candidates, facade=sys.modules[__name__])
 
 
 def _scorecard_return_signal(row: Mapping[str, Any]) -> float | None:
@@ -476,106 +411,11 @@ def _scorecard_return_signal(row: Mapping[str, Any]) -> float | None:
 
 
 def _scorecard_rows(rows: Sequence[Mapping[str, Any]], *, mode: str, limit: int = 5) -> List[Dict[str, Any]]:
-    selected: List[Dict[str, Any]] = []
-    for row in rows:
-        observed = int(row.get("observed_count") or 0)
-        if observed < 10:
-            continue
-        signal = _scorecard_return_signal(row)
-        if signal is None:
-            continue
-        mfe5 = row.get("avg_mfe_5m_pct")
-        mae5 = row.get("avg_mae_5m_pct")
-        try:
-            mfe5_f = float(mfe5) if mfe5 not in (None, "") else None
-        except Exception:
-            mfe5_f = None
-        try:
-            mae5_f = float(mae5) if mae5 not in (None, "") else None
-        except Exception:
-            mae5_f = None
-
-        if mode == "missed":
-            if signal < 0.10 and not (mfe5_f is not None and mfe5_f >= 0.45 and (mae5_f is None or mae5_f > -0.80)):
-                continue
-            if mae5_f is not None and mae5_f <= -1.25:
-                continue
-        elif mode == "blocked":
-            if signal > -0.05 and not (mae5_f is not None and mae5_f <= -0.75 and signal <= 0.05):
-                continue
-        else:
-            continue
-
-        selected.append(
-            {
-                "name": _text(row.get("name")),
-                "candidate_count": int(row.get("candidate_count") or 0),
-                "observed_count": observed,
-                "observed_day_count": int(row.get("observed_day_count") or 0),
-                "sample_concentration": row.get("sample_concentration"),
-                "avg_return_5m_pct": row.get("avg_return_5m_pct"),
-                "avg_return_15m_pct": row.get("avg_return_15m_pct"),
-                "avg_mfe_5m_pct": row.get("avg_mfe_5m_pct"),
-                "avg_mae_5m_pct": row.get("avg_mae_5m_pct"),
-                "scorecard_signal_pct": round(signal, 4),
-            }
-        )
-
-    selected.sort(
-        key=lambda item: (
-            float(item.get("scorecard_signal_pct") or 0.0),
-            int(item.get("observed_count") or 0),
-        ),
-        reverse=(mode == "missed"),
-    )
-    return selected[:limit]
+    return _scorecard_rows_owner._scorecard_rows(rows, mode=mode, limit=limit, facade=sys.modules[__name__])
 
 
 def _named_forward_rows(rows: Sequence[Mapping[str, Any]], names: set[str]) -> List[Dict[str, Any]]:
-    by_name = {str(row.get("name") or ""): row for row in rows}
-    selected: List[Dict[str, Any]] = []
-    for name in sorted(names):
-        row = by_name.get(name)
-        if not isinstance(row, Mapping):
-            continue
-        observed_count = int(row.get("observed_count") or 0)
-        ret5 = row.get("avg_return_5m_pct")
-        ret15 = row.get("avg_return_15m_pct")
-        try:
-            ret5_f = float(ret5) if ret5 not in (None, "") else None
-        except Exception:
-            ret5_f = None
-        try:
-            ret15_f = float(ret15) if ret15 not in (None, "") else None
-        except Exception:
-            ret15_f = None
-        if observed_count < 20:
-            review_state = "sample_insufficient"
-        elif int(row.get("observed_day_count") or 0) < 2:
-            review_state = "sample_concentrated_single_day"
-        elif ret15_f is not None and ret15_f <= 0:
-            review_state = "observe_only_negative_15m"
-        elif ret5_f is not None and ret5_f <= 0:
-            review_state = "observe_only_negative_5m"
-        elif observed_count < PROMOTION_CANDIDATE_MIN_OBSERVED:
-            review_state = "sample_insufficient"
-        else:
-            review_state = "promotion_watch"
-        selected.append(
-            {
-                "name": name,
-                "candidate_count": int(row.get("candidate_count") or 0),
-                "observed_count": observed_count,
-                "observed_day_count": int(row.get("observed_day_count") or 0),
-                "sample_concentration": row.get("sample_concentration"),
-                "avg_return_5m_pct": row.get("avg_return_5m_pct"),
-                "avg_return_15m_pct": row.get("avg_return_15m_pct"),
-                "avg_mfe_5m_pct": row.get("avg_mfe_5m_pct"),
-                "avg_mae_5m_pct": row.get("avg_mae_5m_pct"),
-                "review_state": review_state,
-            }
-        )
-    return selected
+    return _named_rows_owner._named_forward_rows(rows, names, facade=sys.modules[__name__])
 
 
 def _no_trade_scorecard(
@@ -950,43 +790,11 @@ def build_quant_shadow_candidate_evaluation(
 
 
 def _format_rows(rows: Sequence[Mapping[str, Any]], *, limit: int = 4) -> str:
-    parts: List[str] = []
-    for row in list(rows)[:limit]:
-        name = _text(row.get("name"))
-        if not name:
-            continue
-        parts.append(f"{name} ({row.get('count') or 0})")
-    return ", ".join(parts) if parts else "none"
+    return _format_rows_owner._format_rows(rows, limit=limit, facade=sys.modules[__name__])
 
 
 def _format_forward_rows(rows: Sequence[Mapping[str, Any]], *, limit: int = 4) -> str:
-    parts: List[str] = []
-    for row in list(rows)[:limit]:
-        name = _text(row.get("name"))
-        if not name:
-            continue
-        observed = int(row.get("observed_count") or 0)
-        count = int(row.get("candidate_count") or 0)
-        ret5 = row.get("avg_return_5m_pct")
-        ret15 = row.get("avg_return_15m_pct")
-        mfe5 = row.get("avg_mfe_5m_pct")
-        mae5 = row.get("avg_mae_5m_pct")
-        parts.append(
-            f"{name} ({observed}/{count}, "
-            f"+5m {float(ret5):.4f}%"
-            if ret5 is not None
-            else f"{name} ({observed}/{count}, +5m n/a"
-        )
-        if parts:
-            last = parts[-1]
-            if ret15 is not None:
-                last += f", +15m {float(ret15):.4f}%"
-            if mfe5 is not None:
-                last += f", mfe5 {float(mfe5):.4f}%"
-            if mae5 is not None:
-                last += f", mae5 {float(mae5):.4f}%"
-            parts[-1] = last + ")"
-    return "; ".join(parts) if parts else "none"
+    return _format_forward_owner._format_forward_rows(rows, limit=limit, facade=sys.modules[__name__])
 
 
 def _format_scorecard_rows(rows: Sequence[Mapping[str, Any]], *, limit: int = 4) -> str:
