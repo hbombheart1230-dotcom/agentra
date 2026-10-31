@@ -246,8 +246,116 @@ def _risk_adjusted(samples: List[float]) -> Dict[str, float]:
 **Wrapper/monkeypatch/callers:** Leave original function signature, defaults and exception semantics in SOURCE as thin delegation to TARGET. TARGET must not import SOURCE. statistics/math via facade to preserve patch seams and floating point behavior. If the function calls SOURCE globals, pass keyword-only `facade=sys.modules[__name__]` and resolve via facade at call time. Do not duplicate BODY; preserve callers, CLI behavior, output order/identity, patch seams and exceptions.
 **Normal targeted test:** `test_b8_risk_adjusted` in `tests/test_p15_rf063_18h_readiness_projection_owners.py`. Fixture input→expected: [] → sample_count=0.0; [1.0,-1.0] → sample_count=2.0,pnl_mean=0.0. Compare original golden against facade wrapper and Owner, include negative/exception and monkeypatch seam parity, AST thin-wrapper check. Use temp paths/in-memory only. After all eight run `python -m py_compile scripts/diagnostics/check_q9_q12_readiness.py scripts/diagnostics/run_m26_scorecard.py scripts/diagnostics/*readiness*projection.py scripts/diagnostics/m26_scorecard_*_projection.py` and `python -m unittest tests/test_p15_rf063_18h_readiness_projection_owners.py -v` (equivalent scoped pytest allowed); record actual exit/PASS. Commit/push own B source/Owner/test and re-fetch HEAD/blob. If blocked record reason and **continue Bhandoff**.
 
-## FUTURE RESERVE — RESERVE_NOT_VERIFIED 0/6
-The six earlier verified q9 reserve items have been promoted to B1–B6; **none remains a verified reserve**. Candidate next: RF-063 `run_m26_scorecard.py` remaining `_to_epoch`, `_utc_day`, `_iter_jsonl`, `_safe_int`, `_safe_float`, `_load_close_price_by_symbol`. These are **not executable** and not counted until C03 verifies fresh body/blob, missing new target, side effects, caller/patch parity and normal fixture. Do not self-select.
+## FUTURE RESERVE — VERIFIED 6/6, DESIGN ONLY
+
+These six RF-063 SOURCE bodies were independently inspected at B/integration blob `da20247c7177389f4f020c99474a0734218461a7`, all six new TARGET paths returned 404 on B and integration. The current order B7/B8 changes the same SOURCE file, so C03 must recheck its fresh blob before promotion. No B self-selection.
+
+### R1 | RF-063 | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_to_epoch` @ L26 | BLOB=`da20247c7177389f4f020c99474a0734218461a7` → TARGET `scripts/diagnostics/m26_scorecard_epoch_projection.py::_to_epoch` (404 B/integration, B-exclusive)
+```python
+def _to_epoch(ts: Any) -> Optional[int]:
+    if ts is None:
+        return None
+    if isinstance(ts, (int, float)):
+        return int(ts)
+    s = str(ts).strip()
+    if not s:
+        return None
+    try:
+        return int(float(s))
+    except Exception:
+        pass
+    if s.endswith("Z"):
+        s = s[:-1] + "+00:00"
+    try:
+        dt = datetime.fromisoformat(s)
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return int(dt.timestamp())
+    except Exception:
+        return None
+```
+**Safety/patch:** datetime/timezone via facade; no clock if fixed fixture; pure/read-only, no operational invocation. Preserve SOURCE thin wrapper and call-time monkeypatch. **Future normal test input→expected:** None→None; '2026-10-31T00:00:00Z'→UTC epoch; golden/wrapper/Owner parity and negative/exception. **RESERVE_VERIFIED DESIGN ONLY**, not executable until next C03 fresh HEAD/body/target recheck.
+
+### R2 | RF-063 | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_utc_day` @ L49 | BLOB=`da20247c7177389f4f020c99474a0734218461a7` → TARGET `scripts/diagnostics/m26_scorecard_day_projection.py::_utc_day` (404 B/integration, B-exclusive)
+```python
+def _utc_day(ts: Any) -> str:
+    ep = _to_epoch(ts)
+    if ep is None:
+        return datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    return datetime.fromtimestamp(ep, tz=timezone.utc).strftime("%Y-%m-%d")
+```
+**Safety/patch:** _to_epoch/datetime/timezone via facade; patched clock for None case; pure/read-only, no operational invocation. Preserve SOURCE thin wrapper and call-time monkeypatch. **Future normal test input→expected:** epoch 0→'1970-01-01'; missing timestamp→patched UTC date; golden/wrapper/Owner parity and negative/exception. **RESERVE_VERIFIED DESIGN ONLY**, not executable until next C03 fresh HEAD/body/target recheck.
+
+### R3 | RF-063 | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_iter_jsonl` @ L56 | BLOB=`da20247c7177389f4f020c99474a0734218461a7` → TARGET `scripts/diagnostics/m26_scorecard_jsonl_projection.py::_iter_jsonl` (404 B/integration, B-exclusive)
+```python
+def _iter_jsonl(path: Path) -> List[Dict[str, Any]]:
+    if not path.exists():
+        return []
+    out: List[Dict[str, Any]] = []
+    with path.open("r", encoding="utf-8") as f:
+        for line in f:
+            s = line.strip()
+            if not s:
+                continue
+            try:
+                obj = json.loads(s)
+            except Exception:
+                continue
+            if isinstance(obj, dict):
+                out.append(obj)
+    return out
+```
+**Safety/patch:** json/Path via facade, temp only; pure/read-only, no operational invocation. Preserve SOURCE thin wrapper and call-time monkeypatch. **Future normal test input→expected:** missing temp file→[]; temp JSONL with one dict+invalid line→[dict]; golden/wrapper/Owner parity and negative/exception. **RESERVE_VERIFIED DESIGN ONLY**, not executable until next C03 fresh HEAD/body/target recheck.
+
+### R4 | RF-063 | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_safe_int` @ L74 | BLOB=`da20247c7177389f4f020c99474a0734218461a7` → TARGET `scripts/diagnostics/m26_scorecard_int_projection.py::_safe_int` (404 B/integration, B-exclusive)
+```python
+def _safe_int(v: Any, default: int = 0) -> int:
+    try:
+        return int(float(v))
+    except Exception:
+        return int(default)
+```
+**Safety/patch:** pure numeric exception parity; pure/read-only, no operational invocation. Preserve SOURCE thin wrapper and call-time monkeypatch. **Future normal test input→expected:** '3.9'→3; invalid with default=7→7; golden/wrapper/Owner parity and negative/exception. **RESERVE_VERIFIED DESIGN ONLY**, not executable until next C03 fresh HEAD/body/target recheck.
+
+### R5 | RF-063 | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_safe_float` @ L81 | BLOB=`da20247c7177389f4f020c99474a0734218461a7` → TARGET `scripts/diagnostics/m26_scorecard_float_projection.py::_safe_float` (404 B/integration, B-exclusive)
+```python
+def _safe_float(v: Any, default: float = 0.0) -> float:
+    try:
+        return float(v)
+    except Exception:
+        return float(default)
+```
+**Safety/patch:** pure numeric exception parity; pure/read-only, no operational invocation. Preserve SOURCE thin wrapper and call-time monkeypatch. **Future normal test input→expected:** '2.5'→2.5; invalid with default=1.5→1.5; golden/wrapper/Owner parity and negative/exception. **RESERVE_VERIFIED DESIGN ONLY**, not executable until next C03 fresh HEAD/body/target recheck.
+
+### R6 | RF-063 | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_load_close_price_by_symbol` @ L137 | BLOB=`da20247c7177389f4f020c99474a0734218461a7` → TARGET `scripts/diagnostics/m26_scorecard_close_price_projection.py::_load_close_price_by_symbol` (404 B/integration, B-exclusive)
+```python
+def _load_close_price_by_symbol(path: Path, *, day: str) -> Dict[str, float]:
+    out: Dict[str, Tuple[str, float]] = {}
+    if not path.exists():
+        return {}
+    with path.open("r", encoding="utf-8", newline="") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            symbol = str(row.get("symbol") or "").strip()
+            if not symbol:
+                continue
+            ts = str(row.get("ts") or "").strip()
+            d = _utc_day(ts)
+            close = _safe_float(row.get("close"), default=0.0)
+            if close <= 0.0:
+                continue
+            prev = out.get(symbol)
+            if day:
+                if d != day:
+                    continue
+                if prev is None or d >= prev[0]:
+                    out[symbol] = (d, close)
+            else:
+                if prev is None or d >= prev[0]:
+                    out[symbol] = (d, close)
+    return {k: v[1] for k, v in out.items()}
+```
+**Safety/patch:** csv/_utc_day/_safe_float via facade, temp CSV only; pure/read-only, no operational invocation. Preserve SOURCE thin wrapper and call-time monkeypatch. **Future normal test input→expected:** missing temp CSV→{}; temp CSV with valid symbol/close/day→symbol price; golden/wrapper/Owner parity and negative/exception. **RESERVE_VERIFIED DESIGN ONLY**, not executable until next C03 fresh HEAD/body/target recheck.
 
 ## REPORT / PUSH
 #12: `ORDER_ID=B-20261031-18 | CANONICAL_HEAD | ORDER_BLOB | B_REMOTE_BEFORE→AFTER | B1..B8 ITEM_STATUS | SOURCE/TARGET/TEST_BLOBS | NORMAL_COMMAND/EXIT/PASS | MOVED_FUNCTIONS | SOURCE_LOC_BEFORE_AFTER | FIRST_BLOCKER | NEXT_SAFE_ITEM | PUSH_REMOTE_SHA/PUSH_BLOCKED | START_KST/END_KST/ELAPSED_MIN`. Times measured only. C03 document push is not code G1/G2/G3 or RF_DONE. RunLab SOURCE_UNKNOWN/exit255 remains SAFETY_HOLD.
