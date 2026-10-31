@@ -67,7 +67,7 @@ def build_q8_historical_review_payload(
         "trade_by_exit_reason": pattern_by_exit or facade._aggregate_return_rows(return_rows, "exit_reason"),
         **shadow,
     }
-    eligibility = payload.get("q8_promotion_eligibility") if isinstance(payload.get("q8_promotion_eligibility"), Mapping) else {}
+    eligibility = payload.get("q8_promotion_eligibility") if isinstance(payload.get("q8_promotion_eligibility"), facade.Mapping) else {}
     if int(eligibility.get("promotion_allowed_day_count") or 0) <= 0:
         payload["promotion_recommendations"] = [
             {

@@ -38,7 +38,7 @@ def _pattern_rows_from_daily_summaries(
         section_payload = pattern.get(section) if isinstance(pattern.get(section), dict) else {}
         rows = section_payload.get(group_key) if isinstance(section_payload.get(group_key), list) else []
         for row in rows:
-            if not isinstance(row, Mapping):
+            if not isinstance(row, facade.Mapping):
                 continue
             name = facade._text(row.get("name")) or "missing"
             bucket = grouped[name]

@@ -10,12 +10,12 @@ from typing import Any, Iterable, Mapping
 def _rows_reach_epoch(rows: Iterable[Mapping[str, Any]], target_epoch: float | None, *, facade: Any) -> bool:
     if target_epoch is None:
         return False
-    return any((facade._epoch_seconds(row.get("ts")) or 0.0) >= float(target_epoch) for row in rows if isinstance(row, Mapping))
+    return any((facade._epoch_seconds(row.get("ts")) or 0.0) >= float(target_epoch) for row in rows if isinstance(row, facade.Mapping))
 
 
 def _rows_reach_regular_close(rows: Iterable[Mapping[str, Any]], *, facade: Any) -> bool:
     return any(
         facade._row_kst_hhmmss(row) >= "153000"
         for row in rows
-        if isinstance(row, Mapping) and facade._row_kst_hhmmss(row)
+        if isinstance(row, facade.Mapping) and facade._row_kst_hhmmss(row)
     )

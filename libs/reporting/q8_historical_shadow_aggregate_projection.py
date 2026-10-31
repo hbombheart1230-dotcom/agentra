@@ -29,32 +29,32 @@ def _aggregate_shadow_summaries(reports_root: Path, *, start: str, end: str, fac
         if q.get("candidate_count") is not None:
             q_days += 1
         for row in list(q.get("by_reason") or []):
-            if isinstance(row, Mapping):
+            if isinstance(row, facade.Mapping):
                 reason_counter[facade._text(row.get("name"))] += facade._int(row.get("count"))
         for row in list(q.get("by_role") or []):
-            if isinstance(row, Mapping):
+            if isinstance(row, facade.Mapping):
                 role_counter[facade._text(row.get("name"))] += facade._int(row.get("count"))
         for row in list(q.get("by_tactic_id") or []):
-            if isinstance(row, Mapping):
+            if isinstance(row, facade.Mapping):
                 tactic_counter[facade._text(row.get("name"))] += facade._int(row.get("count"))
         below_vwap = (
             q.get("below_vwap_reclaim_observation")
-            if isinstance(q.get("below_vwap_reclaim_observation"), Mapping)
+            if isinstance(q.get("below_vwap_reclaim_observation"), facade.Mapping)
             else {}
         )
         for row in list(below_vwap.get("by_subtype") or []):
-            if isinstance(row, Mapping):
+            if isinstance(row, facade.Mapping):
                 below_vwap_subtype_counter[facade._text(row.get("name"))] += facade._int(row.get("count"))
         for row in list(below_vwap.get("by_subtype_v2") or []):
-            if isinstance(row, Mapping):
+            if isinstance(row, facade.Mapping):
                 below_vwap_subtype_v2_counter[facade._text(row.get("name"))] += facade._int(row.get("count"))
         lane_forward = (
             q.get("entry_lane_forward_outcomes")
-            if isinstance(q.get("entry_lane_forward_outcomes"), Mapping)
+            if isinstance(q.get("entry_lane_forward_outcomes"), facade.Mapping)
             else {}
         )
         for row in list(lane_forward.get("by_lane_subtype") or []):
-            if not isinstance(row, Mapping):
+            if not isinstance(row, facade.Mapping):
                 continue
             name = facade._text(row.get("name"))
             if not name.startswith("vwap_reclaim:"):
@@ -66,7 +66,7 @@ def _aggregate_shadow_summaries(reports_root: Path, *, start: str, end: str, fac
         if groups:
             q8_group_days += 1
         for row in groups:
-            if not isinstance(row, Mapping):
+            if not isinstance(row, facade.Mapping):
                 continue
             reason = facade._text(row.get("reason") or row.get("name"))
             if not reason:
