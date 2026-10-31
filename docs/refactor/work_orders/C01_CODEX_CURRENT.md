@@ -1,60 +1,18 @@
-# C01 — Codex B | B-20261031-21 CONTINUATION | FAST-3 7 remaining actual SOURCE BODY MOVEs
+# C01 — Codex B | B-20261031-21 CONTINUATION | FAST-3 6 remaining actual BODY MOVEs
 
-**CANONICAL_HEAD_AT_DESIGN:** `2c9453195ea619bfefbecf24ed711c9de161939d` | **OLD_ORDER_BLOB:** `fed5961b653a805aeb7cb8d3a0e59f2aefcb0bab` | **B_REMOTE_HEAD:** `444cd86237cefae9ccbf413c72e9e1457f870912` | **SOURCE_BLOBS:** Q9 `83b0295f33e45f38f8e7b8dbd1bbb776029f8820`, M26 `4d5bb75ee8a22ad506ceff962e69e53a15d88563`.
+**CANONICAL_HEAD_AT_TRIAGE:** `c2fff478f77d9cd25e6101cd1c5f2d040953f61b` | **OLD_ORDER_BLOB:** `90b763d600d28a340a30a5d4765744e5ded8d9c6` | **B_REMOTE_HEAD:** `32ed205327a36f2041ebd9a3257c02cba1cd41cd` | **Q9_SOURCE_BLOB:** `43db04b1419b39b3716145d7a0d3844abb634835` | **M26_SOURCE_BLOB:** `4d5bb75ee8a22ad506ceff962e69e53a15d88563`.
 
-**C03 NEW DELTA:** #12 6542649748 B18 B1–B3 REMOTE_DONE on `68f3f0797951cb35219752956a10a609b8363500`, normal unittest 3/3 exit0; earlier B18 B7–B8 also REMOTE_DONE on bc2bf16f. Thus old C01 has only B4–B6=3/6 safe pending, BELOW supply threshold. B-21 carries these 3 still-unimplemented Q9 BODY MOVEs as B1–B3, and adds 5 freshly verified M26 BODY MOVEs as B4–B8. Do not redo old B18 B1–B3/B7–B8, tests, or KEEP. C04 #36 6542892505 and C05 #36 6542991480: B1–B3 integrated scoped; B test at `tests/test_p15_rf063_18h_readiness_projection_owners.py` on B branch accidentally overwrote earlier B7/B8 suite. C04 preserved both by relocating B1–B3 exact tested content to `tests/test_p15_rf063_20h_readiness_projection_owners.py` on integration. **Do not overwrite either existing suite**; create ONLY tests/test_p15_rf063_21h_projection_owners.py for new seven remaining items. RF-063 remains DEV/PARTIAL. #11 A20 all 8 REMOTE_DONE handled in C02; #32 RunLab no delta, exit255/UNKNOWN source operational HOLD.
+**C03 latest delta:** #12 comment 6544449972 confirms B-21 B2 `_baseline_artifacts` REMOTE_DONE: Q9 original BODY removed and new `q9_readiness_baseline_projection` owner exists, normal unittest 2/2 exit0, B normal non-force push 32ed2053. Earlier B1 `_q9_checks` REMOTE_DONE on 444cd862. **Never redo B1/B2 or overwrite their two tests.** Current B3 `_evaluate` BODY is still present and matches old order exact code byte-for-byte; Q9 blob advanced `83b0295f→43db04b1` solely due B2, current function L121. B4–B8 M26 BODY source blob unchanged. **Six** independent safe unfinished B3–B8 remain; threshold is strictly fewer than six, so do not cancel this start order or manufacture new B work. A #11 6544589564 A-23 8/8 REMOTE_DONE; new A-20261101-00 supplied separately. RunLab #32 6520075820 Exited(255), RUN_SOURCE_SHA UNKNOWN, operational HOLD.
 
-**C03 23:00 delta (verified):** #12 6543760151 confirms B-21 B1 `_q9_checks` REMOTE_DONE with normal unittest 1/1 exit0 and non-force remote push `444cd86237cefae9ccbf413c72e9e1457f870912`. Current B/integration Q9 source blob is `83b0295f33e45f38f8e7b8dbd1bbb776029f8820` (B1 now thin wrapper), and existing `tests/test_p15_rf063_21h_projection_owners.py` blob `b45a5a790086b88fc0c32255c3af084beebec3e9` already contains B1 test. **B1 is completed and REMOVED from executable list, never redo it or overwrite its test.** B2–B3 actual bodies remain in Q9 and B4–B8 remain in M26 blob `4d5bb75e`, so **7 independently safe pending** (not below 6 threshold); keep B-21 remaining work. Append B2–B8 tests to the existing 21h test file without erasing B1, or use a new 23h scoped file if append would collide; no test overwrite. #11 A-22 all 8 REMOTE_DONE, C02 A-23 freshly supplied. #32 no new RunLab delta; exit255/source UNKNOWN operational HOLD.
+**ONE-FILE EXECUTION CONTRACT:** Read THIS C01 only and exact source/target/test paths below; no D00/RF/queue/C03/HANDOFF or self-selection. Pin CANONICAL_HEAD, ORDER_BLOB, B remote SHA and ORDER_ID. Execute ALL B3–B8, individually; blocked one → continue other safe ones. Do not invalidate B's earlier start order retroactively. Only B `work/p15-b-operator-structure-20261022` code/test, no docs/RF/STATUS/C04/C05/A branch.
 
-**One-file complete contract:** Read only THIS C01 and exact code/test paths; no D00/RF/queue/C03/HANDOFF exploration, no self-selected tasks. Pin CANONICAL_HEAD, ORDER_BLOB, B remote SHA, ORDER_ID; execute ALL B2–B8, independently. B18 previous-start order is not retroactively canceled. Only B branch code/tests, never docs/RF/STATUS/C04/C05/A branch. Blocked item → continue next safe item.
+**OWNER/SAFETY:** RF-063 CODEX_B exclusive offline diagnostics: Q9 SOURCE `scripts/diagnostics/check_q9_q12_readiness.py` blob `43db04b1`; M26 SOURCE `scripts/diagnostics/run_m26_scorecard.py` blob `4d5bb75e`; all six TARGETs absent on both B and integration, and six future reserve targets absent on both. No overlap with A. Fake mappings/TemporaryDirectory only. Never run live main, real health/process, broker/order, Guard/Step5C/UEF, RunLab, operational State/DB/network/deploy, CI/frozen oracle or force-push. Q9 B3 receives synthetic phase/live/processes and a patched clock only.
 
-**Verified ownership/safety:** RF-063 exclusively CODEX_B; Q9 SOURCE `scripts/diagnostics/check_q9_q12_readiness.py` blob `83b0295f33e45f38f8e7b8dbd1bbb776029f8820`, M26 SOURCE `scripts/diagnostics/run_m26_scorecard.py` blob `4d5bb75ee8a22ad506ceff962e69e53a15d88563` match integration. B2–B3 Q9 still actual calculation bodies; B4–B8 M26 still actual calculation bodies; B1 is REMOTE_DONE. Remaining seven target paths are absent on B/integration; B1 target and 21h test now EXIST and must be preserved; reserve six targets absent. No source/target collision with A. Pure offline readiness projection and scorecard scalar/JSONL calculations. Never call actual `main()`, PowerShell/process status, live health, real reports, broker/order/Guard/Step5C/UEF, RunLab, operational State/DB, network, deploy, frozen tests or CI workflows. Fake/temp only. Q9 _evaluate uses synthetic phase/live/processes and never queries runtime.
+**MOVE:** Move each exact calculation BODY below to new exclusive Owner, SOURCE same-signature thin delegation, no duplicate BODY. Owner never imports SOURCE. Preserve caller/CLI, exception, dict ordering, call-time monkeypatch through `facade=sys.modules[__name__]`; use `from __future__ import annotations` and own typing imports. Capture preimage golden per item; compare original vs wrapper vs direct Owner, negative/error, post-import monkeypatch, AST proof source BODY removed. Existing B1/B2 tests in `tests/test_p15_rf063_21h_projection_owners.py` must be preserved byte-for-byte; append B3–B8 tests safely, or create `tests/test_p15_rf063_20261101_00h_projection_owners.py` if collision. Do not overwrite B18 or prior 21h suite.
 
-**Implementation/test/push:** Move each exact BODY below to new exclusive Owner, SOURCE signature as thin delegation, no duplicate BODY; Owner never imports SOURCE. Use call-time `facade=sys.modules[__name__]` for original globals and preserve CLI/caller/monkeypatch, output/exception, dict order. New Owner `from __future__ import annotations`. Capture original-preimage golden and compare original vs wrapper vs Owner, negative/error, post-import monkeypatch; AST prove body removal. Append 7 named B2–B8 tests to existing `tests/test_p15_rf063_21h_projection_owners.py` without overwriting existing B1 test; if append unsafe, use distinct `tests/test_p15_rf063_23h_projection_owners.py` for B2–B8. Do not modify B18 prior tests. Run `python -m py_compile scripts/diagnostics/check_q9_q12_readiness.py scripts/diagnostics/run_m26_scorecard.py scripts/diagnostics/q9_readiness_*_projection.py scripts/diagnostics/m26_scorecard_*_projection.py` and `python -m unittest tests/test_p15_rf063_21h_projection_owners.py -v` normal exit0 (scoped pytest allowed). No blanket -O/full-peer/hosted CI. Report actual normal exit, source before/after LOC, Owner/test blobs. Commit/push ONLY scripts/diagnostics/check_q9_q12_readiness.py, scripts/diagnostics/run_m26_scorecard.py, seven exact pending B targets and append-only tests/test_p15_rf063_21h_projection_owners.py (or new 23h test file) to `work/p15-b-operator-structure-20261022`, non-force, re-fetch remote HEAD/source/target/test blobs. Terminal auth error → PUSH_BLOCKED only, continue safe work; previously approved exact-tree expected-head lease allowed, no force. C04/C05 G3/DONE separate.
+**NORMAL G2/PUSH:** `python -m py_compile scripts/diagnostics/check_q9_q12_readiness.py scripts/diagnostics/run_m26_scorecard.py` plus six exact new targets; `python -m unittest tests/test_p15_rf063_21h_projection_owners.py -v` (or distinct 00h file for six), normal exit0. Commit only B source/targets/tests, non-force push, refetch remote B HEAD/source/target/test blobs. Report B3–B8 per-item IMPLEMENTED/TEST_BLOCKED/PUSH_BLOCKED/SAFETY_BLOCKED/NOT_RUN, normal exit, SHA, START/END measured to #12. Git authentication failure blocks push only; continue other safe tasks. No mandatory -O/full peer/hosted CI. C04 G3 integration, C05 RF DONE separately.
 
-**Allowed paths:** scripts/diagnostics/check_q9_q12_readiness.py; scripts/diagnostics/run_m26_scorecard.py; scripts/diagnostics/q9_readiness_baseline_projection.py; scripts/diagnostics/q9_readiness_evaluation_projection.py; scripts/diagnostics/m26_scorecard_epoch_projection.py; scripts/diagnostics/m26_scorecard_day_projection.py; scripts/diagnostics/m26_scorecard_jsonl_projection.py; scripts/diagnostics/m26_scorecard_int_projection.py; scripts/diagnostics/m26_scorecard_float_projection.py; tests/test_p15_rf063_21h_projection_owners.py. Reserve R1–R6 design only.
-
-## B2 | RF-063 | Owner=CODEX_B | SOURCE `scripts/diagnostics/check_q9_q12_readiness.py::_baseline_artifacts` @ L133 | SOURCE_BLOB=`83b0295f33e45f38f8e7b8dbd1bbb776029f8820`
-**TARGET:** `scripts/diagnostics/q9_readiness_baseline_projection.py::_baseline_artifacts` — NEW, verified absent on actor and integration HEAD, single Owner.
-**Exact calculation BODY to MOVE (remove from SOURCE; not duplicate, not KEEP):**
-```python
-def _baseline_artifacts(reports_root: Path, day: str) -> dict[str, Any]:
-    artifacts = {
-        "q10": {
-            "decisions": _artifact(reports_root / "evaluation" / "baseline_samsung_hynix" / day / "baseline_samsung_hynix_decisions.json"),
-            "forward": _artifact(reports_root / "evaluation" / "baseline_samsung_hynix" / day / "baseline_samsung_hynix_forward_returns.json"),
-            "comparison": _artifact(reports_root / "evaluation" / "baseline_samsung_hynix" / day / "q9_vs_samsung_hynix_daily_comparison.json"),
-        },
-        "q11": {
-            "signals": _artifact(reports_root / "evaluation" / "opportunity_engine_shadow" / day / "opportunity_engine_signals.json"),
-            "virtual_trades": _artifact(reports_root / "evaluation" / "opportunity_engine_shadow" / day / "opportunity_engine_virtual_trades.json"),
-            "report": _artifact(reports_root / "evaluation" / "opportunity_engine_shadow" / day / "opportunity_engine_daily_report.json"),
-        },
-        "q12": {
-            "decisions": _artifact(reports_root / "evaluation" / "baseline_btc_woori_tech" / day / "baseline_btc_woori_decisions.json"),
-            "forward": _artifact(reports_root / "evaluation" / "baseline_btc_woori_tech" / day / "baseline_btc_woori_forward_returns.json"),
-            "comparison": _artifact(reports_root / "evaluation" / "baseline_btc_woori_tech" / day / "baseline_btc_woori_comparison.json"),
-            "hypothesis_validation": _artifact(reports_root / "evaluation" / "baseline_btc_woori_tech" / day / "q12_btc_woori_hypothesis_validation.json"),
-            "hypothesis_cumulative": _artifact(reports_root / "evaluation" / "baseline_btc_woori_tech" / "hypothesis_validation" / "q12_btc_woori_hypothesis_cumulative.json"),
-        },
-    }
-    if day >= Q10_LEAD_MARKET_ACTIVATION_DAY:
-        forward_root = reports_root / "evaluation" / "baseline_samsung_hynix" / day / "q10_forward_validation"
-        artifacts["q10"].update(
-            {
-                "lead_market_preopen": _artifact(forward_root / "q10_preopen_signal_snapshot.json"),
-                "lead_market_reactions": _artifact(forward_root / "q10_actual_market_reactions.json"),
-                "lead_market_expected_actual": _artifact(forward_root / "q10_expected_vs_actual.json"),
-                "lead_market_shadow": _artifact(forward_root / "q10_shadow_entry_comparison.json"),
-                "lead_market_report": _artifact(forward_root / "q10_forward_validation_report.md"),
-            }
-        )
-    return artifacts
-```
-**SOURCE thin wrapper / caller / monkeypatch:** Preserve exact SOURCE function signature and return/exception semantics. Import the new Owner via package path at call time or stable alias; pass `facade=sys.modules[__name__]` keyword-only for all SOURCE globals; resolve the following through facade at invocation: facade._artifact/Q10_LEAD_MARKET_ACTIVATION_DAY, group/key ordering. Owner must never import SOURCE; do not change external callers, CLI behavior or policy. Check original-preimage golden, wrapper, Owner and post-import monkeypatch parity, including negative/error path and AST proof of BODY removal.
-**Normal targeted test:** `test_b2_baseline_artifacts` in `tests/test_p15_rf063_21h_projection_owners.py`. Fixture input→expected: TemporaryDirectory empty reports_root,day='2026-08-30' → q10/q11/q12 present, all exists=False; 2026-08-31 threshold adds lead_market_*. Only fake mappings/TemporaryDirectory; no real runtime. If BLOCKED record exact first blocker and **continue B3**.
-
-## B3 | RF-063 | Owner=CODEX_B | SOURCE `scripts/diagnostics/check_q9_q12_readiness.py::_evaluate` @ L167 | SOURCE_BLOB=`83b0295f33e45f38f8e7b8dbd1bbb776029f8820`
+## B3 | RF-063 | Owner=CODEX_B | SOURCE `scripts/diagnostics/check_q9_q12_readiness.py::_evaluate` @ L121 | SOURCE_BLOB=`43db04b1419b39b3716145d7a0d3844abb634835`
 **TARGET:** `scripts/diagnostics/q9_readiness_evaluation_projection.py::_evaluate` — NEW, verified absent on actor and integration HEAD, single Owner.
 **Exact calculation BODY to MOVE (remove from SOURCE; not duplicate, not KEEP):**
 ```python
@@ -204,7 +162,7 @@ def _safe_float(v: Any, default: float = 0.0) -> float:
 **Normal targeted test:** `test_b8_safe_float` in `tests/test_p15_rf063_21h_projection_owners.py`. Fixture input→expected: '1.25' → 1.25; 'bad',default=2.5 → 2.5; NaN/exception parity. Only fake mappings/TemporaryDirectory; no real runtime. If BLOCKED record exact first blocker and **continue finish targeted test, commit/push, remote re-fetch**.
 
 ## FUTURE RESERVE — VERIFIED 6/6, DESIGN ONLY (NOT EXECUTABLE)
-These are six distinct RF-063 B source bodies verified on current M26/metrics blobs, target paths absent B/integration; not part of B-21. New C03 issuance and latest source/target recheck mandatory. Do not treat prior B18 tests as reserve.
+These are six distinct RF-063 B source bodies re-verified on current M26/metrics blobs, target paths absent B/integration; not part of B-21. New C03 issuance and latest source/target recheck mandatory. Do not treat prior B18 tests as reserve.
 
 ### R1 | RF-063 | Owner=CODEX_B | SOURCE `scripts/diagnostics/run_m26_scorecard.py::_load_close_price_by_symbol` @ L98 | SOURCE_BLOB=`4d5bb75ee8a22ad506ceff962e69e53a15d88563`
 **TARGET:** `scripts/diagnostics/m26_scorecard_close_projection.py::_load_close_price_by_symbol` (404 actor/integration, verified absent). **BODY (DESIGN ONLY, DO NOT EXECUTE):**
